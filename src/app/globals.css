@@ -5,9 +5,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
- --accent: #3A9EA5;
---accent-light: #E8F6F7;
---accent-dark: #2C7D83;
+  --accent: #3A9EA5;
+  --accent-light: #E8F6F7;
+  --accent-dark: #2C7D83;
+  --brand-orange: #F5813F;
+}
 
 * { box-sizing: border-box; }
 
@@ -22,55 +24,31 @@ body {
   color: #f9fafb;
 }
 
-/* scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
-.dark ::-webkit-scrollbar-thumb { background: #374151; }
 
-/* custom classes */
-.card {
-  @apply bg-white border border-gray-100 rounded-xl shadow-sm;
-}
-.dark .card {
-  @apply bg-gray-900 border-gray-800;
-}
-
-.metric-card {
-  @apply bg-gray-50 rounded-xl p-4;
-}
-.dark .metric-card {
-  @apply bg-gray-800;
-}
+.card { @apply bg-white border border-gray-100 rounded-xl shadow-sm; }
+.metric-card { @apply bg-gray-50 rounded-xl p-4; }
 
 .btn-primary {
-  @apply bg-accent text-white text-sm font-medium px-4 py-2 rounded-lg hover:bg-accent-dark transition-colors;
+  @apply text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors;
   background: var(--accent);
 }
-.btn-primary:hover { background: var(--accent-dark, #0f4a33); }
+.btn-primary:hover { background: var(--accent-dark); }
 
 .btn-secondary {
   @apply text-sm font-medium px-4 py-2 rounded-lg border transition-colors;
   color: var(--accent);
   border-color: var(--accent);
 }
-.btn-secondary:hover {
-  background: var(--accent-light);
-}
+.btn-secondary:hover { background: var(--accent-light); }
 
-/* rating bar */
 .rating-bar { @apply h-1.5 rounded-full bg-gray-200 overflow-hidden; }
 .rating-bar-fill { @apply h-full rounded-full; }
 
-/* animations */
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
-}
+@keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 .pulse-dot { animation: pulse-dot 1.4s infinite; }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
-}
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 .fade-in { animation: fadeIn 0.25s ease-out; }
