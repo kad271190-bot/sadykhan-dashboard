@@ -29,17 +29,19 @@ export default function Sidebar({ active, onNav }: Props) {
       collapsed ? 'w-14' : 'w-56'
     )}>
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-3 py-4 border-b border-gray-100">
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-          style={{ background: 'var(--accent)' }}>
-          <Activity className="w-4 h-4 text-white" />
-        </div>
-        {!collapsed && (
-          <div>
-            <div className="text-sm font-600 text-gray-900 leading-tight">Садыхан</div>
-            <div className="text-[10px] text-gray-400 leading-tight">Управление репутацией</div>
-          </div>
-        )}
+      <div className="w-8 h-8 shrink-0 flex items-center justify-center">
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+    <circle cx="16" cy="16" r="15" stroke="#3A9EA5" strokeWidth="2.5" fill="white"/>
+    <path d="M8 19 Q13 10 16 14 Q19 18 24 13" stroke="#F5813F" strokeWidth="3" strokeLinecap="round" fill="none"/>
+    <path d="M9 22 Q14 13 17 17 Q20 21 25 16" stroke="#F5813F" strokeWidth="2" strokeLinecap="round" fill="none" opacity="0.6"/>
+  </svg>
+</div>
+{!collapsed && (
+  <div>
+    <div className="text-sm font-medium leading-tight" style={{ color: '#3A9EA5', fontWeight: 600 }}>садыхан</div>
+    <div className="text-[10px] text-gray-400 leading-tight">Репутация 2GIS</div>
+  </div>
+)}
       </div>
 
       {/* Nav */}
