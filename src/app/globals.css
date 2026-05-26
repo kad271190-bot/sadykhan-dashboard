@@ -5,9 +5,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-  --accent: #1a6f4e;
-  --accent-light: #e6f4ee;
-}
+ --accent: #00B5B8;
+  --accent-light: #E6F9F9;
+  --accent-dark: #008C8F;
 
 * { box-sizing: border-box; }
 
