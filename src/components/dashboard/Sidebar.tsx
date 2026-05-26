@@ -36,8 +36,8 @@ export default function Sidebar({ active, onNav }: Props) {
         </div>
         {!collapsed && (
           <div>
-            <div className="text-sm font-600 text-gray-900 leading-tight">SADYKHAN</div>
-            <div className="text-[10px] text-gray-400 leading-tight">Репутация 2GIS</div>
+            <div className="text-sm font-600 text-gray-900 leading-tight">Садыхан</div>
+            <div className="text-[10px] text-gray-400 leading-tight">Управление репутацией</div>
           </div>
         )}
       </div>
