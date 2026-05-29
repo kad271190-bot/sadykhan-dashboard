@@ -97,9 +97,7 @@ export default function DashboardPage() {
 
           {section === 'competitors' && <>
             <h1 className="text-lg font-medium text-gray-900">Конкуренты</h1>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <CompetitorsPanel /><AIInsights />
-            </div>
+            <CompetitorsPanel />
           </>}
 
           {section === 'settings' && <>
