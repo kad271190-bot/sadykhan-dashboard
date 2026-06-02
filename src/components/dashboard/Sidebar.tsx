@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import {
   LayoutDashboard, Star, Building2, AlertTriangle,
   TrendingUp, Settings, ChevronLeft, ChevronRight,
-  BarChart3, MessageSquare, ThumbsUp
+  BarChart3, MessageSquare, ThumbsUp, Instagram
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { getUnreadCount, markAsRead } from '@/lib/supabase'
@@ -53,6 +53,7 @@ export default function Sidebar({ active, onNav }: Props) {
     { href: 'analytics', icon: BarChart3, label: 'Аналитика' },
     { href: 'nps', icon: ThumbsUp, label: 'NPS' },
     { href: 'competitors', icon: TrendingUp, label: 'Конкуренты' },
+    { href: 'instagram', icon: Instagram, label: 'Instagram' },
     { href: 'settings', icon: Settings, label: 'Настройки' },
   ]
 

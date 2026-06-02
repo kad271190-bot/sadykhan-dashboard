@@ -13,9 +13,10 @@ import NPSReport from '@/components/dashboard/NPSReport'
 import ReplyComposer from '@/components/dashboard/ReplyComposer'
 import SettingsPage from '@/components/dashboard/SettingsPage'
 import PlatformAnalytics from '@/components/dashboard/PlatformAnalytics'
+import InstagramPublisher from '@/components/instagram/InstagramPublisher'
 import { METRICS } from '@/lib/data'
 
-const SECTIONS = ['overview','reviews','replies','branches','alerts','analytics','nps','competitors','settings'] as const
+const SECTIONS = ['overview','reviews','replies','branches','alerts','analytics','nps','competitors','instagram','settings'] as const
 type Section = typeof SECTIONS[number]
 
 export default function DashboardPage() {
@@ -77,6 +78,8 @@ export default function DashboardPage() {
             <h1 className="text-lg font-medium text-gray-900">Конкуренты</h1>
             <CompetitorsPanel />
           </>}
+
+          {section === 'instagram' && <InstagramPublisher />}
 
           {section === 'settings' && <>
             <h1 className="text-lg font-medium text-gray-900">Настройки</h1>
