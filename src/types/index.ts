@@ -107,32 +107,3 @@ export interface ComplaintStat {
   count: number
   percent: number
 }
-
-// ── Instagram Publisher ────────────────────────────────────────────
-export type InstagramPostType = 'post' | 'reel' | 'story'
-export type InstagramPostStatus = 'draft' | 'scheduled' | 'published' | 'failed'
-
-export interface InstagramPost {
-  id: string
-  type: InstagramPostType
-  status: InstagramPostStatus
-  mediaUrl: string
-  caption: string
-  hashtags: string[]
-  scheduledAt?: string
-  publishedAt?: string
-  instagramMediaId?: string
-  error?: string
-  aiGenerated: boolean
-  topic?: string
-  createdAt: string
-}
-
-export interface AutoStoryConfig {
-  enabled: boolean
-  frequency: 'daily' | '2x_daily' | 'weekly'
-  topics: string[]
-  style: 'formal' | 'casual' | 'promo'
-  includeHashtags: boolean
-  scheduledTime: string
-}
