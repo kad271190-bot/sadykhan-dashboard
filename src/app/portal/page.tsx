@@ -1,5 +1,7 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
+
+const FinanceAgentPage = lazy(() => import('./finance/agent/page'));
 
 // ─── COLORS (Sadykhan brand) ───────────────────────────────
 // Dark green bg: #0A2218
@@ -43,6 +45,7 @@ const NAV = [
       { id: 'finance/reports',    icon: 'file-analytics', label: 'Финотчётность' },
       { id: 'finance/analytics',  icon: 'chart-bar',      label: 'Аналитика' },
       { id: 'finance/accounting', icon: 'calculator',     label: 'Бухгалтерия' },
+      { id: 'finance/agent',      icon: 'robot',          label: 'AI-аналитик' },
     ]},
     { id: 'hr',         icon: 'users',           label: 'HR', subs: [
       { id: 'hr/staff',    icon: 'user',   label: 'Персонал' },
@@ -82,7 +85,7 @@ const TITLES: Record<string,string> = {
   'retail/network':'Сеть аптек', 'retail/managers':'Менеджеры розницы', 'retail/kpi':'KPI розницы',
   'wholesale/clients':'Клиенты опта', 'wholesale/orders':'Заказы опта', 'wholesale/buyers':'Закупщики',
   'develop/procurement':'Закуп', 'develop/categories':'Категории', 'develop/pricing':'Ценообразование',
-  'finance/reports':'Финотчётность', 'finance/analytics':'Аналитика', 'finance/accounting':'Бухгалтерия',
+  'finance/reports':'Финотчётность', 'finance/analytics':'Аналитика', 'finance/accounting':'Бухгалтерия', 'finance/agent':'AI-аналитик',
   'hr/staff':'Персонал', 'hr/rating':'Рейтинг сотрудников', 'hr/training':'Обучение',
   'marketing/promo':'Акции', 'marketing/loyalty':'Лояльность',
   'operations/licenses':'Лицензии', 'operations/standards':'Стандарты',
@@ -252,6 +255,17 @@ function MozgPanel({pageId}:{pageId:string}) {
       <div className="mt-3 pt-3 border-t border-white/10">
         <div className="text-xs" style={{color:'rgba(255,255,255,0.3)'}}>Только для АД и CEO</div>
       </div>
+    </div>
+  );
+}
+
+// ─── Finance Agent Embed ────────────────────────────────────
+function FinanceAgentEmbed() {
+  return (
+    <div style={{ margin: '-20px', height: 'calc(100vh - 88px)' }}>
+      <Suspense fallback={<div className="text-white/40 p-8 text-sm">Загрузка агента...</div>}>
+        <FinanceAgentPage />
+      </Suspense>
     </div>
   );
 }
@@ -490,6 +504,7 @@ function renderContent(page:string, setPage:(p:string)=>void) {
     );
     case 'finance/analytics': return <KPIGrid items={[{label:'Выручка vs план',value:'96%',color:'green'},{label:'Прогноз июнь',value:'₸51М',color:'green'},{label:'Расходы vs план',value:'102%',color:'amber'},{label:'EBITDA',value:'35.5%',color:'green'}]}/>;
     case 'finance/accounting': return <KPIGrid items={[{label:'Документов',value:'1 248',color:'green'},{label:'Ошибок',value:'2',color:'red'},{label:'Точность',value:'99.1%',color:'green'},{label:'Сверок',value:'48/50',color:'green'}]}/>;
+    case 'finance/agent': return <FinanceAgentEmbed />;
     case 'hr/staff': return (
       <div>
         <KPIGrid items={[{label:'Сотрудников',value:'214'},{label:'Вакансий',value:'8',color:'amber'},{label:'Текучесть',value:'6.2%',delta:'Цель: <5%',color:'amber'},{label:'На обучении',value:'31',color:'green'}]}/>
