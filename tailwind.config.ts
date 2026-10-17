@@ -10,6 +10,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        ink: 'var(--ink)',
+        body: 'var(--body)',
+        muted: 'var(--muted)',
+        faint: 'var(--faint)',
+        line: 'var(--line)',
+        'line-soft': 'var(--line-soft)',
+        surface: 'var(--surface)',
+        'surface-2': 'var(--surface-2)',
+        brand: 'var(--brand)',
+        'brand-strong': 'var(--brand-strong)',
+        ok: 'var(--ok)',
+        warn: 'var(--warn)',
+        danger: 'var(--danger)',
+        info: 'var(--info)',
         accent: {
           DEFAULT: '#1a6f4e',
           light: '#e6f4ee',
@@ -17,7 +31,7 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Open Sans', 'system-ui', 'sans-serif'],
       },
     },
   },

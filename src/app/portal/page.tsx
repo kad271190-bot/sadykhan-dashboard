@@ -2,13 +2,9 @@
 import { useState, useEffect } from 'react';
 import ControlTower, { CONTROL_TITLES, CONTROL_VIEWS } from '@/components/control/ControlTower';
 
-// ─── COLORS (Sadykhan brand) ───────────────────────────────
-// Dark green bg: #0A2218
-// Sidebar: #0D2B1F
-// Card: #122D20
-// Teal accent: #1D9E75
-// Orange accent: #F97316
-// White text: #F8FAF9
+// ─── COLORS (Sadykhan brand book) ──────────────────────────
+// Цвета задаются переменными в globals.css (.brand-light / .brand-dark):
+// бирюзовый #4DC2B0, оранжевый #F47216, тёмные #2D7C73 и #204D52.
 
 // ─── NAV ──────────────────────────────────────────────────
 const NAV = [
@@ -161,14 +157,14 @@ const MOZG: Record<string,{text:string,level:'crit'|'warn'}[]> = {
 
 // ─── Components ────────────────────────────────────────────
 function KPIGrid({items}:{items:{label:string,value:string,delta?:string,color?:string}[]}) {
-  const vc:Record<string,string> = {green:'text-teal-400',red:'text-red-400',amber:'text-orange-400',gray:'text-white'};
+  const vc:Record<string,string> = {green:'text-ok',red:'text-danger',amber:'text-warn',gray:'text-ink'};
   return (
     <div className="grid gap-3 mb-4" style={{gridTemplateColumns:`repeat(${Math.min(items.length,4)},1fr)`}}>
       {items.map(k=>(
-        <div key={k.label} className="rounded-xl p-4 border border-white/10" style={{background:'rgba(255,255,255,0.05)'}}>
-          <div className="text-xs mb-1.5" style={{color:'rgba(255,255,255,0.5)'}}>{k.label}</div>
+        <div key={k.label} className="rounded-xl p-4 border border-line" style={{background:'var(--surface)'}}>
+          <div className="text-xs mb-1.5" style={{color:'var(--muted)'}}>{k.label}</div>
           <div className={`text-2xl font-bold ${vc[k.color||'gray']}`}>{k.value}</div>
-          {k.delta&&<div className="text-xs mt-1" style={{color:'rgba(255,255,255,0.4)'}}>{k.delta}</div>}
+          {k.delta&&<div className="text-xs mt-1" style={{color:'var(--faint)'}}>{k.delta}</div>}
         </div>
       ))}
     </div>
@@ -177,11 +173,11 @@ function KPIGrid({items}:{items:{label:string,value:string,delta?:string,color?:
 
 function Card({title,subtitle,children,accent}:{title?:string,subtitle?:string,children:React.ReactNode,accent?:string}) {
   return (
-    <div className="rounded-xl p-4 mb-3 border border-white/10" style={{background:'rgba(255,255,255,0.05)'}}>
+    <div className="rounded-xl p-4 mb-3 border border-line" style={{background:'var(--surface)'}}>
       {title&&(
         <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-semibold text-white">{title}</span>
-          {subtitle&&<span className="text-xs" style={{color:'rgba(255,255,255,0.4)'}}>{subtitle}</span>}
+          <span className="text-sm font-semibold text-ink">{title}</span>
+          {subtitle&&<span className="text-xs" style={{color:'var(--faint)'}}>{subtitle}</span>}
         </div>
       )}
       {children}
@@ -191,18 +187,18 @@ function Card({title,subtitle,children,accent}:{title?:string,subtitle?:string,c
 
 function AlertRow({icon,title,meta,level='warn'}:{icon:string,title:string,meta:string,level?:'crit'|'warn'|'ok'}) {
   const cfg = {
-    crit:{bg:'rgba(239,68,68,0.15)',ic:'text-red-400',badge:'bg-red-500/20 text-red-400',label:'Критично'},
-    warn:{bg:'rgba(249,115,22,0.15)',ic:'text-orange-400',badge:'bg-orange-500/20 text-orange-400',label:'Внимание'},
-    ok:  {bg:'rgba(29,158,117,0.15)',ic:'text-teal-400', badge:'bg-teal-500/20 text-teal-400',  label:'OK'},
+    crit:{bg:'rgba(239,68,68,0.15)',ic:'text-danger',badge:'bg-red-500/20 text-danger',label:'Критично'},
+    warn:{bg:'rgba(244,114,22,0.15)',ic:'text-warn',badge:'bg-orange-500/20 text-warn',label:'Внимание'},
+    ok:  {bg:'rgba(77,194,176,0.15)',ic:'text-ok', badge:'bg-teal-500/20 text-ok',  label:'OK'},
   }[level];
   return (
-    <div className="flex items-start gap-3 p-3 rounded-xl mb-2 border border-white/5" style={{background:cfg.bg}}>
-      <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${cfg.ic}`} style={{background:'rgba(255,255,255,0.05)'}}>
+    <div className="flex items-start gap-3 p-3 rounded-xl mb-2 border border-line-soft" style={{background:cfg.bg}}>
+      <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5 ${cfg.ic}`} style={{background:'var(--surface)'}}>
         <i className={`ti ti-${icon} text-sm`}></i>
       </div>
       <div className="flex-1 min-w-0">
-        <div className="text-xs text-white leading-relaxed">{title}</div>
-        <div className="text-xs mt-0.5" style={{color:'rgba(255,255,255,0.4)'}}>{meta}</div>
+        <div className="text-xs text-ink leading-relaxed">{title}</div>
+        <div className="text-xs mt-0.5" style={{color:'var(--faint)'}}>{meta}</div>
       </div>
       <span className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 font-medium ${cfg.badge}`}>{cfg.label}</span>
     </div>
@@ -212,17 +208,17 @@ function AlertRow({icon,title,meta,level='warn'}:{icon:string,title:string,meta:
 function Bar({label,pct,color,val}:{label:string,pct:number,color:string,val:string}) {
   return (
     <div className="flex items-center gap-3 py-1.5">
-      <span className="text-xs w-36 flex-shrink-0 truncate" style={{color:'rgba(255,255,255,0.6)'}}>{label}</span>
-      <div className="flex-1 h-1.5 rounded-full" style={{background:'rgba(255,255,255,0.1)'}}>
+      <span className="text-xs w-36 flex-shrink-0 truncate" style={{color:'var(--muted)'}}>{label}</span>
+      <div className="flex-1 h-1.5 rounded-full" style={{background:'var(--line)'}}>
         <div className="h-full rounded-full transition-all duration-500" style={{width:`${pct}%`,background:color}}></div>
       </div>
-      <span className="text-xs w-16 text-right flex-shrink-0 font-medium text-white">{val}</span>
+      <span className="text-xs w-16 text-right flex-shrink-0 font-medium text-ink">{val}</span>
     </div>
   );
 }
 
 function SDot({s}:{s:'ok'|'warn'|'crit'|'off'}) {
-  const c={ok:'bg-teal-400',warn:'bg-orange-400',crit:'bg-red-400',off:'bg-gray-600'};
+  const c={ok:'bg-brand',warn:'bg-orange-400',crit:'bg-red-400',off:'bg-gray-600'};
   return <span className={`inline-block w-2 h-2 rounded-full flex-shrink-0 ${c[s]}`}></span>;
 }
 
@@ -231,33 +227,33 @@ function MozgPanel({pageId}:{pageId:string}) {
   const hints = MOZG[pageId] || MOZG[pageId.split('/')[0]] || [];
   const hasCrit = hints.some(h=>h.level==='crit');
   if(hints.length===0) return (
-    <div className="w-64 flex-shrink-0 rounded-2xl p-4 border border-white/10" style={{background:'rgba(29,158,117,0.08)'}}>
+    <div className="w-64 flex-shrink-0 rounded-2xl p-4 border border-line" style={{background:'rgba(77,194,176,0.08)'}}>
       <div className="flex items-center gap-2 mb-3">
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{background:'rgba(29,158,117,0.2)'}}>
-          <i className="ti ti-brain text-teal-400 text-sm"></i>
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{background:'rgba(77,194,176,0.2)'}}>
+          <i className="ti ti-brain text-ok text-sm"></i>
         </div>
-        <span className="text-xs font-bold text-teal-400">МОЗГ — Садыхан</span>
+        <span className="text-xs font-bold text-ok">МОЗГ — Садыхан</span>
       </div>
-      <div className="text-xs" style={{color:'rgba(255,255,255,0.4)'}}>Замечаний нет. Всё в норме.</div>
+      <div className="text-xs" style={{color:'var(--faint)'}}>Замечаний нет. Всё в норме.</div>
     </div>
   );
   return (
     <div className={`w-64 flex-shrink-0 rounded-2xl p-4 border ${hasCrit?'border-red-500/30':'border-orange-500/30'}`}
-      style={{background:hasCrit?'rgba(239,68,68,0.08)':'rgba(249,115,22,0.08)'}}>
+      style={{background:hasCrit?'rgba(239,68,68,0.08)':'rgba(244,114,22,0.08)'}}>
       <div className="flex items-center gap-2 mb-3">
-        <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${hasCrit?'text-red-400':'text-orange-400'}`}
-          style={{background:'rgba(255,255,255,0.05)'}}>
+        <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${hasCrit?'text-danger':'text-warn'}`}
+          style={{background:'var(--surface)'}}>
           <i className="ti ti-brain text-sm"></i>
         </div>
         <div>
-          <div className="text-xs font-bold text-white">МОЗГ — Садыхан</div>
-          <div className="text-xs" style={{color:'rgba(255,255,255,0.4)'}}>{hints.length} замечания</div>
+          <div className="text-xs font-bold text-ink">МОЗГ — Садыхан</div>
+          <div className="text-xs" style={{color:'var(--faint)'}}>{hints.length} замечания</div>
         </div>
       </div>
       <div className="space-y-2">
         {hints.map((h,i)=>(
-          <div key={i} className={`p-2.5 rounded-xl text-xs leading-relaxed border ${h.level==='crit'?'border-red-500/20 text-red-200':'border-orange-500/20 text-orange-200'}`}
-            style={{background:h.level==='crit'?'rgba(239,68,68,0.1)':'rgba(249,115,22,0.1)'}}>
+          <div key={i} className={`p-2.5 rounded-xl text-xs leading-relaxed border ${h.level==='crit'?'border-red-500/20 text-danger':'border-orange-500/20 text-warn'}`}
+            style={{background:h.level==='crit'?'rgba(239,68,68,0.1)':'rgba(244,114,22,0.1)'}}>
             <div className="flex items-start gap-1.5">
               <i className={`ti ti-${h.level==='crit'?'alert-circle':'info-circle'} text-xs mt-0.5 flex-shrink-0`}></i>
               {h.text}
@@ -265,8 +261,8 @@ function MozgPanel({pageId}:{pageId:string}) {
           </div>
         ))}
       </div>
-      <div className="mt-3 pt-3 border-t border-white/10">
-        <div className="text-xs" style={{color:'rgba(255,255,255,0.3)'}}>Только для АД и CEO</div>
+      <div className="mt-3 pt-3 border-t border-line">
+        <div className="text-xs" style={{color:'var(--faint)'}}>Только для АД и CEO</div>
       </div>
     </div>
   );
@@ -293,12 +289,12 @@ function PageOverview({setPage}:{setPage:(p:string)=>void}) {
             {id:'it/servicedesk',icon:'device-desktop',name:'IT',kpi:'3 открытых заявки',s:'warn'},
           ].map(d=>(
             <div key={d.id} onClick={()=>setPage(d.id)}
-              className="flex items-center gap-2 p-2.5 rounded-xl border border-white/5 cursor-pointer mb-2 transition-all hover:border-teal-500/40"
-              style={{background:'rgba(255,255,255,0.03)'}}>
-              <i className={`ti ti-${d.icon} text-sm text-teal-400`}></i>
+              className="flex items-center gap-2 p-2.5 rounded-xl border border-line-soft cursor-pointer mb-2 transition-all hover:border-teal-500/40"
+              style={{background:'var(--surface-2)'}}>
+              <i className={`ti ti-${d.icon} text-sm text-ok`}></i>
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-medium text-white">{d.name}</div>
-                <div className="text-xs" style={{color:'rgba(255,255,255,0.4)'}}>{d.kpi}</div>
+                <div className="text-xs font-medium text-ink">{d.name}</div>
+                <div className="text-xs" style={{color:'var(--faint)'}}>{d.kpi}</div>
               </div>
               <SDot s={d.s as any}/>
             </div>
@@ -318,16 +314,16 @@ function PageOverview({setPage}:{setPage:(p:string)=>void}) {
 function PageBoard() {
   return (
     <div>
-      <div className="rounded-2xl p-5 mb-4 border border-teal-500/30" style={{background:'rgba(29,158,117,0.1)'}}>
+      <div className="rounded-2xl p-5 mb-4 border border-teal-500/30" style={{background:'rgba(77,194,176,0.1)'}}>
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{background:'rgba(29,158,117,0.2)'}}>
-            <i className="ti ti-crown text-teal-400 text-2xl"></i>
+          <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{background:'rgba(77,194,176,0.2)'}}>
+            <i className="ti ti-crown text-ok text-2xl"></i>
           </div>
           <div>
-            <div className="text-base font-bold text-white">Совет директоров Садыхан</div>
-            <div className="text-xs" style={{color:'rgba(255,255,255,0.5)'}}>5 AI-агентов · Доступ: АД, CEO, руководители департаментов</div>
+            <div className="text-base font-bold text-ink">Совет директоров Садыхан</div>
+            <div className="text-xs" style={{color:'var(--muted)'}}>5 AI-агентов · Доступ: АД, CEO, руководители департаментов</div>
           </div>
-          <span className="ml-auto text-xs bg-teal-500/20 text-teal-400 px-3 py-1 rounded-full font-medium">Активен</span>
+          <span className="ml-auto text-xs bg-teal-500/20 text-ok px-3 py-1 rounded-full font-medium">Активен</span>
         </div>
         <KPIGrid items={[
           {label:'Агентов',value:'5',color:'green'},
@@ -335,12 +331,12 @@ function PageBoard() {
           {label:'Открытых вопросов',value:'2',color:'amber'},
           {label:'Последнее заседание',value:'Вчера',color:'gray'},
         ]}/>
-        <div className="text-xs font-medium text-white mb-2">Как работает Совет:</div>
+        <div className="text-xs font-medium text-ink mb-2">Как работает Совет:</div>
         <div className="flex items-center gap-2 flex-wrap">
           {['МОЗГ выявил проблему','→','Совет получает доклад','→','5 агентов голосуют','→','Решение → АД и CEO'].map((s,i)=>(
             s==='→'
-              ?<span key={i} style={{color:'rgba(255,255,255,0.3)'}}>→</span>
-              :<div key={i} className="text-xs px-3 py-1.5 rounded-lg text-white border border-white/10" style={{background:'rgba(255,255,255,0.05)'}}>{s}</div>
+              ?<span key={i} style={{color:'var(--faint)'}}>→</span>
+              :<div key={i} className="text-xs px-3 py-1.5 rounded-lg text-ink border border-line" style={{background:'var(--surface)'}}>{s}</div>
           ))}
         </div>
       </div>
@@ -352,14 +348,14 @@ function PageBoard() {
           {avatar:'⚙️',name:'Масааки Имаи',role:'Процессы и улучшения',focus:'Найти потери. Устранить. Измерить. Повторить.'},
           {avatar:'📈',name:'Тимур Турлов',role:'Финансы и масштабирование',focus:'Нельзя защищаться — нужно атаковать новые рынки.'},
         ].map(a=>(
-          <div key={a.name} className="flex items-center gap-3 p-3 rounded-xl mb-2 border border-white/5" style={{background:'rgba(255,255,255,0.03)'}}>
+          <div key={a.name} className="flex items-center gap-3 p-3 rounded-xl mb-2 border border-line-soft" style={{background:'var(--surface-2)'}}>
             <span className="text-2xl flex-shrink-0">{a.avatar}</span>
             <div className="flex-1 min-w-0">
-              <div className="text-xs font-bold text-white">{a.name}</div>
-              <div className="text-xs text-teal-400">{a.role}</div>
-              <div className="text-xs mt-0.5 italic" style={{color:'rgba(255,255,255,0.4)'}}>"{a.focus}"</div>
+              <div className="text-xs font-bold text-ink">{a.name}</div>
+              <div className="text-xs text-ok">{a.role}</div>
+              <div className="text-xs mt-0.5 italic" style={{color:'var(--faint)'}}>"{a.focus}"</div>
             </div>
-            <span className="text-xs bg-teal-500/20 text-teal-400 px-2 py-0.5 rounded-full flex-shrink-0">Активен</span>
+            <span className="text-xs bg-teal-500/20 text-ok px-2 py-0.5 rounded-full flex-shrink-0">Активен</span>
           </div>
         ))}
       </Card>
@@ -385,11 +381,11 @@ function renderContent(page:string, setPage:(p:string)=>void) {
     case 'board': return <PageBoard/>;
     case 'alerts': return (
       <div>
-        <div className="text-xs uppercase tracking-wider mb-2" style={{color:'rgba(255,255,255,0.4)'}}>Критические</div>
+        <div className="text-xs uppercase tracking-wider mb-2" style={{color:'var(--faint)'}}>Критические</div>
         <AlertRow icon="alert-circle" title="Алматы-3 — аномалия лояльности каждую пятницу 18–20:00, ущерб ~₸45 000" meta="2 ч · Антифрод · Открыт" level="crit"/>
         <AlertRow icon="receipt-2" title="Кассир Астана-7 — 34 чека одновременно в 20:00, налоговый риск" meta="4 ч · Антифрод · Открыт" level="crit"/>
         <AlertRow icon="message-x" title="567 отзывов без ответа — норматив 18% превышен" meta="5 ч · Репутация · Открыт" level="crit"/>
-        <div className="text-xs uppercase tracking-wider mb-2 mt-4" style={{color:'rgba(255,255,255,0.4)'}}>Предупреждения</div>
+        <div className="text-xs uppercase tracking-wider mb-2 mt-4" style={{color:'var(--faint)'}}>Предупреждения</div>
         <AlertRow icon="chart-line-down" title="NPS снизился на 6 пунктов за неделю" meta="2 д · NPS" level="warn"/>
         <AlertRow icon="device-desktop" title="1С ошибка синхронизации Астана-2" meta="3 ч · IT" level="warn"/>
       </div>
@@ -416,11 +412,11 @@ function renderContent(page:string, setPage:(p:string)=>void) {
         <KPIGrid items={[{label:'Аптек в агрегаторах',value:'22/24',color:'green'},{label:'Расхождений',value:'47',color:'red'},{label:'Сумма',value:'₸184К',color:'red'},{label:'Последняя сверка',value:'Сегодня 9:00',color:'green'}]}/>
         <div className="grid grid-cols-3 gap-3 mb-3">
           {[{name:'Glovo',orders:1240,diff:18,sum:'₸72К'},{name:'Яндекс Еда',orders:890,diff:22,sum:'₸88К'},{name:'Wolt',orders:310,diff:7,sum:'₸24К'}].map(ag=>(
-            <div key={ag.name} className="p-3 rounded-xl border border-white/10" style={{background:'rgba(255,255,255,0.05)'}}>
-              <div className="text-sm font-bold text-white mb-2">{ag.name}</div>
-              <div className="text-xs mb-1" style={{color:'rgba(255,255,255,0.5)'}}>Заказов: <span className="text-white font-medium">{ag.orders}</span></div>
-              <div className="text-xs mb-1" style={{color:'rgba(255,255,255,0.5)'}}>Расхождений: <span className="text-red-400 font-medium">{ag.diff}</span></div>
-              <div className="text-xs" style={{color:'rgba(255,255,255,0.5)'}}>Сумма: <span className="text-red-400 font-medium">{ag.sum}</span></div>
+            <div key={ag.name} className="p-3 rounded-xl border border-line" style={{background:'var(--surface)'}}>
+              <div className="text-sm font-bold text-ink mb-2">{ag.name}</div>
+              <div className="text-xs mb-1" style={{color:'var(--muted)'}}>Заказов: <span className="text-ink font-medium">{ag.orders}</span></div>
+              <div className="text-xs mb-1" style={{color:'var(--muted)'}}>Расхождений: <span className="text-danger font-medium">{ag.diff}</span></div>
+              <div className="text-xs" style={{color:'var(--muted)'}}>Сумма: <span className="text-danger font-medium">{ag.sum}</span></div>
             </div>
           ))}
         </div>
@@ -431,10 +427,10 @@ function renderContent(page:string, setPage:(p:string)=>void) {
         <KPIGrid items={[{label:'Чеков за сегодня',value:'4 218',color:'green'},{label:'Отложенных',value:'34',color:'red'},{label:'Аннулированных',value:'12',color:'amber'},{label:'Средний чек',value:'₸3 420'}]}/>
         <Card title="Отложенные чеки по аптекам">
           {[{name:'Астана-7',count:14,sum:'₸48 200',s:'crit'},{name:'Алматы-3',count:9,sum:'₸31 400',s:'crit'},{name:'Алматы-5',count:7,sum:'₸24 100',s:'warn'},{name:'Шымкент-2',count:4,sum:'₸13 800',s:'warn'}].map(r=>(
-            <div key={r.name} className="flex items-center gap-3 p-2.5 rounded-xl mb-2 border border-white/5" style={{background:'rgba(255,255,255,0.03)'}}>
-              <SDot s={r.s as any}/><span className="text-xs text-white flex-1">{r.name}</span>
-              <span className="text-xs text-red-400 font-medium">{r.count} чеков</span>
-              <span className="text-xs" style={{color:'rgba(255,255,255,0.4)'}}>{r.sum}</span>
+            <div key={r.name} className="flex items-center gap-3 p-2.5 rounded-xl mb-2 border border-line-soft" style={{background:'var(--surface-2)'}}>
+              <SDot s={r.s as any}/><span className="text-xs text-ink flex-1">{r.name}</span>
+              <span className="text-xs text-danger font-medium">{r.count} чеков</span>
+              <span className="text-xs" style={{color:'var(--faint)'}}>{r.sum}</span>
             </div>
           ))}
         </Card>
@@ -445,11 +441,11 @@ function renderContent(page:string, setPage:(p:string)=>void) {
         <KPIGrid items={[{label:'Аптек всего',value:'24'},{label:'Ревизий в месяце',value:'18',color:'green'},{label:'Просрочено',value:'2',color:'red'},{label:'Ср. недостача',value:'₸12К',color:'amber'}]}/>
         <Card title="График ревизий">
           {[{name:'Алматы-1',date:'02.06',s:'ok',result:'Норма',diff:'₸0'},{name:'Алматы-3',date:'—',s:'crit',result:'Просрочена',diff:'−'},{name:'Астана-7',date:'03.06',s:'warn',result:'Недостача',diff:'−₸48 200'},{name:'Шымкент-1',date:'05.06',s:'ok',result:'Норма',diff:'₸0'}].map(r=>(
-            <div key={r.name} className="flex items-center gap-3 p-2.5 rounded-xl mb-2 border border-white/5" style={{background:'rgba(255,255,255,0.03)'}}>
-              <SDot s={r.s as any}/><span className="text-xs text-white w-24">{r.name}</span>
-              <span className="text-xs w-16" style={{color:'rgba(255,255,255,0.4)'}}>{r.date}</span>
-              <span className={`text-xs flex-1 ${r.s==='crit'?'text-red-400':r.s==='warn'?'text-orange-400':'text-teal-400'}`}>{r.result}</span>
-              <span className={`text-xs font-medium ${r.diff.startsWith('-')?'text-red-400':r.diff==='₸0'?'text-teal-400':'text-white'}`}>{r.diff}</span>
+            <div key={r.name} className="flex items-center gap-3 p-2.5 rounded-xl mb-2 border border-line-soft" style={{background:'var(--surface-2)'}}>
+              <SDot s={r.s as any}/><span className="text-xs text-ink w-24">{r.name}</span>
+              <span className="text-xs w-16" style={{color:'var(--faint)'}}>{r.date}</span>
+              <span className={`text-xs flex-1 ${r.s==='crit'?'text-danger':r.s==='warn'?'text-warn':'text-ok'}`}>{r.result}</span>
+              <span className={`text-xs font-medium ${r.diff.startsWith('-')?'text-danger':r.diff==='₸0'?'text-ok':'text-ink'}`}>{r.diff}</span>
             </div>
           ))}
         </Card>
@@ -486,9 +482,9 @@ function renderContent(page:string, setPage:(p:string)=>void) {
         <Card title="Товары в дефиците" subtitle="срочно заказать">
           {[{name:'Нурофен 400мг №10',stock:0,reorder:200},{name:'Амоксициллин 500мг №20',stock:3,reorder:150},{name:'Лоратадин 10мг №30',stock:5,reorder:300}].map(r=>(
             <div key={r.name} className="flex items-center gap-3 p-2.5 rounded-xl mb-2" style={{background:'rgba(239,68,68,0.1)',border:'1px solid rgba(239,68,68,0.2)'}}>
-              <SDot s="crit"/><span className="text-xs text-white flex-1">{r.name}</span>
-              <span className="text-xs text-red-400">Остаток: {r.stock}</span>
-              <span className="text-xs" style={{color:'rgba(255,255,255,0.4)'}}>Заказ: {r.reorder} шт</span>
+              <SDot s="crit"/><span className="text-xs text-ink flex-1">{r.name}</span>
+              <span className="text-xs text-danger">Остаток: {r.stock}</span>
+              <span className="text-xs" style={{color:'var(--faint)'}}>Заказ: {r.reorder} шт</span>
             </div>
           ))}
         </Card>
@@ -532,13 +528,13 @@ function renderContent(page:string, setPage:(p:string)=>void) {
         <KPIGrid items={[{label:'Открытых заявок',value:'3',color:'amber'},{label:'Выполнено за месяц',value:'47',color:'green'},{label:'Среднее время',value:'4.2 ч',color:'amber'}]}/>
         <Card title="Заявки в работе">
           {[{p:'high',t:'1С — ошибка синхронизации Астана-2',f:'Финансы · 3 ч',s:'В работе'},{p:'med',t:'Кассовый терминал Алматы-5',f:'Операции · 6 ч',s:'Назначено'},{p:'low',t:'Доступ для нового сотрудника',f:'HR · 1 д',s:'Очередь'}].map((r,i)=>{
-            const pc:Record<string,string>={high:'bg-red-500/20 text-red-400',med:'bg-orange-500/20 text-orange-400',low:'bg-teal-500/20 text-teal-400'};
+            const pc:Record<string,string>={high:'bg-red-500/20 text-danger',med:'bg-orange-500/20 text-warn',low:'bg-teal-500/20 text-ok'};
             const pl:Record<string,string>={high:'Высокий',med:'Средний',low:'Низкий'};
             return (
-              <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl mb-2 border border-white/5" style={{background:'rgba(255,255,255,0.03)'}}>
+              <div key={i} className="flex items-center gap-3 p-2.5 rounded-xl mb-2 border border-line-soft" style={{background:'var(--surface-2)'}}>
                 <span className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 font-medium ${pc[r.p]}`}>{pl[r.p]}</span>
-                <div className="flex-1"><div className="text-xs text-white">{r.t}</div><div className="text-xs" style={{color:'rgba(255,255,255,0.4)'}}>{r.f}</div></div>
-                <span className="text-xs" style={{color:'rgba(255,255,255,0.4)'}}>{r.s}</span>
+                <div className="flex-1"><div className="text-xs text-ink">{r.t}</div><div className="text-xs" style={{color:'var(--faint)'}}>{r.f}</div></div>
+                <span className="text-xs" style={{color:'var(--faint)'}}>{r.s}</span>
               </div>
             );
           })}
@@ -552,30 +548,30 @@ function renderContent(page:string, setPage:(p:string)=>void) {
     case 'legal/licenses': return <KPIGrid items={[{label:'Лицензий аптек',value:'24/24',color:'green'},{label:'Истекают скоро',value:'2',color:'amber'},{label:'Стоимость продления',value:'₸480К'},{label:'Следующая проверка',value:'15.07'}]}/>;
     case 'agents': return (
       <div>
-        <div className="rounded-2xl p-4 mb-4 border border-teal-500/30" style={{background:'rgba(29,158,117,0.1)'}}>
-          <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{background:'rgba(29,158,117,0.2)'}}><i className="ti ti-brain text-teal-400 text-xl"></i></div><div><div className="text-sm font-bold text-white">МОЗГ — Садыхан</div><div className="text-xs" style={{color:'rgba(255,255,255,0.5)'}}>Перекрёстная проверка · советуется с Советом директоров · доклад АД и CEO</div></div><span className="ml-auto text-xs bg-teal-500/20 text-teal-400 px-2 py-0.5 rounded-full">Активен</span></div>
+        <div className="rounded-2xl p-4 mb-4 border border-teal-500/30" style={{background:'rgba(77,194,176,0.1)'}}>
+          <div className="flex items-center gap-3"><div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{background:'rgba(77,194,176,0.2)'}}><i className="ti ti-brain text-ok text-xl"></i></div><div><div className="text-sm font-bold text-ink">МОЗГ — Садыхан</div><div className="text-xs" style={{color:'var(--muted)'}}>Перекрёстная проверка · советуется с Советом директоров · доклад АД и CEO</div></div><span className="ml-auto text-xs bg-teal-500/20 text-ok px-2 py-0.5 rounded-full">Активен</span></div>
         </div>
-        <div className="text-xs uppercase tracking-wider mb-2" style={{color:'rgba(255,255,255,0.4)'}}>Активные агенты</div>
+        <div className="text-xs uppercase tracking-wider mb-2" style={{color:'var(--faint)'}}>Активные агенты</div>
         <div className="grid grid-cols-3 gap-3 mb-4">
           {[{name:'NPS-агент',desc:'Анализирует отзывы, задачи фармацевтам',s:'active'},{name:'Агент репутации',desc:'Мониторит 2ГИС/Google/Яндекс каждый час',s:'active'},{name:'IT Service агент',desc:'Принимает и распределяет заявки',s:'dev'}].map(a=>(
-            <div key={a.name} className="p-3 rounded-xl border border-white/10" style={{background:'rgba(255,255,255,0.05)'}}>
-              <div className="flex justify-between gap-2 mb-2"><span className="text-xs font-bold text-white">{a.name}</span><span className={`text-xs px-2 py-0.5 rounded-full ${a.s==='active'?'bg-teal-500/20 text-teal-400':'bg-orange-500/20 text-orange-400'}`}>{a.s==='active'?'Активен':'Разработка'}</span></div>
-              <div className="text-xs leading-relaxed" style={{color:'rgba(255,255,255,0.5)'}}>{a.desc}</div>
+            <div key={a.name} className="p-3 rounded-xl border border-line" style={{background:'var(--surface)'}}>
+              <div className="flex justify-between gap-2 mb-2"><span className="text-xs font-bold text-ink">{a.name}</span><span className={`text-xs px-2 py-0.5 rounded-full ${a.s==='active'?'bg-teal-500/20 text-ok':'bg-orange-500/20 text-warn'}`}>{a.s==='active'?'Активен':'Разработка'}</span></div>
+              <div className="text-xs leading-relaxed" style={{color:'var(--muted)'}}>{a.desc}</div>
             </div>
           ))}
         </div>
-        <div className="text-xs uppercase tracking-wider mb-2" style={{color:'rgba(255,255,255,0.4)'}}>Запланированные</div>
+        <div className="text-xs uppercase tracking-wider mb-2" style={{color:'var(--faint)'}}>Запланированные</div>
         <div className="grid grid-cols-3 gap-3">
           {[{name:'Антифрод-агент',desc:'Аномалии → тикет СБ'},{name:'Агент агрегаторов',desc:'Сверка Glovo/Яндекс/Wolt'},{name:'Reorder-агент',desc:'Авто-заявки при дефиците'},{name:'Финансовый агент',desc:'P&L, план-факт, Cash flow'},{name:'Агент ревизий',desc:'Планирует и фиксирует ревизии'},{name:'1С-агент',desc:'Мониторинг ошибок синхронизации'}].map(a=>(
-            <div key={a.name} className="p-3 rounded-xl border border-white/10" style={{background:'rgba(255,255,255,0.03)'}}>
-              <div className="flex justify-between gap-2 mb-2"><span className="text-xs font-bold text-white">{a.name}</span><span className="text-xs bg-white/5 text-white/40 px-2 py-0.5 rounded-full">Запланирован</span></div>
-              <div className="text-xs" style={{color:'rgba(255,255,255,0.4)'}}>{a.desc}</div>
+            <div key={a.name} className="p-3 rounded-xl border border-line" style={{background:'var(--surface-2)'}}>
+              <div className="flex justify-between gap-2 mb-2"><span className="text-xs font-bold text-ink">{a.name}</span><span className="text-xs bg-surface-2 text-faint px-2 py-0.5 rounded-full">Запланирован</span></div>
+              <div className="text-xs" style={{color:'var(--faint)'}}>{a.desc}</div>
             </div>
           ))}
         </div>
       </div>
     );
-    default: return <div className="text-sm p-4" style={{color:'rgba(255,255,255,0.4)'}}>Раздел в разработке</div>;
+    default: return <div className="text-sm p-4" style={{color:'var(--faint)'}}>Раздел в разработке</div>;
   }
 }
 
@@ -590,48 +586,42 @@ export default function PortalPage() {
   const toggle = (id:string) => setOpenDepts(p=>({...p,[id]:!p[id]}));
 
   return (
-    <div className="flex h-screen" style={{background:'#0A2218',fontFamily:'Inter,sans-serif'}}>
+    <div className="brand-light flex h-screen text-ink" style={{background:'var(--bg)'}}>
       {/* Sidebar */}
-      <div className="w-56 flex flex-col flex-shrink-0 border-r" style={{background:'#0D2B1F',borderColor:'rgba(255,255,255,0.08)'}}>
+      <div className="brand-dark w-56 flex flex-col flex-shrink-0 border-r" style={{background:'#204D52',borderColor:'var(--line)'}}>
         {/* Logo */}
-        <div className="p-4 border-b" style={{borderColor:'rgba(255,255,255,0.08)'}}>
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style={{background:'linear-gradient(135deg,#1D9E75,#0D6B50)'}}>
-              <i className="ti ti-building-store text-white text-base"></i>
-            </div>
-            <div>
-              <div className="text-sm font-bold text-white tracking-wide">САДЫХАН</div>
-              <div className="text-xs" style={{color:'rgba(255,255,255,0.4)'}}>Корп. платформа</div>
-            </div>
-          </div>
+        <div className="p-4 border-b" style={{borderColor:'var(--line)'}}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/logo-sadykhan.svg" alt="Садыхан" className="h-7 w-auto"/>
+          <div className="text-xs mt-2" style={{color:'var(--faint)'}}>Корпоративная AI-платформа</div>
         </div>
 
         <nav className="flex-1 overflow-y-auto py-2">
           {NAV.map(sec=>(
             <div key={sec.section}>
-              <div className="text-xs uppercase tracking-widest px-4 pt-4 pb-1.5 font-semibold" style={{color:'rgba(255,255,255,0.25)',letterSpacing:'0.1em'}}>{sec.section}</div>
+              <div className="text-xs uppercase tracking-widest px-4 pt-4 pb-1.5 font-semibold" style={{color:'var(--faint)',letterSpacing:'0.1em'}}>{sec.section}</div>
               {sec.items.map((it:any)=>(
                 <div key={it.id}>
                   <button onClick={()=>it.subs?toggle(it.id):setPage(it.id)}
                     className="w-full flex items-center gap-2 px-3 py-2 text-xs transition-all duration-150 text-left border-l-2"
                     style={{
-                      borderLeftColor: page===it.id||page.startsWith(it.id+'/')?'#1D9E75':'transparent',
-                      background: page===it.id||page.startsWith(it.id+'/')?'rgba(29,158,117,0.15)':'transparent',
-                      color: page===it.id||page.startsWith(it.id+'/')?'#1D9E75':'rgba(255,255,255,0.6)',
+                      borderLeftColor: page===it.id||page.startsWith(it.id+'/')?'var(--brand-strong)':'transparent',
+                      background: page===it.id||page.startsWith(it.id+'/')?'rgba(77,194,176,0.15)':'transparent',
+                      color: page===it.id||page.startsWith(it.id+'/')?'var(--brand-strong)':'var(--muted)',
                     }}>
                     <i className={`ti ti-${it.icon} text-sm flex-shrink-0`}></i>
                     <span className="flex-1 truncate font-medium">{it.label}</span>
-                    {it.badge&&<span className="text-xs px-1.5 py-0.5 rounded-full font-medium" style={{background:'rgba(249,115,22,0.2)',color:'#F97316'}}>{it.badge}</span>}
-                    {it.subs&&<i className={`ti ti-chevron-${openDepts[it.id]?'up':'down'} text-xs transition-transform duration-200`} style={{color:'rgba(255,255,255,0.3)'}}></i>}
+                    {it.badge&&<span className="text-xs px-1.5 py-0.5 rounded-full font-medium" style={{background:'rgba(244,114,22,0.2)',color:'var(--orange)'}}>{it.badge}</span>}
+                    {it.subs&&<i className={`ti ti-chevron-${openDepts[it.id]?'up':'down'} text-xs transition-transform duration-200`} style={{color:'var(--faint)'}}></i>}
                   </button>
                   {it.subs&&openDepts[it.id]&&(
-                    <div className="ml-4 border-l" style={{borderColor:'rgba(255,255,255,0.08)'}}>
+                    <div className="ml-4 border-l" style={{borderColor:'var(--line)'}}>
                       {it.subs.map((sub:any)=>(
                         <button key={sub.id} onClick={()=>setPage(sub.id)}
                           className="w-full flex items-center gap-2 px-3 py-1.5 text-xs transition-all duration-150 text-left my-0.5 rounded-lg mx-1"
                           style={{
-                            background: page===sub.id?'rgba(29,158,117,0.2)':'transparent',
-                            color: page===sub.id?'#1D9E75':'rgba(255,255,255,0.45)',
+                            background: page===sub.id?'rgba(77,194,176,0.2)':'transparent',
+                            color: page===sub.id?'var(--brand-strong)':'var(--faint)',
                             width:'calc(100% - 8px)',
                           }}>
                           <i className={`ti ti-${sub.icon} text-xs flex-shrink-0`}></i>
@@ -647,11 +637,11 @@ export default function PortalPage() {
         </nav>
 
         {/* User */}
-        <div className="p-3 border-t flex items-center gap-2" style={{borderColor:'rgba(255,255,255,0.08)'}}>
-          <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0" style={{background:'linear-gradient(135deg,#1D9E75,#0D6B50)'}}>АД</div>
+        <div className="p-3 border-t flex items-center gap-2" style={{borderColor:'var(--line)'}}>
+          <div className="w-7 h-7 rounded-full flex items-center justify-center text-ink text-xs font-bold flex-shrink-0" style={{background:'linear-gradient(135deg,#1D9E75,#2D7C73)'}}>АД</div>
           <div className="min-w-0">
-            <div className="text-xs font-semibold text-white">Владелец</div>
-            <div className="text-xs truncate" style={{color:'rgba(255,255,255,0.35)'}}>Полный доступ</div>
+            <div className="text-xs font-semibold text-ink">Владелец</div>
+            <div className="text-xs truncate" style={{color:'var(--faint)'}}>Полный доступ</div>
           </div>
         </div>
       </div>
@@ -659,16 +649,16 @@ export default function PortalPage() {
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Topbar */}
-        <div className="h-12 flex items-center gap-3 px-5 border-b flex-shrink-0" style={{background:'#0D2B1F',borderColor:'rgba(255,255,255,0.08)'}}>
-          <div className="text-sm font-bold text-white">{TITLES[page]||page}</div>
+        <div className="h-12 flex items-center gap-3 px-5 border-b flex-shrink-0" style={{background:'var(--surface)',borderColor:'var(--line)'}}>
+          <div className="text-sm font-bold text-ink">{TITLES[page]||page}</div>
           <div className="ml-auto flex items-center gap-2">
-            <button onClick={()=>setPage('alerts')} className="text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 font-medium transition-all" style={{background:'rgba(239,68,68,0.15)',color:'#F87171'}}>
+            <button onClick={()=>setPage('alerts')} className="text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 font-medium transition-all" style={{background:'rgba(239,68,68,0.15)',color:'var(--danger)'}}>
               <i className="ti ti-alert-triangle text-xs"></i> 4 алерта
             </button>
-            <button onClick={()=>setPage('board')} className="text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 font-medium transition-all" style={{background:'rgba(249,115,22,0.15)',color:'#FB923C'}}>
+            <button onClick={()=>setPage('board')} className="text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 font-medium transition-all" style={{background:'rgba(244,114,22,0.15)',color:'var(--warn)'}}>
               <i className="ti ti-crown text-xs"></i> Совет
             </button>
-            <i className="ti ti-bell text-sm cursor-pointer" style={{color:'rgba(255,255,255,0.4)'}}></i>
+            <i className="ti ti-bell text-sm cursor-pointer" style={{color:'var(--faint)'}}></i>
           </div>
         </div>
 
@@ -680,27 +670,27 @@ export default function PortalPage() {
           </div>
 
           {/* МОЗГ right panel */}
-          <div className="w-72 flex-shrink-0 overflow-y-auto p-4 border-l" style={{borderColor:'rgba(255,255,255,0.06)',background:'rgba(0,0,0,0.15)'}}>
+          <div className="w-72 flex-shrink-0 overflow-y-auto p-4 border-l" style={{borderColor:'var(--line)',background:'var(--surface-2)'}}>
             <div className="flex items-center gap-2 mb-4">
-              <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{background:'rgba(29,158,117,0.2)'}}>
-                <i className="ti ti-brain text-teal-400 text-xs"></i>
+              <div className="w-6 h-6 rounded-lg flex items-center justify-center" style={{background:'rgba(77,194,176,0.2)'}}>
+                <i className="ti ti-brain text-ok text-xs"></i>
               </div>
-              <span className="text-xs font-bold text-teal-400">МОЗГ — Садыхан</span>
+              <span className="text-xs font-bold text-ok">МОЗГ — Садыхан</span>
             </div>
             <MozgPanel pageId={page}/>
 
             {/* Совет директоров в панели */}
-            <div className="mt-4 pt-4 border-t" style={{borderColor:'rgba(255,255,255,0.08)'}}>
-              <div className="text-xs font-bold text-white mb-3 flex items-center gap-1.5">
-                <i className="ti ti-crown text-orange-400 text-xs"></i>
+            <div className="mt-4 pt-4 border-t" style={{borderColor:'var(--line)'}}>
+              <div className="text-xs font-bold text-ink mb-3 flex items-center gap-1.5">
+                <i className="ti ti-crown text-warn text-xs"></i>
                 Совет директоров
               </div>
-              <div className="text-xs mb-3" style={{color:'rgba(255,255,255,0.4)'}}>Последнее решение:</div>
-              <div className="p-2.5 rounded-xl text-xs border" style={{background:'rgba(249,115,22,0.08)',borderColor:'rgba(249,115,22,0.2)',color:'rgba(255,255,255,0.7)'}}>
-                <div className="font-medium text-orange-400 mb-1">Голосование 5:0</div>
+              <div className="text-xs mb-3" style={{color:'var(--faint)'}}>Последнее решение:</div>
+              <div className="p-2.5 rounded-xl text-xs border" style={{background:'rgba(244,114,22,0.08)',borderColor:'rgba(244,114,22,0.2)',color:'var(--muted)'}}>
+                <div className="font-medium text-warn mb-1">Голосование 5:0</div>
                 Внутренняя проверка Алматы-3. Срок: 7 дней.
               </div>
-              <button onClick={()=>setPage('board')} className="w-full mt-2 text-xs py-2 rounded-xl font-medium transition-all" style={{background:'rgba(249,115,22,0.15)',color:'#FB923C'}}>
+              <button onClick={()=>setPage('board')} className="w-full mt-2 text-xs py-2 rounded-xl font-medium transition-all" style={{background:'rgba(244,114,22,0.15)',color:'var(--warn)'}}>
                 Открыть Совет →
               </button>
             </div>
