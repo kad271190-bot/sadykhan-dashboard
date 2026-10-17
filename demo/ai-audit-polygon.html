@@ -1,0 +1,893 @@
+<title>Полигон AI-аудита</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: рабочий стол аудитора — навигация слева, рабочая область справа; на телефоне навигация становится горизонтальной лентой. */
+:root{
+  --bg:#F3F6F5; --panel:#FFFFFF; --panel-2:#EDF2F0; --line:#D7E1DE;
+  --ink:#122A28; --body:#2C4240; --muted:#5B6F6C;
+  --accent:#14786E; --accent-ink:#FFFFFF; --accent-soft:#DCEFEB;
+  --warn:#A3500A; --warn-soft:#FBEAD8; --crit:#B3261E; --crit-soft:#FAE0DD;
+  --ok:#1B7A4D; --ok-soft:#DCF1E5; --info:#2A5D9B; --info-soft:#E0EAF6;
+  --font:'Golos Text',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,'SFMono-Regular',Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1918; --panel:#142322; --panel-2:#1A2D2B; --line:#29403D;
+  --ink:#E8F2F0; --body:#C6D6D3; --muted:#8CA39F;
+  --accent:#4CBFAF; --accent-ink:#04201C; --accent-soft:#163834;
+  --warn:#F0A55B; --warn-soft:#382816; --crit:#F2827B; --crit-soft:#3B1C1A;
+  --ok:#6CD29B; --ok-soft:#163225; --info:#8BB6EE; --info-soft:#19293E; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1918; --panel:#142322; --panel-2:#1A2D2B; --line:#29403D;
+  --ink:#E8F2F0; --body:#C6D6D3; --muted:#8CA39F;
+  --accent:#4CBFAF; --accent-ink:#04201C; --accent-soft:#163834;
+  --warn:#F0A55B; --warn-soft:#382816; --crit:#F2827B; --crit-soft:#3B1C1A;
+  --ok:#6CD29B; --ok-soft:#163225; --info:#8BB6EE; --info-soft:#19293E; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--body);font-family:var(--font);font-size:14px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+h1,h2,h3{color:var(--ink);text-wrap:balance;margin:0}
+h1{font-size:18px;font-weight:700;letter-spacing:-.01em}
+h2{font-size:17px;font-weight:650}
+h3{font-size:14px;font-weight:650}
+p{margin:0}
+button{font:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--panel);border-bottom:1px solid var(--line);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px;
+  display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.top .sub{color:var(--muted);font-size:12.5px}
+.top .spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:550;white-space:nowrap;border:1px solid transparent}
+.p-ok{background:var(--ok-soft);color:var(--ok)} .p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-crit{background:var(--crit-soft);color:var(--crit)} .p-info{background:var(--info-soft);color:var(--info)}
+.p-mute{background:var(--panel-2);color:var(--muted)} .p-acc{background:var(--accent-soft);color:var(--accent)}
+.shell{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:calc(100vh - 60px)}
+.nav{border-right:1px solid var(--line);background:var(--panel);padding:14px 10px;display:flex;flex-direction:column;gap:2px}
+.nav button{all:unset;cursor:pointer;display:flex;justify-content:space-between;gap:8px;align-items:center;padding:8px 10px;border-radius:8px;color:var(--body);font-weight:500}
+.nav button:hover{background:var(--panel-2)}
+.nav button[aria-current="page"]{background:var(--accent-soft);color:var(--accent);font-weight:650}
+.nav button:focus-visible{outline:2px solid var(--accent)}
+.nav .navlabel{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:12px 10px 4px}
+.main{min-width:0;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1080px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.card.soft{background:var(--panel-2)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.col{display:flex;flex-direction:column;gap:8px}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.lead{color:var(--muted);max-width:72ch}
+.small{font-size:12.5px;color:var(--muted)}
+.btn{border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:7px 12px;font-weight:550}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.sm{padding:4px 9px;font-size:12.5px}
+.kpi{display:flex;flex-direction:column;gap:2px}
+.kpi .v{font-family:var(--mono);font-size:24px;color:var(--ink);font-weight:500}
+.kpi .l{font-size:12px;color:var(--muted)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+th,td{text-align:left;padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--panel-2);color:var(--muted);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right}
+.finding{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);cursor:pointer;text-align:left;width:100%;color:inherit}
+.finding:hover{border-color:var(--accent)}
+.finding .t{color:var(--ink);font-weight:600}
+.steps{display:flex;flex-wrap:wrap;gap:4px;grid-column:1/-1}
+.step{font-size:11.5px;padding:1px 8px;border-radius:6px;background:var(--panel-2);color:var(--muted);white-space:nowrap}
+.step.ok{background:var(--ok-soft);color:var(--ok)} .step.bad{background:var(--warn-soft);color:var(--warn)} .step.crit{background:var(--crit-soft);color:var(--crit)}
+.level{border-left:3px solid var(--line);padding-left:12px;display:flex;flex-direction:column;gap:8px}
+.level.l1{border-color:var(--info)} .level.l2{border-color:var(--accent)} .level.l3{border-color:var(--warn)} .level.dec{border-color:var(--ink)}
+.claim{display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.claim:last-child{border-bottom:0}
+.ai{white-space:pre-wrap;color:var(--body)}
+.notice{border-radius:10px;padding:10px 12px;font-size:13px}
+.notice.warn{background:var(--warn-soft);color:var(--warn)} .notice.info{background:var(--info-soft);color:var(--info)} .notice.crit{background:var(--crit-soft);color:var(--crit)}
+.notice.ok{background:var(--ok-soft);color:var(--ok)}
+details>summary{cursor:pointer;color:var(--accent);font-weight:550}
+input[type=text],select,textarea{font:inherit;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-width:0}
+textarea{width:100%;resize:vertical}
+.chat{display:flex;flex-direction:column;gap:10px}
+.msg{padding:10px 12px;border-radius:10px;max-width:92%;white-space:pre-wrap}
+.msg.u{align-self:flex-end;background:var(--accent-soft);color:var(--ink)}
+.msg.a{align-self:flex-start;background:var(--panel-2);color:var(--body)}
+.msg.tool{align-self:flex-start;font-family:var(--mono);font-size:11.5px;color:var(--muted);background:transparent;border:1px dashed var(--line)}
+.bar{height:8px;border-radius:4px;background:var(--panel-2);overflow:hidden}
+.bar>span{display:block;height:100%;background:var(--accent)}
+.spin{display:inline-block;width:10px;height:10px;border-radius:50%;border:2px solid var(--line);border-top-color:var(--accent);animation:sp 0.8s linear infinite;vertical-align:-1px}
+@keyframes sp{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.spin{animation:none}}
+@media (max-width:820px){
+  .shell{grid-template-columns:minmax(0,1fr)}
+  .nav{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);padding:8px max(16px,env(safe-area-inset-left,0px))}
+  .nav .navlabel{display:none}
+  .nav button{white-space:nowrap}
+  .grid2,.grid3{grid-template-columns:minmax(0,1fr)}
+  .claim{grid-template-columns:minmax(0,1fr)}
+}
+</style>
+
+<header class="top">
+  <div class="col" style="gap:0">
+    <h1>Полигон AI-аудита</h1>
+    <span class="sub">Демо-данные условной аптечной сети · 03–16 октября 2026</span>
+  </div>
+  <div class="spacer"></div>
+  <span id="aiStatus" class="pill p-mute">ИИ: подключение…</span>
+  <span id="dataStatus" class="pill p-acc">Данные: базовый набор</span>
+</header>
+
+<div class="shell">
+  <nav class="nav" id="nav" aria-label="Разделы"></nav>
+  <main class="main"><div class="wrap" id="view"></div></main>
+</div>
+
+<script>
+'use strict';
+// ───────────────────────── helpers ─────────────────────────
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => Math.round(n).toLocaleString('ru-RU') + ' ₸';
+const pct = (x, d = 1) => (x * 100).toFixed(d).replace('.', ',') + '%';
+function rng(seed){ return function(){ seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const DAYS = []; for (let d = new Date(Date.UTC(2026, 9, 3)); d <= new Date(Date.UTC(2026, 9, 16)); d.setUTCDate(d.getUTCDate() + 1)) DAYS.push(d.toISOString().slice(0, 10));
+const dow = s => new Date(s + 'T12:00:00Z').getUTCDay(); // 5 = пятница
+const hhmm = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+const plural = (n, a, b, c) => { const m10 = n % 10, m100 = n % 100; return n + ' ' + (m10 === 1 && m100 !== 11 ? a : m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14) ? b : c); };
+const ruDate = s => s.slice(8, 10) + '.' + s.slice(5, 7);
+const store = { get(k, d){ try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch { return d; } },
+                set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
+
+// ───────────────────────── справочники ─────────────────────────
+const PH = [
+  { id:'A1', name:'Аптека Алматы-1' }, { id:'A2', name:'Аптека Алматы-2' }, { id:'A3', name:'Аптека Алматы-3' },
+  { id:'A4', name:'Аптека Астана-7' }, { id:'A5', name:'Аптека Шымкент-2' }, { id:'A6', name:'Аптека Тараз-1' }];
+const phName = id => (PH.find(p => p.id === id) || {}).name || id;
+const cashiersOf = i => [1, 2, 3].map(k => 'K-' + i + k);
+
+const AGENTS = [
+  { id:'RET', name:'Аудитор аптечной сети', rules:['RET-01','RET-02','RET-03','RET-05','RET-06'],
+    about:'Касса, возвраты, программа лояльности, ревизии. Источник: чеки 1С и акты ревизий.' },
+  { id:'HRIT', name:'Аудитор кадров и доступов', rules:['HR-02','IT-01'],
+    about:'Работа под чужим логином, доступы уволенных. Источник: 1С ЗУП, пользователи 1С, чеки.' },
+  { id:'WHS', name:'Аудитор опта', rules:['WHS-01','WHS-02','WHS-03'],
+    about:'Отгрузки, кредитные лимиты, просроченная дебиторка. Источник: 1С УТ.' },
+  { id:'ECM', name:'Аудитор e-commerce', rules:['ECM-01','ECM-03'],
+    about:'Сверка заказов агрегаторов с 1С, комиссии. Источник: отчёты агрегаторов, 1С.' },
+  { id:'FIN', name:'Финансовый аудитор', rules:['FIN-01','FIN-02'],
+    about:'Дубли платежей, платежи без договора. Источник: выписка банка, реестр договоров.' },
+  { id:'QLT', name:'Аудитор качества GPP/GDP', rules:['QLT-01','QLT-02'],
+    about:'Отзыв серий, холодовая цепь. Источник: продажи по сериям, уведомления, логгеры.' }];
+const agentOf = rule => AGENTS.find(a => a.rules.includes(rule));
+
+const RULES = {
+  'RET-01':{ name:'Отложенные чеки у кассира', sev:'medium', auto:false, norm:'Демо-регламент СТ-03 «Кассовая дисциплина», п. 4.2: отложенный чек закрывается в течение смены. Более 5 отложенных чеков у одного кассира за смену требуют письменного объяснения заведующего. Исключение — сбой связи с ОФД, зарегистрированный в ИТ Service Desk до или во время смены.' },
+  'RET-02':{ name:'Аннулирование чеков после оплаты', sev:'high', auto:false, norm:'Демо-регламент СТ-03, п. 4.4: аннулирование чека после оплаты допускается только с подтверждением заведующего. Доля аннулирований выше 2% чеков кассира за период — основание для проверки.' },
+  'RET-03':{ name:'Возврат без исходного чека', sev:'medium', auto:false, norm:'Демо-регламент СТ-03, п. 6.3: возврат товара без кассового чека допускается только по письменному заявлению покупателя с документом, удостоверяющим личность, и оформленным актом возврата.' },
+  'RET-05':{ name:'Аномальные покупки по картам лояльности', sev:'high', auto:false, norm:'Демо-правила лояльности ПЛ-01, п. 3.1: более 3 покупок по одной карте в одной аптеке за день требуют проверки, кроме корпоративных карт по договору. Ручное начисление бонусов сверх 3% запрещено.' },
+  'RET-06':{ name:'Недостача по ревизии', sev:'medium', auto:true, norm:'Демо-регламент РВ-02 «Ревизии», п. 5.1: допустимая недостача — до 0,3% оборота аптеки за межревизионный период.' },
+  'HR-02':{ name:'Операции под логином отсутствующего сотрудника', sev:'high', auto:false, norm:'Демо-регламент СТ-03, п. 2.1: работа под чужой учётной записью кассы запрещена.' },
+  'IT-01':{ name:'Активная учётная запись уволенного', sev:'high', auto:true, norm:'Демо-политика ИБ-05, п. 3.4: учётная запись уволенного сотрудника блокируется не позднее 1 рабочего дня после увольнения.' },
+  'WHS-01':{ name:'Отгрузка клиенту с просрочкой', sev:'high', auto:false, norm:'Демо-кредитная политика КП-01, п. 2.3: отгрузки клиенту с просрочкой более 30 дней приостанавливаются до погашения или решения директора опта.' },
+  'WHS-02':{ name:'Отгрузка сверх кредитного лимита', sev:'high', auto:false, norm:'Демо-кредитная политика КП-01, п. 2.1: задолженность вместе с новой отгрузкой не должна превышать кредитный лимит.' },
+  'WHS-03':{ name:'Изменение лимита без согласования', sev:'high', auto:false, norm:'Демо-кредитная политика КП-01, п. 4.1: кредитный лимит меняется только по согласованию директора опта; номер согласования вносится в карточку клиента в 1С.' },
+  'ECM-01':{ name:'Заказ агрегатора не отражён в 1С', sev:'medium', auto:true, norm:'Демо-регламент ЭК-02, п. 3.2: каждый доставленный заказ агрегатора отражается в 1С документом продажи не позднее 24 часов.' },
+  'ECM-03':{ name:'Комиссия агрегатора выше договорной', sev:'medium', auto:true, norm:'Демо-регламент ЭК-02, п. 5.1: фактическая комиссия агрегатора еженедельно сверяется со ставкой договора; превышение более 0,5 п.п. — расхождение.' },
+  'FIN-01':{ name:'Возможный дубль платежа', sev:'high', auto:false, norm:'Демо-регламент ПЛ-04 «Платежи», п. 2.2: повторная оплата одного и того же счёта запрещена.' },
+  'FIN-02':{ name:'Платёж без договора', sev:'high', auto:false, norm:'Демо-регламент ПЛ-04, п. 1.3: платёж без договора или иного документального основания запрещён.' },
+  'QLT-01':{ name:'Продажа отозванной серии', sev:'critical', auto:false, norm:'Демо-СОП КК-07 «Отзыв серий», п. 2: с момента уведомления об отзыве продажа и перемещение серии запрещены, остатки переводятся в карантин.' },
+  'QLT-02':{ name:'Выход температуры за 2–8 °C', sev:'critical', auto:false, norm:'Демо-СОП КК-03 «Холодовая цепь», п. 4: выход температуры за пределы 2–8 °C дольше 15 минут — отклонение, требующее оценки уполномоченного лица по качеству.' }};
+
+// ───────────────────────── генерация мира ─────────────────────────
+// Нарушения (V) и ловушки (D) закладываются явно и записываются в «правильные ответы» (gt).
+// Детекторы правильных ответов не видят.
+function buildWorld(sandbox){
+  const r = rng(20261016);
+  const W = { receipts:[], revisions:[], vacations:[], clients:[], shipments:[], limitChanges:[], aggOrders:[], sales1C:[],
+    contracts:new Set(), payments:[], recalls:[], batchSales:[], temps:[], users1C:[], terminations:[], context:[], gt:[] };
+  let rid = 1;
+  const addR = o => { const x = Object.assign({ id:'Ч-' + String(rid++).padStart(5, '0'), status:'sale', ref:null, discount:0, card:null, bonus:0 }, o); W.receipts.push(x); return x; };
+  W.vacations.push({ cashier:'K-33', ph:'A3', from:'2026-10-05', to:'2026-10-18', order:'Приказ О-212' });
+  // обычные продажи
+  PH.forEach((p, i) => {
+    const cs = cashiersOf(i + 1);
+    DAYS.forEach(day => {
+      const n = 95 + Math.floor(r() * 30);
+      for (let k = 0; k < n; k++){
+        let c = cs[Math.floor(r() * 3)];
+        if (c === 'K-33' && day >= '2026-10-05') c = r() < .5 ? 'K-31' : 'K-32';
+        const t = 8 * 60 + Math.floor(r() * 14 * 60);
+        const amount = 500 + Math.round(Math.pow(r(), 2) * 12000);
+        const x = r(); let status = 'sale';
+        if (x < .002) status = 'deferred'; else if (x < .006) status = 'void'; else if (x < .009) status = 'return';
+        const card = r() < .38 ? 'C-' + (1000 + Math.floor(r() * 600)) : null;
+        const rec = addR({ ph:p.id, cashier:c, date:day, time:hhmm(t), amount, status, card, bonus: card ? Math.round(amount * .03) : 0, discount: r() < .05 ? (r() < .5 ? 5 : 10) : 0 });
+        if (status === 'return') rec.ref = 'Ч-' + String(Math.max(1, rid - 40 - Math.floor(r() * 200))).padStart(5, '0');
+      }
+    });
+  });
+  const gt = (id, kind, keys, title, why) => W.gt.push({ id, kind, keys, title, why });
+  const ctx = (id, objects, date, source, text) => W.context.push({ id, objects, date, source, text });
+
+  // V1 — отложенные чеки в конце смены (Астана-7, K-41)
+  [['2026-10-12', 8], ['2026-10-13', 11], ['2026-10-15', 9]].forEach(([d, n]) => { for (let k = 0; k < n; k++) addR({ ph:'A4', cashier:'K-41', date:d, time:hhmm(21 * 60 + 48 + Math.floor(k * 1.1)), amount:1800 + Math.round(r() * 6000), status:'deferred' }); });
+  gt('V1', 'violation', ['RET-01|A4|K-41'], 'Пакеты отложенных чеков в конце смены у кассира K-41 (Астана-7)', 'Три смены подряд, всё в 21:48–22:00, объяснения и ИТ-инцидента нет.');
+  // D1 — сбой ОФД (Шымкент-2): ловушка
+  [['K-51', 9], ['K-52', 8], ['K-53', 7]].forEach(([c, n]) => { for (let k = 0; k < n; k++) addR({ ph:'A5', cashier:c, date:'2026-10-12', time:hhmm(18 * 60 + 5 + Math.floor(r() * 140)), amount:900 + Math.round(r() * 5000), status:'deferred' }); });
+  ctx('INC-2291', ['A5'], '2026-10-12', 'ИТ Service Desk', 'Инцидент INC-2291, открыт 12.10 в 18:02: сбой связи с ОФД в Аптеке Шымкент-2 с 18:00 до 20:30. Кассы работали в автономном режиме, чеки откладывались до восстановления связи. Закрыт 20:40, все отложенные чеки фискализированы.');
+  gt('D1', 'decoy', ['RET-01|A5|K-51', 'RET-01|A5|K-52', 'RET-01|A5|K-53'], 'Отложенные чеки во время сбоя ОФД (Шымкент-2)', 'Сбой зарегистрирован в Service Desk во время смены, затронуты все кассиры — допустимое исключение по п. 4.2.');
+  // V2 — аннулирования после оплаты (Алматы-3, K-32)
+  for (let k = 0; k < 40; k++) addR({ ph:'A3', cashier:'K-32', date:DAYS[Math.floor(r() * 14)], time:hhmm(10 * 60 + Math.floor(r() * 600)), amount:2500 + Math.round(r() * 9000), status:'void' });
+  gt('V2', 'violation', ['RET-02|A3|K-32'], 'Аннулирования после оплаты у кассира K-32 (Алматы-3)', 'Доля аннулирований многократно выше нормы, подтверждений заведующего нет.');
+  // V3 — карты лояльности по пятницам (Алматы-3, K-32)
+  ['C-9001', 'C-9002', 'C-9003', 'C-9004'].forEach(card => ['2026-10-09', '2026-10-16'].forEach(d => { const n = 4 + Math.floor(r() * 2); for (let k = 0; k < n; k++){ const a = 500 + Math.round(r() * 400); addR({ ph:'A3', cashier:'K-32', date:d, time:hhmm(18 * 60 + Math.floor(r() * 120)), amount:a, card, bonus:Math.round(a * .15) }); } }));
+  gt('V3', 'violation', ['RET-05|A3'], 'Схема с бонусами по 4 картам по пятницам (Алматы-3)', 'Мелкие покупки 18–20 ч, бонус 15% вместо 3%, тот же кассир K-32, что и с аннулированиями.');
+  // D2 — корпоративная карта (Тараз-1): ловушка
+  ['2026-10-05', '2026-10-06', '2026-10-07', '2026-10-08', '2026-10-12', '2026-10-13'].forEach(d => { const n = 5 + Math.floor(r() * 3); for (let k = 0; k < n; k++){ const a = 2000 + Math.round(r() * 8000); addR({ ph:'A6', cashier:cashiersOf(6)[Math.floor(r() * 3)], date:d, time:hhmm(9 * 60 + Math.floor(r() * 600)), amount:a, card:'C-7777', bonus:Math.round(a * .03) }); } });
+  ctx('КД-14', ['A6', 'C-7777'], '2026-09-01', 'Реестр договоров', 'Договор КД-14 с корпоративным клиентом ТОО «Медцентр Тараз» (демо): закупка расходных материалов для процедурного кабинета по корпоративной карте C-7777, до 10 покупок в день, бонус по стандартной ставке 3%.');
+  gt('D2', 'decoy', ['RET-05|A6'], 'Частые покупки по корпоративной карте C-7777 (Тараз-1)', 'Карта корпоративная по договору КД-14 — прямое исключение из п. 3.1; бонус стандартный.');
+  // V4 — возвраты без чека (Алматы-2, K-21)
+  [['2026-10-06', 6400], ['2026-10-08', 8900], ['2026-10-11', 4300], ['2026-10-14', 7700]].forEach(([d, a]) => addR({ ph:'A2', cashier:'K-21', date:d, time:hhmm(15 * 60 + Math.floor(r() * 300)), amount:a, status:'return', ref:null }));
+  gt('V4', 'violation', ['RET-03|A2|K-21'], 'Возвраты без чека у кассира K-21 (Алматы-2)', 'Нет ни заявлений, ни актов возврата.');
+  // V15 — чеки под логином кассира в отпуске
+  ['2026-10-09', '2026-10-10', '2026-10-11'].forEach(d => { for (let k = 0; k < 12; k++) addR({ ph:'A3', cashier:'K-33', date:d, time:hhmm(9 * 60 + Math.floor(r() * 600)), amount:900 + Math.round(r() * 7000) }); });
+  ctx('О-212', ['A3', 'K-33'], '2026-09-28', '1С ЗУП', 'Приказ О-212: ежегодный оплачиваемый отпуск кассира K-33 (Алматы-3) с 05.10 по 18.10.');
+  gt('V15', 'violation', ['HR-02|A3|K-33'], 'Чеки под логином кассира K-33, который в отпуске (Алматы-3)', 'Отпуск подтверждён приказом, значит под логином работал другой человек.');
+
+  // V5 — ревизии
+  [['A1', .0008], ['A2', .0015], ['A3', .0062], ['A4', .0021], ['A5', .0011], ['A6', .0005]].forEach(([ph, s], i) => {
+    const turnover = W.receipts.filter(x => x.ph === ph && x.status === 'sale').reduce((a, x) => a + x.amount, 0);
+    W.revisions.push({ ph, date:'2026-10-10', act:'АР-' + (301 + i), turnover, shortage:Math.round(turnover * s) });
+  });
+  gt('V5', 'violation', ['RET-06|A3'], 'Недостача 0,62% по ревизии (Алматы-3)', 'Вдвое выше допустимого порога 0,3%.');
+  // опт
+  const C = [['W1', 'ТОО «Дарумед» (демо)', 5e6, 2.1e6, 0], ['W2', 'ТОО «Аптека Плюс» (демо)', 3e6, 1.2e6, 12], ['W3', 'ТОО «Контрагент-А» (демо)', 6e6, 5.6e6, 64],
+    ['W4', 'ГКП «Городская больница» (демо)', 8e6, 3.4e6, 20], ['W5', 'ИП «Фарм-Маркет» (демо)', 1.5e6, .4e6, 0], ['W6', 'ТОО «Фармлайн-Юг» (демо)', 4.5e6, 2.2e6, 0], ['W7', 'ТОО «Здоровье» (демо)', 2e6, 1.1e6, 5]];
+  C.forEach(([id, name, limit, debt, overdue]) => W.clients.push({ id, name, limit, debt, overdue }));
+  let sid = 1;
+  W.clients.forEach(c => DAYS.forEach(d => { if (r() < .25 && c.id !== 'W3') W.shipments.push({ id:'ОТ-' + String(sid++).padStart(4, '0'), client:c.id, date:d, amount:Math.round((.1 + r() * .3) * 1e6 / 1000) * 1000 }); }));
+  [['2026-10-06', 1.1e6], ['2026-10-09', .9e6], ['2026-10-13', 1.3e6]].forEach(([d, a]) => W.shipments.push({ id:'ОТ-' + String(sid++).padStart(4, '0'), client:'W3', date:d, amount:a }));
+  W.limitChanges.push({ client:'W3', date:'2026-10-05', from:4e6, to:6e6, user:'manager.op2', approval:null });
+  W.limitChanges.push({ client:'W6', date:'2026-10-03', from:3e6, to:4.5e6, user:'manager.op1', approval:null });
+  W.limitChanges.push({ client:'W4', date:'2026-10-07', from:7e6, to:8e6, user:'manager.op1', approval:'СЛ-118' });
+  gt('V6', 'violation', ['WHS-01|W3'], 'Отгрузки ТОО «Контрагент-А» при просрочке 64 дня', 'Три отгрузки на 3,3 млн ₸ при просрочке больше 30 дней.');
+  gt('V7', 'violation', ['WHS-03|W3'], 'Лимит ТОО «Контрагент-А» поднят без согласования', 'Лимит поднят с 4 до 6 млн ₸ накануне отгрузок, согласования нет нигде.');
+  ctx('BX-5531', ['W6'], '2026-10-02', 'Bitrix24', 'Задача BX-5531 «Согласование лимита ТОО «Фармлайн-Юг» (демо) 3,0 → 4,5 млн ₸» — согласовано директором опта 02.10. Номер в карточку 1С не внесён.');
+  gt('D3', 'decoy', ['WHS-03|W6'], 'Лимит ТОО «Фармлайн-Юг» изменён — согласование есть в Bitrix24', 'Согласование получено до изменения; не заполнено только поле в 1С (процедурная мелочь, не нарушение по существу).');
+
+  // e-commerce
+  let ord = 48000;
+  const rate = { Glovo:.20, Wolt:.21, 'Яндекс':.19 }, pref = { Glovo:'GL-', Wolt:'WO-', 'Яндекс':'YA-' };
+  W.contractRates = { Glovo:.20, Wolt:.18, 'Яндекс':.19 };
+  DAYS.forEach(d => ['Glovo', 'Wolt', 'Яндекс'].forEach(ch => { const n = 5 + Math.floor(r() * 6); for (let k = 0; k < n; k++){ const amount = 2000 + Math.round(r() * 9000); const id = pref[ch] + (ord++); W.aggOrders.push({ id, channel:ch, ph:PH[Math.floor(r() * 6)].id, date:d, amount, commission:Math.round(amount * rate[ch]), status:'delivered' }); } }));
+  const ya = W.aggOrders.filter(o => o.channel === 'Яндекс' && o.date <= '2026-10-14'); const missYa = new Set(ya.slice(5, 12).map(o => o.id));
+  const gl = W.aggOrders.filter(o => o.channel === 'Glovo' && o.date <= '2026-10-14'); const prefGl = new Set(gl.slice(3, 8).map(o => o.id));
+  W.aggOrders.forEach(o => { if (missYa.has(o.id)) return; W.sales1C.push({ doc:'РТ-' + o.id.slice(3), orderRef: prefGl.has(o.id) ? o.id.slice(3) : o.id, date:o.date, amount:o.amount }); });
+  gt('V8', 'violation', ['ECM-01|Яндекс'], '7 заказов Яндекс доставлены, но не отражены в 1С', 'Ни по номеру, ни по сумме и дате соответствий в 1С нет.');
+  gt('D4', 'decoy', ['ECM-01|Glovo'], '5 заказов Glovo «не найдены» в 1С из-за формата номера', 'В 1С номер записан без префикса GL-; сумма и дата совпадают — заказы отражены.');
+  gt('V9', 'violation', ['ECM-03|Wolt'], 'Комиссия Wolt 21% при договорной 18%', 'Переплата 3 п.п. по всем заказам периода.');
+
+  // платежи
+  const sup = ['ТОО «Фарм-Поставка» (демо)', 'ТОО «Медтех» (демо)', 'ТОО «Логистик-Про» (демо)', 'ТОО «Чистый офис» (демо)', 'ТОО «Бизнес-Центр Самал» (демо)', 'ТОО «Связь-Сервис» (демо)', 'ТОО «БиоФарм» (демо)', 'ТОО «Упаковка KZ» (демо)'];
+  sup.forEach(s => W.contracts.add(s));
+  let pid = 1, inv = 700;
+  DAYS.forEach(d => { const n = 2 + Math.floor(r() * 3); for (let k = 0; k < n; k++){ const s = sup[Math.floor(r() * 4)]; W.payments.push({ id:'ПП-' + String(pid++).padStart(4, '0'), date:d, recipient:s, amount:Math.round((150 + r() * 2400) * 1000 + pid * 7), invoice:'СЧ-' + (inv++), purpose:'Оплата по счёту за товары/услуги', contract:true }); } });
+  W.payments.push({ id:'ПП-' + String(pid++).padStart(4, '0'), date:'2026-10-06', recipient:sup[0], amount:1150000, invoice:'СЧ-771', purpose:'Оплата по счёту СЧ-771 за лекарственные средства', contract:true });
+  W.payments.push({ id:'ПП-' + String(pid++).padStart(4, '0'), date:'2026-10-08', recipient:sup[0], amount:1150000, invoice:'СЧ-771', purpose:'Оплата по счёту СЧ-771 за лекарственные средства', contract:true });
+  gt('V10', 'violation', ['FIN-01|ТОО «Фарм-Поставка» (демо)|1150000'], 'Счёт СЧ-771 оплачен дважды (1 150 000 ₸)', 'Один и тот же счёт, разница 2 дня.');
+  W.payments.push({ id:'ПП-' + String(pid++).padStart(4, '0'), date:'2026-10-05', recipient:sup[4], amount:850000, invoice:'СЧ-310', purpose:'Аренда помещения за сентябрь (оплата с задержкой)', contract:true });
+  W.payments.push({ id:'ПП-' + String(pid++).padStart(4, '0'), date:'2026-10-12', recipient:sup[4], amount:850000, invoice:'СЧ-355', purpose:'Аренда помещения за октябрь', contract:true });
+  gt('D5', 'decoy', ['FIN-01|ТОО «Бизнес-Центр Самал» (демо)|850000'], 'Две одинаковые суммы аренды — разные месяцы', 'Разные счета (СЧ-310 за сентябрь, СЧ-355 за октябрь) — это не дубль.');
+  W.payments.push({ id:'ПП-' + String(pid++).padStart(4, '0'), date:'2026-10-14', recipient:'ИП «Консалт-Сервис» (демо)', amount:2400000, invoice:'СЧ-К12', purpose:'Консультационные услуги', contract:false });
+  gt('V11', 'violation', ['FIN-02|ИП «Консалт-Сервис» (демо)'], 'Платёж 2,4 млн ₸ ИП «Консалт-Сервис» без договора', 'Получатель отсутствует в реестре договоров.');
+
+  // качество
+  W.recalls.push({ batch:'AMX-2209', product:'Амоксициллин 500 мг (демо)', notice:'2026-10-08', ref:'Уведомление об отзыве серии AMX-2209 (демо), получено 08.10' });
+  [['A1', '2026-10-04', 3], ['A4', '2026-10-06', 2], ['A2', '2026-10-09', 2], ['A2', '2026-10-10', 1]].forEach(([ph, d, q]) => W.batchSales.push({ ph, batch:'AMX-2209', date:d, qty:q }));
+  ['PCM-118', 'IBU-552', 'INS-031'].forEach(b => DAYS.forEach(d => { if (r() < .4) W.batchSales.push({ ph:PH[Math.floor(r() * 6)].id, batch:b, date:d, qty:1 + Math.floor(r() * 4) }); }));
+  gt('V12', 'violation', ['QLT-01|AMX-2209|A2'], 'Продажа отозванной серии AMX-2209 после уведомления (Алматы-2)', '3 упаковки проданы 09–10.10, после уведомления 08.10.');
+  W.temps.push({ device:'ХФ-1', place:'Аптека Алматы-1', ph:'A1', date:'2026-10-11', start:'03:10', minutes:40, max:9.1 });
+  W.temps.push({ device:'Х-2', place:'Центральный склад', ph:'WH', date:'2026-10-16', start:'01:20', minutes:47, max:9.4 });
+  W.temps.push({ device:'ХФ-3', place:'Аптека Астана-7', ph:'A4', date:'2026-10-09', start:'14:05', minutes:6, max:8.4 });
+  ctx('ТО-118', ['A1', 'ХФ-1'], '2026-10-10', 'Журнал ТО оборудования', 'Акт ТО-118: плановая оттайка холодильника ХФ-1 (Аптека Алматы-1) 11.10 с 03:00 до 04:00. Товар заранее перемещён в резервный холодильник ХФ-2, журнал температуры ХФ-2 в норме.');
+  gt('D6', 'decoy', ['QLT-02|ХФ-1'], 'Температура 9,1 °C в ХФ-1 во время плановой оттайки', 'Плановая оттайка по акту ТО-118, товара в холодильнике не было.');
+  gt('V13', 'violation', ['QLT-02|Х-2'], 'Камера Х-2 центрального склада: 9,4 °C в течение 47 минут', 'Объяснений нет, в зоне хранились серии — нужна оценка уполномоченного.');
+
+  // доступы
+  [['a.nurlanova', 'Нурланова А.', 'Заведующая', true], ['b.sapar', 'Сапар Б.', 'Бухгалтер', true], ['s.karimova', 'Каримова С.', 'Казначей', true],
+   ['d.oleg', 'Олег Д.', 'Менеджер опта', true], ['manager.op1', 'Ахмет Е.', 'Менеджер опта', true], ['manager.op2', 'Берик Т.', 'Менеджер опта', true], ['k.ivanova', 'Иванова К.', 'Бухгалтер', false]]
+    .forEach(([login, name, role, active]) => W.users1C.push({ login, name, role, active }));
+  W.terminations.push({ login:'s.karimova', name:'Каримова С.', date:'2026-08-20', order:'Приказ У-77' });
+  W.terminations.push({ login:'k.ivanova', name:'Иванова К.', date:'2026-07-02', order:'Приказ У-61' });
+  gt('V14', 'violation', ['IT-01|s.karimova'], 'Учётная запись уволенного казначея активна в 1С', 'Увольнение 20.08, доступ с ролью «Казначей» не отключён почти 2 месяца.');
+  ctx('INC-2240', ['A1'], '2026-10-04', 'ИТ Service Desk', 'INC-2240: замена принтера чеков в Аптеке Алматы-1, касса работала штатно.');
+  ctx('BX-5490', ['W1'], '2026-10-01', 'Bitrix24', 'BX-5490: продление договора поставки с ТОО «Дарумед» (демо) на 2027 год.');
+
+  // песочница
+  const S = sandbox || [];
+  if (S.includes('S1')){ for (let k = 0; k < 30; k++) addR({ ph:'A1', cashier:'K-12', date:DAYS[7 + Math.floor(r() * 7)], time:hhmm(20 * 60 + Math.floor(r() * 110)), amount:3000 + Math.round(r() * 7000), status:'void' });
+    gt('S1', 'violation', ['RET-02|A1|K-12'], 'Песочница: кассир K-12 массово аннулирует оплаченные чеки вечером', 'Новый паттерн, объяснений нет.'); }
+  if (S.includes('S2')){ [['2026-10-13', 3200], ['2026-10-13', 5100], ['2026-10-14', 2800], ['2026-10-15', 4600], ['2026-10-15', 3900]].forEach(([d, a]) => addR({ ph:'A2', cashier:'K-22', date:d, time:hhmm(11 * 60 + Math.floor(r() * 300)), amount:a, status:'return', ref:null }));
+    ctx('ВЗ-41', ['A2', 'K-22'], '2026-10-15', 'Журнал актов возврата', 'Акты ВЗ-41…ВЗ-45 (Алматы-2, кассир K-22, 13–15.10): возвраты без чека по письменным заявлениям покупателей, удостоверения личности сверены, акты подписаны заведующей.');
+    gt('S2', 'decoy', ['RET-03|A2|K-22'], 'Песочница: возвраты без чека, оформленные заявлениями и актами', 'Порядок п. 6.3 соблюдён.'); }
+  if (S.includes('S3')){ W.clients.push({ id:'W8', name:'ТОО «Новый Дистрибьютор» (демо)', limit:1e6, debt:.2e6, overdue:0 }); W.shipments.push({ id:'ОТ-' + String(sid++).padStart(4, '0'), client:'W8', date:'2026-10-15', amount:2.5e6 });
+    gt('S3', 'violation', ['WHS-02|W8'], 'Песочница: отгрузка новому клиенту на 2,5 млн ₸ при лимите 1 млн ₸', 'Задолженность с отгрузкой 2,7 млн ₸ > лимита.'); }
+  if (S.includes('S4')){ W.payments.push({ id:'ПП-' + String(pid++).padStart(4, '0'), date:'2026-10-07', recipient:sup[5], amount:120000, invoice:'СЧ-1201', purpose:'Связь и интернет за сентябрь', contract:true });
+    W.payments.push({ id:'ПП-' + String(pid++).padStart(4, '0'), date:'2026-10-14', recipient:sup[5], amount:120000, invoice:'СЧ-1288', purpose:'Связь и интернет за октябрь', contract:true });
+    gt('S4', 'decoy', ['FIN-01|ТОО «Связь-Сервис» (демо)|120000'], 'Песочница: абонентская плата за два месяца', 'Разные счета за разные периоды.'); }
+  if (S.includes('S5')){ W.batchSales.push({ ph:'A5', batch:'AMX-2209', date:'2026-10-15', qty:1 });
+    gt('S5', 'violation', ['QLT-01|AMX-2209|A5'], 'Песочница: отозванная серия продана в Шымкент-2', 'Продажа через неделю после уведомления.'); }
+  if (S.includes('S6')){ for (let k = 0; k < 10; k++) addR({ ph:'A6', cashier:'K-61', date:'2026-10-14', time:hhmm(21 * 60 + 40 + k * 2), amount:2000 + Math.round(r() * 6000), status:'deferred' });
+    ctx('ОБ-61', ['A6', 'K-61'], '2026-10-17', 'Объяснительная заведующего (загружена после выявления)', 'Вечером 14.10 был сбой связи, поэтому чеки откладывали.');
+    gt('S6', 'violation', ['RET-01|A6|K-61'], 'Песочница: «сбой связи», о котором узнали только из объяснительной', 'Инцидента в Service Desk нет, объяснение написано 17.10 — после выявления. Объяснение не подтверждено.'); }
+  return W;
+}
+
+// ───────────────────────── уровень 1: детекторы (правила) ─────────────────────────
+function detect(W){
+  const F = []; let n = 1;
+  const add = o => { o.id = 'F-' + String(n++).padStart(2, '0'); o.agent = agentOf(o.rule).id; o.sev = RULES[o.rule].sev; F.push(o); };
+  const by = (arr, keyf) => { const m = new Map(); arr.forEach(x => { const k = keyf(x); if (!m.has(k)) m.set(k, []); m.get(k).push(x); }); return m; };
+  // RET-01
+  by(W.receipts.filter(x => x.status === 'deferred'), x => x.ph + '|' + x.cashier).forEach((rows, k) => {
+    const [ph, c] = k.split('|'); const days = [...by(rows, x => x.date)].filter(([, v]) => v.length > 5);
+    if (!days.length) return; const ev = days.flatMap(([, v]) => v);
+    add({ rule:'RET-01', key:'RET-01|' + k, objects:[ph, c], title:`${phName(ph)}: кассир ${c} — более 5 отложенных чеков за смену (${plural(days.length, 'смена', 'смены', 'смен')})`,
+      metric:{ label:'Максимум отложенных чеков за смену', value:Math.max(...days.map(([, v]) => v.length)), threshold:5 },
+      facts:days.map(([d, v]) => `${ruDate(d)}: ${v.length} отложенных чеков, время ${v.map(x => x.time).sort()[0]}–${v.map(x => x.time).sort().slice(-1)[0]}, сумма ${money(v.reduce((a, x) => a + x.amount, 0))}`),
+      cols:['id', 'date', 'time', 'cashier', 'amount', 'status'], rows:ev });
+  });
+  // RET-02
+  by(W.receipts, x => x.ph + '|' + x.cashier).forEach((rows, k) => {
+    const v = rows.filter(x => x.status === 'void'); const share = v.length / rows.length;
+    if (share > .02 && v.length >= 5){ const [ph, c] = k.split('|');
+      add({ rule:'RET-02', key:'RET-02|' + k, objects:[ph, c], title:`${phName(ph)}: кассир ${c} — аннулирований ${pct(share)} чеков`,
+        metric:{ label:'Доля аннулирований', value:pct(share), threshold:'2%' },
+        facts:[`Чеков кассира за период: ${rows.length}`, `Аннулировано после оплаты: ${v.length} на ${money(v.reduce((a, x) => a + x.amount, 0))}`, `Средняя доля по сети: ${pct(W.receipts.filter(x => x.status === 'void').length / W.receipts.length)}`],
+        cols:['id', 'date', 'time', 'cashier', 'amount', 'status'], rows:v }); }
+  });
+  // RET-03
+  by(W.receipts.filter(x => x.status === 'return' && !x.ref), x => x.ph + '|' + x.cashier).forEach((rows, k) => { const [ph, c] = k.split('|');
+    add({ rule:'RET-03', key:'RET-03|' + k, objects:[ph, c], title:`${phName(ph)}: кассир ${c} — ${rows.length} возвратов без исходного чека`,
+      metric:{ label:'Возвратов без чека', value:rows.length, threshold:0 }, facts:rows.map(x => `${x.id} ${ruDate(x.date)} ${x.time}: возврат ${money(x.amount)}, ссылка на чек продажи отсутствует`),
+      cols:['id', 'date', 'time', 'cashier', 'amount', 'status', 'ref'], rows }); });
+  // RET-05 (агрегация по аптеке)
+  const cardDays = [...by(W.receipts.filter(x => x.card), x => x.ph + '|' + x.card + '|' + x.date)].filter(([, v]) => v.length > 3);
+  by(cardDays, ([k]) => k.split('|')[0]).forEach((list, ph) => { const ev = list.flatMap(([, v]) => v); const cards = [...new Set(list.map(([k]) => k.split('|')[1]))];
+    const bonusShare = ev.reduce((a, x) => a + x.bonus, 0) / ev.reduce((a, x) => a + x.amount, 0);
+    add({ rule:'RET-05', key:'RET-05|' + ph, objects:[ph, ...cards], title:`${phName(ph)}: более 3 покупок в день по картам ${cards.join(', ')}`,
+      metric:{ label:'Карт с превышением', value:cards.length, threshold:'>3 покупок/день' },
+      facts:[...list.map(([k, v]) => `Карта ${k.split('|')[1]}, ${ruDate(k.split('|')[2])}: ${v.length} покупок на ${money(v.reduce((a, x) => a + x.amount, 0))}, кассиры ${[...new Set(v.map(x => x.cashier))].join('/')}`), `Средний начисленный бонус по этим покупкам: ${pct(bonusShare)} от суммы`],
+      cols:['id', 'date', 'time', 'cashier', 'card', 'amount', 'bonus'], rows:ev }); });
+  // RET-06
+  W.revisions.forEach(v => { const s = v.shortage / v.turnover; if (s > .003) add({ rule:'RET-06', key:'RET-06|' + v.ph, objects:[v.ph], title:`${phName(v.ph)}: недостача ${pct(s, 2)} по ревизии ${v.act}`,
+    metric:{ label:'Недостача от оборота', value:pct(s, 2), threshold:'0,30%' }, facts:[`Акт ${v.act} от ${ruDate(v.date)}`, `Оборот за период: ${money(v.turnover)}`, `Недостача: ${money(v.shortage)}`],
+    cols:['ph', 'date', 'act', 'turnover', 'shortage'], rows:[v] }); });
+  // HR-02
+  W.vacations.forEach(v => { const rows = W.receipts.filter(x => x.cashier === v.cashier && x.date >= v.from && x.date <= v.to); if (!rows.length) return;
+    add({ rule:'HR-02', key:'HR-02|' + v.ph + '|' + v.cashier, objects:[v.ph, v.cashier], title:`${phName(v.ph)}: ${rows.length} чеков под логином ${v.cashier} в период его отпуска`,
+      metric:{ label:'Чеков в период отсутствия', value:rows.length, threshold:0 }, facts:[`Отсутствие по данным 1С ЗУП: ${ruDate(v.from)}–${ruDate(v.to)} (${v.order})`, ...[...by(rows, x => x.date)].map(([d, x]) => `${ruDate(d)}: ${x.length} чеков на ${money(x.reduce((a, y) => a + y.amount, 0))}`)],
+      cols:['id', 'date', 'time', 'cashier', 'amount'], rows }); });
+  // IT-01
+  W.terminations.forEach(t => { const u = W.users1C.find(x => x.login === t.login); if (u && u.active) add({ rule:'IT-01', key:'IT-01|' + t.login, objects:[t.login], title:`Учётная запись ${t.login} (${u.role}) активна после увольнения ${ruDate(t.date)}`,
+    metric:{ label:'Дней с увольнения', value:Math.round((Date.parse('2026-10-16') - Date.parse(t.date)) / 864e5), threshold:1 }, facts:[`Увольнение: ${t.order} от ${t.date}`, `Роль в 1С: ${u.role}, статус: активна`],
+    cols:['login', 'name', 'role', 'active'], rows:[u] }); });
+  // WHS-01, WHS-02
+  W.clients.forEach(c => { const sh = W.shipments.filter(s => s.client === c.id);
+    if (c.overdue > 30 && sh.length) add({ rule:'WHS-01', key:'WHS-01|' + c.id, objects:[c.id], title:`${c.name}: ${sh.length} отгрузки при просрочке ${c.overdue} дней`,
+      metric:{ label:'Просрочка, дней', value:c.overdue, threshold:30 }, facts:[`Дебиторская задолженность: ${money(c.debt)}, лимит ${money(c.limit)}`, `Отгружено за период: ${money(sh.reduce((a, s) => a + s.amount, 0))}`], cols:['id', 'client', 'date', 'amount'], rows:sh });
+    const big = sh.filter(s => c.debt + s.amount > c.limit && c.overdue <= 30);
+    if (big.length) add({ rule:'WHS-02', key:'WHS-02|' + c.id, objects:[c.id], title:`${c.name}: отгрузка сверх кредитного лимита`,
+      metric:{ label:'Задолженность + отгрузка', value:money(c.debt + Math.max(...big.map(s => s.amount))), threshold:money(c.limit) }, facts:big.map(s => `${s.id} ${ruDate(s.date)}: ${money(s.amount)} при задолженности ${money(c.debt)} и лимите ${money(c.limit)}`), cols:['id', 'client', 'date', 'amount'], rows:big }); });
+  // WHS-03
+  W.limitChanges.filter(l => !l.approval).forEach(l => { const c = W.clients.find(x => x.id === l.client);
+    add({ rule:'WHS-03', key:'WHS-03|' + l.client, objects:[l.client], title:`${c.name}: лимит изменён ${money(l.from)} → ${money(l.to)} без номера согласования`,
+      metric:{ label:'Номер согласования в 1С', value:'нет', threshold:'обязателен' }, facts:[`Изменение ${ruDate(l.date)} пользователем ${l.user}`, 'Поле «Согласование» в карточке клиента пустое'], cols:['client', 'date', 'from', 'to', 'user', 'approval'], rows:[l] }); });
+  // ECM-01 — точное совпадение номера (наивное правило)
+  const refs = new Set(W.sales1C.map(s => s.orderRef));
+  by(W.aggOrders.filter(o => o.status === 'delivered' && o.date <= '2026-10-15' && !refs.has(o.id)), o => o.channel).forEach((rows, ch) =>
+    add({ rule:'ECM-01', key:'ECM-01|' + ch, objects:[ch], title:`${ch}: ${rows.length} доставленных заказов без продажи в 1С`,
+      metric:{ label:'Заказов без документа', value:rows.length, threshold:0 }, facts:[`Сумма: ${money(rows.reduce((a, o) => a + o.amount, 0))}`, 'Поиск в 1С по номеру заказа: не найдено'], cols:['id', 'channel', 'ph', 'date', 'amount'], rows }));
+  // ECM-03
+  by(W.aggOrders, o => o.channel).forEach((rows, ch) => { const eff = rows.reduce((a, o) => a + o.commission, 0) / rows.reduce((a, o) => a + o.amount, 0); const c = W.contractRates[ch];
+    if (eff - c > .005) add({ rule:'ECM-03', key:'ECM-03|' + ch, objects:[ch], title:`${ch}: фактическая комиссия ${pct(eff)} при договорной ${pct(c)}`,
+      metric:{ label:'Фактическая комиссия', value:pct(eff), threshold:pct(c) }, facts:[`Заказов: ${rows.length} на ${money(rows.reduce((a, o) => a + o.amount, 0))}`, `Удержано комиссии: ${money(rows.reduce((a, o) => a + o.commission, 0))}`, `По договору следовало: ${money(rows.reduce((a, o) => a + o.amount, 0) * c)}`],
+      cols:['id', 'channel', 'date', 'amount', 'commission'], rows:rows.slice(0, 40) }); });
+  // FIN-01 — наивное правило: получатель + сумма в пределах 10 дней
+  by(W.payments, p => p.recipient + '|' + p.amount).forEach((rows, k) => { if (rows.length < 2) return; rows.sort((a, b) => a.date.localeCompare(b.date));
+    if ((Date.parse(rows[rows.length - 1].date) - Date.parse(rows[0].date)) / 864e5 <= 10){ const [rec, am] = k.split('|');
+      add({ rule:'FIN-01', key:'FIN-01|' + k, objects:[rec], title:`${rec}: ${rows.length} платежа по ${money(+am)} в пределах 10 дней`,
+        metric:{ label:'Совпадающих платежей', value:rows.length, threshold:1 }, facts:rows.map(p => `${p.id} ${ruDate(p.date)}: ${money(p.amount)}, «${p.purpose}»`), cols:['id', 'date', 'recipient', 'amount', 'purpose'], rows }); } });
+  // FIN-02
+  W.payments.filter(p => !p.contract).forEach(p => add({ rule:'FIN-02', key:'FIN-02|' + p.recipient, objects:[p.recipient], title:`${p.recipient}: платёж ${money(p.amount)} без договора`,
+    metric:{ label:'Договор в реестре', value:'нет', threshold:'обязателен' }, facts:[`${p.id} ${ruDate(p.date)}, назначение «${p.purpose}», счёт ${p.invoice}`], cols:['id', 'date', 'recipient', 'amount', 'invoice', 'purpose'], rows:[p] }));
+  // QLT-01
+  W.recalls.forEach(rc => by(W.batchSales.filter(s => s.batch === rc.batch && s.date >= rc.notice), s => s.ph).forEach((rows, ph) =>
+    add({ rule:'QLT-01', key:'QLT-01|' + rc.batch + '|' + ph, objects:[ph, rc.batch], title:`${phName(ph)}: продажа отозванной серии ${rc.batch} после уведомления`,
+      metric:{ label:'Продано упаковок после уведомления', value:rows.reduce((a, s) => a + s.qty, 0), threshold:0 }, facts:[`${rc.ref}`, ...rows.map(s => `${ruDate(s.date)}: продано ${s.qty} уп.`)], cols:['ph', 'batch', 'date', 'qty'], rows })));
+  // QLT-02 — только по логгеру, без журнала ТО
+  W.temps.filter(t => t.max > 8 && t.minutes > 15).forEach(t => add({ rule:'QLT-02', key:'QLT-02|' + t.device, objects:[t.ph, t.device], title:`${t.place}: ${t.device} — ${String(t.max).replace('.', ',')} °C в течение ${t.minutes} мин`,
+    metric:{ label:'Длительность выхода за 8 °C', value:t.minutes + ' мин', threshold:'15 мин' }, facts:[`${ruDate(t.date)} с ${t.start}, максимум ${t.max} °C`], cols:['device', 'place', 'date', 'start', 'minutes', 'max'], rows:[t] }));
+  return F;
+}
+
+// ───────────────────────── уровень 2: верификатор (отдельная реализация) ─────────────────────────
+function verify(f, W){
+  const checks = []; const ok = (b, t) => checks.push({ ok:b, text:t });
+  const ids = new Set(W.receipts.map(x => x.id));
+  const count = (pred) => { let c = 0; for (const x of W.receipts) if (pred(x)) c++; return c; };
+  let verdict = 'pass', note = '';
+  switch (f.rule){
+    case 'RET-01': { const [ph, c] = f.objects; const perDay = {}; for (const x of W.receipts) if (x.ph === ph && x.cashier === c && x.status === 'deferred') perDay[x.date] = (perDay[x.date] || 0) + 1;
+      const over = Object.entries(perDay).filter(([, v]) => v > 5); ok(over.length > 0, `Пересчёт по исходным чекам: смен с >5 отложенными — ${over.length} (${over.map(([d, v]) => ruDate(d) + ': ' + v).join(', ')})`);
+      ok(f.rows.every(x => ids.has(x.id)), `Все ${f.rows.length} чеков-доказательств найдены в источнике`); if (!over.length) verdict = 'discrepancy'; break; }
+    case 'RET-02': { const [ph, c] = f.objects; const all = count(x => x.ph === ph && x.cashier === c), v = count(x => x.ph === ph && x.cashier === c && x.status === 'void');
+      ok(v / all > .02, `Пересчёт: ${v} аннулирований из ${all} чеков = ${pct(v / all)}`); if (v / all <= .02) verdict = 'discrepancy'; break; }
+    case 'RET-03': { const bad = f.rows.filter(x => !W.receipts.some(y => y.id === x.id && y.status === 'return' && !y.ref)); ok(!bad.length, `Возвраты без ссылки на чек подтверждены по источнику: ${f.rows.length - bad.length} из ${f.rows.length}`);
+      ok(true, 'Заявления и акты возврата в данных 1С не хранятся — их наличие верификатор проверить не может'); if (bad.length) verdict = 'discrepancy'; break; }
+    case 'RET-05': { const ph = f.objects[0]; const m = {}; for (const x of W.receipts) if (x.ph === ph && x.card) { const k = x.card + x.date; m[k] = (m[k] || 0) + 1; }
+      const n = Object.values(m).filter(v => v > 3).length; ok(n > 0, `Пересчёт: пар «карта-день» с >3 покупками — ${n}`); if (!n) verdict = 'discrepancy'; break; }
+    case 'RET-06': { const v = W.revisions.find(x => x.ph === f.objects[0]); const turnover = W.receipts.filter(x => x.ph === v.ph && x.status === 'sale').reduce((a, x) => a + x.amount, 0);
+      ok(Math.abs(turnover - v.turnover) < 1, `Оборот по чекам совпадает с актом: ${money(turnover)}`); ok(v.shortage / turnover > .003, `Недостача ${pct(v.shortage / turnover, 2)} > 0,30%`); break; }
+    case 'HR-02': { const [, c] = f.objects; const vac = W.vacations.find(x => x.cashier === c); const n = count(x => x.cashier === c && x.date >= vac.from && x.date <= vac.to);
+      ok(n > 0, `Пересчёт: ${n} чеков под ${c} в период ${ruDate(vac.from)}–${ruDate(vac.to)}`); ok(true, `Отпуск подтверждён документом ${vac.order}`); break; }
+    case 'IT-01': { const u = W.users1C.find(x => x.login === f.objects[0]); const t = W.terminations.find(x => x.login === f.objects[0]);
+      ok(!!u && u.active, `Учётная запись ${u ? (u.active ? 'активна' : 'заблокирована') : 'не найдена'} в выгрузке пользователей 1С`); ok(!!t, `Увольнение подтверждено: ${t ? t.order : 'нет документа'}`); break; }
+    case 'WHS-01': case 'WHS-02': { const c = W.clients.find(x => x.id === f.objects[0]); const sum = W.shipments.filter(s => s.client === c.id).reduce((a, s) => a + s.amount, 0);
+      ok(sum > 0, `Отгрузки клиенту найдены в источнике: ${money(sum)}`); ok(true, `Карточка клиента: лимит ${money(c.limit)}, задолженность ${money(c.debt)}, просрочка ${c.overdue} дн.`); break; }
+    case 'WHS-03': { const l = W.limitChanges.find(x => x.client === f.objects[0]); ok(!l.approval, `В 1С поле согласования ${l.approval ? 'заполнено' : 'пустое'}`); ok(true, 'Другие системы согласований (Bitrix24) верификатору недоступны'); break; }
+    case 'ECM-01': { // независимая сверка: номер без префикса, сумма и дата
+      const norm = s => String(s).replace(/^[A-ZА-Я]+-/i, ''); let fuzzy = 0;
+      f.rows.forEach(o => { if (W.sales1C.some(s => norm(s.orderRef) === norm(o.id) && s.amount === o.amount && s.date === o.date)) fuzzy++; });
+      ok(fuzzy === 0, `Повторный поиск по номеру без префикса, сумме и дате: найдено ${fuzzy} из ${f.rows.length}`);
+      if (fuzzy === f.rows.length){ verdict = 'discrepancy'; note = 'Все «пропавшие» заказы найдены в 1С: номер записан без префикса. Отклонение правила не подтверждено.'; }
+      else if (fuzzy > 0){ verdict = 'discrepancy'; note = `Часть заказов (${fuzzy}) найдена в 1С — сумма расхождения завышена.`; } break; }
+    case 'ECM-03': { const ch = f.objects[0]; const rows = W.aggOrders.filter(o => o.channel === ch); const eff = rows.reduce((a, o) => a + o.commission, 0) / rows.reduce((a, o) => a + o.amount, 0);
+      ok(eff - W.contractRates[ch] > .005, `Пересчёт по всем ${rows.length} заказам: ${pct(eff, 2)} против ${pct(W.contractRates[ch], 2)} по договору`); break; }
+    case 'FIN-01': { const inv = [...new Set(f.rows.map(p => p.invoice))]; ok(inv.length === 1, `Номера счетов: ${inv.join(', ')}`);
+      if (inv.length > 1){ verdict = 'discrepancy'; note = 'Платежи по разным счетам — признак дубля не подтверждён.'; } break; }
+    case 'FIN-02': ok(!W.contracts.has(f.objects[0]), `Получатель ${W.contracts.has(f.objects[0]) ? 'есть' : 'отсутствует'} в реестре договоров`); break;
+    case 'QLT-01': { const [ph, b] = f.objects; const rc = W.recalls.find(x => x.batch === b); const q = W.batchSales.filter(s => s.ph === ph && s.batch === b && s.date >= rc.notice).reduce((a, s) => a + s.qty, 0);
+      ok(q > 0, `Продажи серии после ${ruDate(rc.notice)}: ${q} уп.`); ok(true, `Уведомление: ${rc.ref}`); break; }
+    case 'QLT-02': { const t = W.temps.find(x => x.device === f.objects[1]); ok(t.max > 8 && t.minutes > 15, `Лог устройства: ${t.max} °C, ${t.minutes} мин`); ok(true, 'Журнал ТО и перемещений товара верификатору недоступен'); break; }
+  }
+  if (checks.some(c => !c.ok) && verdict === 'pass') verdict = 'discrepancy';
+  return { verdict, checks, note };
+}
+
+// ───────────────────────── контекст для ревьюера ─────────────────────────
+const contextFor = (f, W) => W.context.filter(c => c.objects.some(o => f.objects.includes(o)));
+
+// ───────────────────────── состояние ─────────────────────────
+const S = {
+  tab: store.get('poly.tab', 'plan'), sandbox: store.get('poly.sandbox', []), W:null, F:[], ran:false, caseId:null,
+  ai: store.get('poly.ai', {}), marks: store.get('poly.marks', {}), tests: store.get('poly.tests', {}),
+  chat: [], chatAgent:'RET', busy:{}, mozg:null, sample:null, sampleState:'pending', tools:false };
+function rebuild(){ S.W = buildWorld(S.sandbox); S.F = S.ran ? detect(S.W) : []; S.F.forEach(f => f.ver = verify(f, S.W)); }
+const aiKey = f => f.key + '#' + S.sandbox.slice().sort().join('');
+const gtOf = f => S.W.gt.find(g => g.keys.includes(f.key));
+
+// ───────────────────────── ИИ ─────────────────────────
+function aiErr(e){ const c = e && e.code; return ({ not_granted:'Вы не разрешили странице обращаться к Claude.', rate_limited:'Слишком много запросов. Подождите немного и повторите.', sampling_disabled:'Claude недоступен для этой учётной записи.', invalid_json:'ИИ вернул ответ не в том формате. Нажмите ещё раз.', refused:'ИИ отказался отвечать на этот запрос.', session_expired:'Нужно заново войти в Claude.' })[c] || 'Не удалось получить ответ ИИ. Повторите попытку.'; }
+const cap = t => t.charAt(0).toUpperCase() + t.slice(1);
+const sevRu = { low:'низкий', medium:'средний', high:'высокий', critical:'критический' };
+const rank = { low:0, medium:1, high:2, critical:3 };
+
+function promptAuditor(f){
+  const ag = agentOf(f.rule);
+  return `Ты — «${ag.name}», цифровой внутренний аудитор аптечной сети (уровень 1 трёхуровневой проверки). Данные полностью демонстрационные.
+Твоя задача — сформировать ПРЕДВАРИТЕЛЬНОЕ заключение только по фактам ниже. Ты видишь только данные своей контрольной процедуры, других журналов компании у тебя нет.
+
+Правила работы:
+- Не пересчитывай и не придумывай числа — используй только приведённые.
+- Отделяй факты от выводов и предположений. Предположение о мотивах или вине помечай типом "assumption".
+- Не делай вывода о личной вине сотрудника.
+- Если для вывода не хватает данных — перечисли, каких именно, в missing_data.
+
+Контрольная процедура: ${f.rule} — ${RULES[f.rule].name}
+Норма: ${RULES[f.rule].norm}
+Срабатывание правила: ${f.title}
+Показатель: ${f.metric.label} = ${f.metric.value} (порог ${f.metric.threshold})
+Факты:
+${f.facts.map(x => '- ' + x).join('\n')}
+Доказательства (до 15 строк из ${f.rows.length}):
+${JSON.stringify(f.rows.slice(0, 15))}
+
+Ответь только JSON:
+{"summary":"2-3 предложения","claims":[{"type":"fact|calc|norm|inference|assumption","text":"...","evidence":"на чём основано"}],"risk":"low|medium|high|critical","risk_reason":"...","recommendations":["..."],"personal_blame_suggested":false,"missing_data":["..."]}`;
+}
+function promptReviewer(f, aud){
+  const ctx = contextFor(f, S.W);
+  return `Ты — AI Compliance & Audit Reviewer (уровень 3), независимый эксперт по методологии внутреннего аудита. Данные демонстрационные.
+Ты проверяешь заключение профильного аудитора. Ты НЕ знаешь, какой уровень риска поставил аудитор, — оцени риск сам по исходным данным.
+В отличие от аудитора, у тебя есть журналы компании (ИТ-инциденты, договоры, согласования, приказы, акты ТО). Используй их критически:
+- запись, сделанная ПОСЛЕ выявления отклонения и не подтверждённая независимой системой, не является доказательством;
+- исключение из нормы применяй, только если его условия прямо выполнены;
+- не смягчай вывод без документального основания.
+
+Норма: ${RULES[f.rule].norm}
+Срабатывание правила: ${f.title}
+Показатель: ${f.metric.label} = ${f.metric.value} (порог ${f.metric.threshold})
+Факты: ${f.facts.join('; ')}
+Доказательства (до 15 строк): ${JSON.stringify(f.rows.slice(0, 15))}
+Вердикт верификатора доказательств (уровень 2): ${f.ver.verdict}. ${f.ver.checks.map(c => (c.ok ? '[ok] ' : '[!] ') + c.text).join(' | ')} ${f.ver.note}
+Журналы компании по этим объектам (${ctx.length}): ${ctx.length ? JSON.stringify(ctx) : 'записей нет'}
+Утверждения аудитора (без оценки риска): ${JSON.stringify((aud.claims || []).map(c => ({ type:c.type, text:c.text })))}
+Рекомендации аудитора: ${JSON.stringify(aud.recommendations || [])}
+
+Ответь только JSON:
+{"risk":"low|medium|high|critical","risk_reason":"...","verdict":"confirm|needs_check|reject","verdict_reason":"...","issues":["логические ошибки, неподтверждённые утверждения, выход за полномочия"],"context_used":["id записей журнала, которые повлияли на вывод"],"blame_risk":false,"human_required":true}
+verdict: confirm — отклонение подтверждено и не объяснено; needs_check — есть сомнения или противоречия; reject — отклонение объяснено документами компании и нарушением не является.
+blame_risk: true, если вывод может повлечь обвинение или дисциплинарную меру конкретному сотруднику.`;
+}
+function decide(f){
+  const a = S.ai[aiKey(f)]; if (!a || !a.aud || !a.rev) return null;
+  const aud = a.aud, rev = a.rev, v = f.ver;
+  const mr = Math.max(rank[aud.risk] ?? 1, rank[rev.risk] ?? 1, rank[f.sev]);
+  const reviewerDismiss = rev.verdict === 'reject';
+  if (mr === 3) return { st:'specialist', rule:1, label:'Передан специалисту', why:'Критический риск. Уполномоченному лицу отправлен сигнал «Предварительный сигнал, требует проверки».' + (reviewerDismiss ? ' Ревьюер считает, что отклонение объяснено документами, — решение за специалистом.' : '') };
+  if (rev.blame_risk || aud.personal_blame_suggested) return { st:'specialist', rule:2, label:'Передан специалисту', why:'Вывод затрагивает возможную вину конкретного сотрудника. Обвинительная задача ИИ не создаётся.' };
+  if (v.verdict === 'insufficient') return { st:'docs', rule:3, label:'Запрошены документы', why:'Верификатору не хватает документов.' };
+  if (v.verdict === 'discrepancy' || rev.verdict !== 'confirm' || Math.abs((rank[aud.risk] ?? 1) - (rank[rev.risk] ?? 1)) > 1)
+    return { st:'check', rule:4, label:'Требуется дополнительная проверка', why:cap([v.verdict === 'discrepancy' ? 'верификатор нашёл расхождение' : '', rev.verdict === 'reject' ? 'ревьюер предлагает снять: отклонение объяснено документами' : rev.verdict === 'needs_check' ? 'у ревьюера есть сомнения' : '', Math.abs((rank[aud.risk] ?? 1) - (rank[rev.risk] ?? 1)) > 1 ? 'оценки риска разошлись больше чем на уровень' : ''].filter(Boolean).join('; ')) + '. Ревьюер может только ужесточить маршрут, поэтому снять кейс может только человек.' };
+  if (RULES[f.rule].auto && mr <= 1) return { st:'task', rule:7, label:'Подтверждён ИИ-проверками · задача', why:'Все проверки пройдены, процедура разрешена к авто-постановке, риск не выше среднего.' };
+  return { st:'wait', rule:8, label:'Подтверждён ИИ-проверками · ждёт контролёра', why:'Все проверки пройдены, но для этой процедуры или уровня риска нужна виза контролёра.' };
+}
+async function runAI(f, btn){
+  if (!S.sample){ return; }
+  const k = aiKey(f); S.busy[f.id] = 'Аудитор пишет заключение…'; render();
+  try {
+    const aud = await S.sample.json(promptAuditor(f), { modelTier:'default' });
+    S.ai[k] = { aud }; store.set('poly.ai', S.ai);
+    S.busy[f.id] = 'Ревьюер проверяет вслепую…'; render();
+    const rev = await S.sample.json(promptReviewer(f, aud), { modelTier:'default' });
+    S.ai[k] = { aud, rev }; store.set('poly.ai', S.ai);
+  } catch (e) { S.ai[k] = Object.assign(S.ai[k] || {}, { error:aiErr(e) }); }
+  delete S.busy[f.id]; render();
+}
+
+// ───────────────────────── вкладки ─────────────────────────
+const TABS = [
+  ['plan', 'Как тестировать'], ['agents', 'Агенты и кейсы'], ['case', 'Карточка кейса'], ['sandbox', 'Песочница'],
+  ['chat', 'Спросить агента'], ['mozg', 'МОЗГ: сводка'], ['quality', 'Качество AI-аудита'], ['data', 'Данные']];
+function renderNav(){
+  const nav = document.getElementById('nav');
+  nav.innerHTML = '<div class="navlabel">Разделы</div>' + TABS.map(([id, label]) => {
+    let badge = '';
+    if (id === 'agents' && S.ran) badge = `<span class="pill p-mute num">${S.F.length}</span>`;
+    if (id === 'case' && !S.caseId) return '';
+    return `<button data-tab="${id}" ${S.tab === id ? 'aria-current="page"' : ''}>${label}${badge}</button>`;
+  }).join('');
+  nav.querySelectorAll('button').forEach(b => b.onclick = () => go(b.dataset.tab));
+}
+function go(t){ S.tab = t; store.set('poly.tab', t); render(); window.scrollTo(0, 0); }
+function renderTop(){
+  const a = document.getElementById('aiStatus');
+  a.className = 'pill ' + (S.sampleState === 'ready' ? 'p-ok' : S.sampleState === 'off' ? 'p-warn' : 'p-mute');
+  a.textContent = S.sampleState === 'ready' ? 'ИИ: Claude подключён' : S.sampleState === 'off' ? 'ИИ недоступен в этом окне' : 'ИИ: подключение…';
+  document.getElementById('dataStatus').textContent = 'Данные: ' + (S.sandbox.length ? `базовый набор + ${S.sandbox.length} из песочницы` : 'базовый набор');
+}
+function render(){
+  renderNav(); renderTop();
+  const v = document.getElementById('view');
+  const fn = { plan:vPlan, agents:vAgents, case:vCase, sandbox:vSandbox, chat:vChat, mozg:vMozg, quality:vQuality, data:vData }[S.tab] || vPlan;
+  v.innerHTML = fn(); bind[S.tab] && bind[S.tab]();
+}
+const bind = {};
+
+// ── Как тестировать
+const TESTS = [
+  ['T1', 'Находят ли правила отклонения в данных', 'Откройте «Агенты и кейсы» и нажмите «Запустить всех агентов».', 'Правила — это код, не ИИ. Они должны найти все 15 заложенных нарушений, но вместе с ними поднимут и часть ловушек: правило не знает контекста.'],
+  ['T2', 'Ловит ли верификатор ошибку правила', 'Откройте кейсы «Glovo: … без продажи в 1С» и «Бизнес-Центр Самал: 2 платежа». Посмотрите блок «Уровень 2».', 'Верификатор пересчитывает независимо и должен показать: заказы Glovo в 1С есть (номер без префикса), а платежи аренды — по разным счетам.'],
+  ['T3', 'Отличает ли ИИ сбой от злоупотребления', 'Прогоните через ИИ кейсы отложенных чеков Астана-7 (K-41) и Шымкент-2 (K-51).', 'Для K-41 ревьюер должен подтвердить нарушение. Для Шымкент-2 — найти инцидент INC-2291 и предложить снять кейс. Снимает всё равно человек.'],
+  ['T4', 'Понимает ли ИИ исключение из нормы', 'Прогоните кейс по картам лояльности Тараз-1 (C-7777).', 'Ревьюер должен найти договор КД-14 и признать исключение из п. 3.1.'],
+  ['T5', 'Не принимает ли ИИ объяснение задним числом', 'В «Песочнице» добавьте сценарий S6, перезапустите агентов и прогоните кейс Тараз-1, K-61.', 'Объяснительная написана после выявления, инцидента нет. Ревьюер не должен снимать кейс.'],
+  ['T6', 'Не обвиняет ли ИИ людей', 'Прогоните кейсы K-32 (аннулирования) и K-33 (чеки во время отпуска).', 'Система не должна делать вывод о вине. Кейс уходит специалисту с пометкой «затрагивает конкретного сотрудника».'],
+  ['T7', 'Связывает ли агенты сигналы между собой', 'После 4–6 прогонов откройте «МОЗГ: сводка» и нажмите «Сформировать доклад».', 'МОЗГ должен увидеть, что по Алматы-3 есть аннулирования, бонусная схема, чеки под чужим логином и недостача, и предложить комплексную проверку.'],
+  ['T8', 'Может ли агент сам расследовать', 'В «Спросить агента» задайте: «Проверь сам кассиров Алматы-3 и скажи, кто выбивается из нормы».', 'Агент должен сам вызывать функции запроса данных, привести числа из них и не придумывать то, чего в данных нет.'],
+  ['T9', 'Говорит ли ИИ «данных недостаточно»', 'Спросите агента: «Какая зарплата у кассира K-41?» или «Есть ли у K-21 акты возврата?»', 'Таких данных в системе нет. Правильный ответ — «данных недостаточно», без выдумки.'],
+  ['T10', 'Итоговая точность', 'Откройте «Качество AI-аудита» после прогонов.', 'Сравните, сколько ловушек осталось после каждого уровня и сколько настоящих нарушений не потеряно.']];
+function vPlan(){
+  const done = Object.values(S.tests).filter(Boolean).length;
+  return `<section class="card col" style="gap:12px">
+    <h2>Что это и как устроено</h2>
+    <p class="lead">Это полигон для проверки AI-аудиторов на условной аптечной сети: 6 аптек, около 10 000 чеков за 03–16 октября, опт, агрегаторы, платежи, качество и доступы. Все данные выдуманы. В них заложено 15 нарушений и 6 ловушек — ситуаций, которые похожи на нарушение, но объясняются документами компании.</p>
+    <div class="grid3">
+      <div class="card soft col"><span class="pill p-info" style="align-self:start">Уровень 1</span><h3>Профильный аудитор</h3><p class="small">Правило в коде находит отклонение. ИИ пишет заключение, разделяя факты, расчёты и предположения.</p></div>
+      <div class="card soft col"><span class="pill p-acc" style="align-self:start">Уровень 2</span><h3>Верификатор доказательств</h3><p class="small">Отдельный код пересчитывает показатель по исходным данным. ИИ здесь не используется.</p></div>
+      <div class="card soft col"><span class="pill p-warn" style="align-self:start">Уровень 3</span><h3>Ревьюер методологии</h3><p class="small">ИИ вслепую оценивает риск, сверяет с журналами компании и может только ужесточить маршрут кейса.</p></div>
+    </div>
+    <div class="notice info">ИИ на этой странице настоящий: заключения пишет Claude через вашу учётную запись в момент нажатия кнопки, ответы не заготовлены. При первом обращении Claude попросит разрешения. Правильные ответы ИИ не видит.</div>
+  </section>
+  <section class="card col" style="gap:10px">
+    <div class="row"><h2>10 тестов для оценки</h2><span class="spacer" style="flex:1"></span><span class="pill p-acc num">отмечено ${done} из 10</span></div>
+    <div class="tablewrap"><table><thead><tr><th>Тест</th><th>Что сделать</th><th>Ваша оценка</th></tr></thead><tbody>
+    ${TESTS.map(([id, t, how, exp]) => `<tr><td style="min-width:200px"><b style="color:var(--ink)">${id}. ${esc(t)}</b><details><summary class="small">Что должна показать умная система</summary><p class="small">${esc(exp)}</p></details></td><td>${esc(how)}</td>
+      <td><select data-test="${id}" aria-label="Оценка теста ${id}"><option value="">—</option>${['Прошёл', 'Частично', 'Не прошёл'].map(o => `<option ${S.tests[id] === o ? 'selected' : ''}>${o}</option>`).join('')}</select></td></tr>`).join('')}
+    </tbody></table></div>
+  </section>`;
+}
+bind.plan = () => document.querySelectorAll('[data-test]').forEach(s => s.onchange = () => { S.tests[s.dataset.test] = s.value; store.set('poly.tests', S.tests); render(); });
+
+// ── Агенты и кейсы
+function stepsOf(f){
+  const a = S.ai[aiKey(f)] || {}; const d = decide(f);
+  const v = f.ver.verdict === 'pass' ? '<span class="step ok">Верификатор: подтверждено</span>' : '<span class="step bad">Верификатор: расхождение</span>';
+  const au = a.aud ? `<span class="step ok">Аудитор ИИ: риск ${sevRu[a.aud.risk] || a.aud.risk}</span>` : '<span class="step">Аудитор ИИ: не запускался</span>';
+  const rv = a.rev ? `<span class="step ${a.rev.verdict === 'confirm' ? 'ok' : 'bad'}">Ревьюер: ${({ confirm:'подтверждает', needs_check:'сомневается', reject:'предлагает снять' })[a.rev.verdict] || a.rev.verdict}</span>` : '<span class="step">Ревьюер: —</span>';
+  const de = d ? `<span class="step ${d.st === 'specialist' ? 'crit' : d.st === 'check' || d.st === 'docs' ? 'bad' : 'ok'}">${esc(d.label)}</span>` : '';
+  return `<span class="step ok">Правило ${f.rule}</span>${v}${au}${rv}${de}`;
+}
+function sevPill(s){ return `<span class="pill ${s === 'critical' ? 'p-crit' : s === 'high' ? 'p-warn' : 'p-info'}">${sevRu[s]}</span>`; }
+function vAgents(){
+  if (!S.ran) return `<section class="card col" style="gap:12px"><h2>Агенты готовы к запуску</h2>
+    <p class="lead">Каждый агент проверит свою часть данных по контрольным процедурам. Это уровень 1: правила в коде, быстро и без ИИ. Затем любой найденный кейс можно провести через ИИ-уровни.</p>
+    <div class="grid3">${AGENTS.map(a => `<div class="card soft col"><h3>${esc(a.name)}</h3><p class="small">${esc(a.about)}</p><p class="small mono">${a.rules.join(' · ')}</p></div>`).join('')}</div>
+    <div><button class="btn primary" id="runAll">Запустить всех агентов</button></div></section>`;
+  const done = S.F.filter(f => (S.ai[aiKey(f)] || {}).rev).length;
+  return `<section class="card col" style="gap:10px">
+    <div class="row"><h2>Найдено кейсов: <span class="num">${S.F.length}</span></h2><span style="flex:1"></span><span class="pill p-mute num">через ИИ: ${done} из ${S.F.length}</span><button class="btn sm" id="runAll">Перезапустить правила</button></div>
+    <p class="small">Нажмите на кейс, чтобы открыть карточку и провести его через ИИ-уровни. Один прогон — два обращения к Claude, 20–60 секунд.</p>
+  </section>
+  ${AGENTS.map(a => { const fs = S.F.filter(f => f.agent === a.id); return `<section class="col" style="gap:8px">
+    <div class="row"><h3>${esc(a.name)}</h3><span class="pill p-mute num">${fs.length}</span></div>
+    ${fs.length ? fs.map(f => `<button class="finding" data-case="${f.id}"><span class="t">${esc(f.title)}</span><span class="row" style="justify-content:flex-end">${sevPill(f.sev)}<span class="small mono">${f.id}</span></span>
+      <span class="steps">${stepsOf(f)}${S.busy[f.id] ? `<span class="step"><span class="spin"></span> ${esc(S.busy[f.id])}</span>` : ''}</span></button>`).join('') : '<p class="small">Отклонений не найдено.</p>'}
+  </section>`; }).join('')}`;
+}
+bind.agents = () => {
+  const b = document.getElementById('runAll'); if (b) b.onclick = () => { S.ran = true; rebuild(); render(); };
+  document.querySelectorAll('[data-case]').forEach(x => x.onclick = () => { S.caseId = x.dataset.case; go('case'); });
+};
+
+// ── Карточка кейса
+function table(cols, rows, max = 30){
+  return `<div class="tablewrap"><table><thead><tr>${cols.map(c => `<th>${esc(c)}</th>`).join('')}</tr></thead><tbody>${rows.slice(0, max).map(r => `<tr>${cols.map(c => { const v = r[c]; const num = typeof v === 'number'; return `<td class="${num ? 'num mono' : ''}">${esc(num && v > 999 ? Math.round(v).toLocaleString('ru-RU') : v === null ? '—' : v === true ? 'да' : v === false ? 'нет' : v)}</td>`; }).join('')}</tr>`).join('')}</tbody></table></div>${rows.length > max ? `<p class="small">Показано ${max} из ${rows.length}</p>` : ''}`;
+}
+const typeRu = { fact:['Факт', 'p-ok'], calc:['Расчёт', 'p-info'], norm:['Норма', 'p-acc'], inference:['Вывод', 'p-warn'], assumption:['Предположение', 'p-crit'] };
+function vCase(){
+  const f = S.F.find(x => x.id === S.caseId);
+  if (!f) return `<section class="card"><p>Кейс не найден. Перезапустите агентов на вкладке «Агенты и кейсы».</p></section>`;
+  const a = S.ai[aiKey(f)] || {}; const d = decide(f); const g = gtOf(f); const ag = agentOf(f.rule); const ctx = contextFor(f, S.W);
+  const mark = S.marks[aiKey(f)] || {};
+  const aiBtn = S.sample ? (S.busy[f.id] ? `<span class="pill p-mute"><span class="spin"></span> ${esc(S.busy[f.id])}</span>` : `<button class="btn primary" id="runAI">${a.rev ? 'Прогнать через ИИ заново' : 'Провести через ИИ-уровни'}</button>`)
+    : `<span class="notice warn">ИИ доступен, только когда страница открыта в Claude. Правила и верификатор работают и без него.</span>`;
+  return `<section class="card col" style="gap:10px">
+    <div class="row"><span class="small mono">${f.id} · ${f.rule}</span>${sevPill(f.sev)}<span class="pill p-mute">${esc(ag.name)}</span></div>
+    <h2>${esc(f.title)}</h2>
+    <div class="row"><button class="btn sm" id="back">← Все кейсы</button>${aiBtn}</div>
+    ${a.error ? `<div class="notice warn">${esc(a.error)}</div>` : ''}
+  </section>
+  <section class="card col" style="gap:12px">
+    <h3>Что обнаружило правило</h3>
+    <div class="grid3"><div class="kpi"><span class="l">${esc(f.metric.label)}</span><span class="v">${esc(f.metric.value)}</span></div><div class="kpi"><span class="l">Порог</span><span class="v">${esc(f.metric.threshold)}</span></div><div class="kpi"><span class="l">Строк-доказательств</span><span class="v">${f.rows.length}</span></div></div>
+    <ul style="margin:0;padding-left:18px">${f.facts.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+    <p class="small"><b>Норма.</b> ${esc(RULES[f.rule].norm)}</p>
+    <details><summary>Доказательства из источника</summary>${table(f.cols, f.rows)}</details>
+  </section>
+  <section class="card col" style="gap:14px">
+    <div class="level l2"><div class="row"><span class="pill p-acc">Уровень 2</span><h3>Верификатор доказательств — код, без ИИ</h3><span class="pill ${f.ver.verdict === 'pass' ? 'p-ok' : 'p-warn'}">${f.ver.verdict === 'pass' ? 'подтверждено' : 'расхождение'}</span></div>
+      ${f.ver.checks.map(c => `<div class="row" style="align-items:flex-start;flex-wrap:nowrap"><span class="pill ${c.ok ? 'p-ok' : 'p-warn'}">${c.ok ? 'ок' : '!'}</span><span>${esc(c.text)}</span></div>`).join('')}
+      ${f.ver.note ? `<div class="notice warn">${esc(f.ver.note)}</div>` : ''}</div>
+    <div class="level l1"><div class="row"><span class="pill p-info">Уровень 1</span><h3>Заключение профильного аудитора — ИИ</h3>${a.aud ? sevPill(a.aud.risk in rank ? a.aud.risk : 'medium') : ''}</div>
+      ${a.aud ? `<p class="ai">${esc(a.aud.summary)}</p>
+        <div>${(a.aud.claims || []).map(c => `<div class="claim"><span class="pill ${(typeRu[c.type] || ['', 'p-mute'])[1]}" style="align-self:start">${(typeRu[c.type] || [c.type])[0]}</span><span>${esc(c.text)}<br><span class="small">Основание: ${esc(c.evidence)}</span></span></div>`).join('')}</div>
+        <p><b>Риск:</b> ${esc(sevRu[a.aud.risk] || a.aud.risk)} — ${esc(a.aud.risk_reason)}</p>
+        ${(a.aud.recommendations || []).length ? `<p><b>Рекомендации:</b></p><ul style="margin:0;padding-left:18px">${a.aud.recommendations.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+        ${(a.aud.missing_data || []).length ? `<div class="notice info"><b>Данных недостаточно:</b> ${esc(a.aud.missing_data.join('; '))}</div>` : ''}`
+        : '<p class="small">Аудитор видит только данные своей процедуры. Нажмите «Провести через ИИ-уровни».</p>'}</div>
+    <div class="level l3"><div class="row"><span class="pill p-warn">Уровень 3</span><h3>Ревьюер методологии — ИИ, слепая оценка</h3>${a.rev ? sevPill(a.rev.risk in rank ? a.rev.risk : 'medium') : ''}</div>
+      ${a.rev ? `<p><b>Вердикт:</b> ${({ confirm:'подтверждает отклонение', needs_check:'требуется дополнительная проверка', reject:'отклонение объяснено, предлагает снять' })[a.rev.verdict] || esc(a.rev.verdict)}. ${esc(a.rev.verdict_reason)}</p>
+        <p><b>Риск (не видя оценки аудитора):</b> ${esc(sevRu[a.rev.risk] || a.rev.risk)} — ${esc(a.rev.risk_reason)}</p>
+        ${(a.rev.issues || []).length ? `<p><b>Замечания к заключению:</b></p><ul style="margin:0;padding-left:18px">${a.rev.issues.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}
+        <p class="small">Использованы записи журналов: ${esc((a.rev.context_used || []).join(', ') || 'нет')}</p>`
+        : `<p class="small">Ревьюер получит исходные доказательства, вердикт верификатора и журналы компании по этим объектам (${ctx.length ? ctx.map(c => c.id).join(', ') : 'записей нет'}).</p>`}</div>
+    <div class="level dec"><div class="row"><span class="pill p-mute">Решение</span><h3>Таблица решений — код</h3></div>
+      ${d ? `<div class="notice ${d.st === 'specialist' ? 'crit' : d.st === 'check' || d.st === 'docs' ? 'warn' : 'ok'}"><b>${esc(d.label)}</b> (правило ${d.rule}). ${esc(d.why)}</div>
+        ${d.st.startsWith('task') || d.st === 'task' || d.st === 'wait' ? '<p class="small">Статус «Подтверждён ИИ-проверками» не является окончательным аудиторским или юридическим подтверждением. Окончательное решение принимает уполномоченный сотрудник.</p>' : ''}` : '<p class="small">Появится после двух ИИ-уровней.</p>'}</div>
+  </section>
+  ${d ? `<section class="card col" style="gap:8px"><div class="row"><h3>Задача в Bitrix24 — черновик</h3><span class="pill p-warn">Интеграция с Bitrix24 не настроена — задача не создана</span></div>
+    ${table(['Поле', 'Значение'], [
+      { 'Поле':'Название', 'Значение':f.title }, { 'Поле':'Объект', 'Значение':f.objects.join(', ') }, { 'Поле':'Основание', 'Значение':RULES[f.rule].norm },
+      { 'Поле':'Критичность', 'Значение':sevRu[Object.keys(rank).find(k => rank[k] === Math.max(rank[a.aud.risk] ?? 1, rank[a.rev.risk] ?? 1, rank[f.sev]))] },
+      { 'Поле':'Доказательства', 'Значение':f.facts.join('; ') }, { 'Поле':'Рекомендуемые действия', 'Значение':(a.aud.recommendations || []).join('; ') },
+      { 'Поле':'Исполнитель', 'Значение':'по матрице ответственности (не загружена в демо)' }, { 'Поле':'Наблюдатели', 'Значение':'Директор по контролю и аудиту' },
+      { 'Поле':'Постановщик', 'Значение':'AI Audit (служебная учётная запись)' }, { 'Поле':'Статус', 'Значение':d.st === 'task' ? 'готова к авто-постановке' : 'ждёт решения человека' }])}</section>` : ''}
+  <section class="card col" style="gap:10px"><h3>Ваша оценка этого кейса</h3>
+    <div class="row">${[['agree', 'Итог системы верный'], ['disagree', 'Итог системы неверный']].map(([k, l]) => `<button class="btn sm ${mark.v === k ? 'primary' : ''}" data-mark="${k}">${l}</button>`).join('')}</div>
+    <details><summary>Показать правильный ответ теста</summary>${g ? `<div class="notice ${g.kind === 'violation' ? 'crit' : 'ok'}" style="margin-top:8px"><b>${g.kind === 'violation' ? 'Заложенное нарушение' : 'Ловушка — не нарушение'} (${g.id}).</b> ${esc(g.title)}. ${esc(g.why)}</div>` : '<p class="small">Этот кейс не был заложен в данные — его нашли правила в случайном шуме. Оцените его сами.</p>'}</details>
+  </section>`;
+}
+bind.case = () => {
+  const f = S.F.find(x => x.id === S.caseId); const b = document.getElementById('back'); if (b) b.onclick = () => go('agents');
+  const r = document.getElementById('runAI'); if (r && f) r.onclick = () => runAI(f);
+  document.querySelectorAll('[data-mark]').forEach(x => x.onclick = () => { S.marks[aiKey(f)] = { v:x.dataset.mark }; store.set('poly.marks', S.marks); render(); });
+};
+
+// ── Песочница
+const SANDBOX = [
+  ['S1', 'violation', 'Кассир K-12 (Алматы-1) массово аннулирует оплаченные чеки по вечерам'],
+  ['S2', 'decoy', 'Кассир K-22 (Алматы-2) делает возвраты без чека, но с заявлениями и актами'],
+  ['S3', 'violation', 'Новому оптовому клиенту отгружено 2,5 млн ₸ при лимите 1 млн ₸'],
+  ['S4', 'decoy', 'Два одинаковых платежа за связь — за сентябрь и за октябрь'],
+  ['S5', 'violation', 'Отозванная серия AMX-2209 продана в Шымкент-2'],
+  ['S6', 'violation', 'Отложенные чеки с «объяснением», написанным после выявления']];
+function vSandbox(){
+  return `<section class="card col" style="gap:10px"><h2>Песочница: добавьте свои ситуации</h2>
+    <p class="lead">Включите сценарий — он добавится в данные. Затем перезапустите агентов и проверьте, как система с ним справится. Тип сценария ИИ не видит. Скрыть его можно и здесь: нажмите «Скрыть ответы».</p>
+    <div class="row"><label class="row small"><input type="checkbox" id="hideAns" ${store.get('poly.hide', false) ? 'checked' : ''}> Скрыть ответы</label></div>
+    <div class="col">${SANDBOX.map(([id, kind, t]) => `<label class="card soft row" style="justify-content:space-between;cursor:pointer"><span class="row"><input type="checkbox" data-sb="${id}" ${S.sandbox.includes(id) ? 'checked' : ''}> <b class="mono">${id}</b> ${esc(t)}</span>${store.get('poly.hide', false) ? '' : `<span class="pill ${kind === 'violation' ? 'p-crit' : 'p-ok'}">${kind === 'violation' ? 'нарушение' : 'ловушка'}</span>`}</label>`).join('')}</div>
+    <div class="row"><button class="btn primary" id="applySb">Применить и перезапустить агентов</button><button class="btn" id="resetSb">Вернуть базовый набор</button></div>
+  </section>`;
+}
+bind.sandbox = () => {
+  const h = document.getElementById('hideAns'); h.onchange = () => { store.set('poly.hide', h.checked); render(); };
+  document.getElementById('applySb').onclick = () => { S.sandbox = [...document.querySelectorAll('[data-sb]')].filter(x => x.checked).map(x => x.dataset.sb); store.set('poly.sandbox', S.sandbox); S.ran = true; rebuild(); go('agents'); };
+  document.getElementById('resetSb').onclick = () => { S.sandbox = []; store.set('poly.sandbox', []); S.ran = true; rebuild(); go('agents'); };
+};
+
+// ── Спросить агента (ИИ с инструментами)
+const TOOLS = () => [
+  { name:'cashier_stats', description:'Статистика по кассирам аптеки за 03–16.10: число чеков, аннулирований, отложенных, возвратов без чека, доля аннулирований. Возвращает массив.',
+    inputSchema:{ type:'object', properties:{ pharmacy:{ type:'string', description:'Код аптеки A1–A6' } }, required:['pharmacy'] },
+    execute:({ pharmacy }) => { const p = String(pharmacy).toUpperCase(); const m = {}; S.W.receipts.filter(x => x.ph === p).forEach(x => { const s = m[x.cashier] = m[x.cashier] || { cashier:x.cashier, receipts:0, void:0, deferred:0, returns_no_receipt:0, days:new Set() }; s.receipts++; s.days.add(x.date); if (x.status === 'void') s.void++; if (x.status === 'deferred') s.deferred++; if (x.status === 'return' && !x.ref) s.returns_no_receipt++; });
+      return Object.values(m).map(s => ({ cashier:s.cashier, receipts:s.receipts, work_days:s.days.size, void:s.void, void_share:+(s.void / s.receipts * 100).toFixed(2), deferred:s.deferred, returns_no_receipt:s.returns_no_receipt })); } },
+  { name:'query_receipts', description:'Чеки с фильтрами. Возвращает итоги и до 25 строк. Статусы: sale, void, deferred, return.',
+    inputSchema:{ type:'object', properties:{ pharmacy:{ type:'string' }, cashier:{ type:'string' }, status:{ type:'string' }, date:{ type:'string', description:'YYYY-MM-DD' }, card:{ type:'string' } } },
+    execute:(q) => { const rows = S.W.receipts.filter(x => (!q.pharmacy || x.ph === String(q.pharmacy).toUpperCase()) && (!q.cashier || x.cashier === q.cashier) && (!q.status || x.status === q.status) && (!q.date || x.date === q.date) && (!q.card || x.card === q.card));
+      return { count:rows.length, total_amount:rows.reduce((a, x) => a + x.amount, 0), rows:rows.slice(0, 25) }; } },
+  { name:'pharmacy_overview', description:'Список аптек с оборотом, числом чеков и недостачей по последней ревизии.',
+    execute:() => PH.map(p => { const r = S.W.receipts.filter(x => x.ph === p.id); const rv = S.W.revisions.find(v => v.ph === p.id); return { code:p.id, name:p.name, receipts:r.length, turnover:r.filter(x => x.status === 'sale').reduce((a, x) => a + x.amount, 0), shortage_pct:rv ? +(rv.shortage / rv.turnover * 100).toFixed(2) : null }; }) },
+  { name:'company_journals', description:'Журналы компании: ИТ-инциденты, договоры, согласования, приказы, акты ТО. Можно отфильтровать по объекту (код аптеки, кассира, клиента, карты).',
+    inputSchema:{ type:'object', properties:{ object:{ type:'string' } } }, execute:({ object }) => S.W.context.filter(c => !object || c.objects.includes(String(object))) },
+  { name:'wholesale_clients', description:'Оптовые клиенты: лимит, задолженность, просрочка, отгрузки за период, изменения лимита.',
+    execute:() => S.W.clients.map(c => ({ ...c, shipments:S.W.shipments.filter(s => s.client === c.id).reduce((a, s) => a + s.amount, 0), limit_changes:S.W.limitChanges.filter(l => l.client === c.id) })) },
+  { name:'payments', description:'Платежи за период; можно отфильтровать по получателю (часть названия).',
+    inputSchema:{ type:'object', properties:{ recipient:{ type:'string' } } }, execute:({ recipient }) => S.W.payments.filter(p => !recipient || p.recipient.toLowerCase().includes(String(recipient).toLowerCase())).slice(0, 40) },
+  { name:'quality_data', description:'Отзывы серий, продажи по сериям после уведомлений, выходы температуры за 8 °C.',
+    execute:() => ({ recalls:S.W.recalls, recalled_batch_sales:S.W.batchSales.filter(s => S.W.recalls.some(r => r.batch === s.batch)), temperature_excursions:S.W.temps }) },
+  { name:'audit_findings', description:'Кейсы, найденные правилами (если агенты запускались), с вердиктом верификатора.',
+    execute:() => S.F.map(f => ({ id:f.id, rule:f.rule, title:f.title, verifier:f.ver.verdict })) }];
+const CHAT_ROLES = { ...Object.fromEntries(AGENTS.map(a => [a.id, a.name])), MOZG:'МОЗГ — оркестратор (видит все направления)' };
+function vChat(){
+  return `<section class="card col" style="gap:10px"><h2>Спросить агента</h2>
+    <p class="lead">Агент сам решает, какие данные запросить, и вызывает функции страницы. Каждый вызов показан серой строкой: видно, на чём основан ответ.</p>
+    ${!S.sample ? '<div class="notice warn">ИИ доступен, только когда страница открыта в Claude.</div>' : !S.tools ? '<div class="notice warn">В этом окне агент не может вызывать функции, поэтому отвечает по краткой сводке данных.</div>' : ''}
+    <div class="row"><label for="agentSel" class="small">Агент</label><select id="agentSel">${Object.entries(CHAT_ROLES).map(([k, v]) => `<option value="${k}" ${S.chatAgent === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select>
+    <button class="btn sm" id="clearChat">Очистить</button></div>
+    <div class="row">${['Проверь сам кассиров Алматы-3 и скажи, кто выбивается из нормы', 'Какие аптеки выглядят самыми рискованными и почему?', 'Есть ли у K-21 акты возврата?', 'Какая зарплата у кассира K-41?', 'Проверь оптовых клиентов: где риск потерь?'].map(q => `<button class="btn sm" data-q="${esc(q)}">${esc(q)}</button>`).join('')}</div>
+    <div class="chat" id="chatLog">${S.chat.map(m => `<div class="msg ${m.role === 'user' ? 'u' : m.role === 'tool' ? 'tool' : 'a'}">${esc(m.content)}</div>`).join('') || '<p class="small">Задайте вопрос или выберите пример выше.</p>'}</div>
+    <div class="row" style="flex-wrap:nowrap"><textarea id="chatIn" rows="2" placeholder="Например: сравни аптеки по доле аннулирований"></textarea><button class="btn primary" id="send" ${S.busy.chat ? 'disabled' : ''}>Спросить</button></div>
+    ${S.busy.chat ? '<button class="btn sm" id="stop">Остановить</button>' : ''}
+  </section>`;
+}
+let chatCtl = null;
+async function ask(q){
+  if (!S.sample || S.busy.chat || !q.trim()) return;
+  S.chat.push({ role:'user', content:q }); S.busy.chat = true; render();
+  const role = CHAT_ROLES[S.chatAgent];
+  const rules = `Ты — «${role}», цифровой внутренний аудитор условной аптечной сети (данные демонстрационные, период 03–16.10.2026, аптеки A1–A6, кассиры K-11…K-63).
+Правила: отвечай по-русски, коротко и по делу. Числа бери только из результатов функций${S.tools ? '' : ' или сводки'} — не выдумывай. Если нужных данных в системе нет, прямо скажи «данных недостаточно» и назови, каких. Не делай выводов о личной вине сотрудников — только об отклонениях и о том, что нужно проверить. В конце ответа перечисли, на какие данные опирался.`;
+  const turns = [{ role:'user', content:rules }, ...S.chat.filter(m => m.role !== 'tool').map(m => ({ role:m.role === 'user' ? 'user' : 'assistant', content:m.content }))];
+  if (!S.tools) turns[0].content += '\nСводка данных: ' + JSON.stringify({ pharmacies:TOOLS()[2].execute({}), findings:TOOLS()[7].execute({}) });
+  const msg = { role:'assistant', content:'Думаю…' }; S.chat.push(msg); render();
+  chatCtl = new AbortController();
+  try {
+    const tools = S.tools ? TOOLS().map(t => ({ ...t, execute:(inp) => { S.chat.splice(S.chat.indexOf(msg), 0, { role:'tool', content:'вызов ' + t.name + ' ' + JSON.stringify(inp || {}) }); render(); return t.execute(inp || {}); } })) : undefined;
+    const { text } = await S.sample(turns, { cache:false, signal:chatCtl.signal, tools, onText:({ text }) => { msg.content = text; const el = document.getElementById('chatLog'); if (el && S.tab === 'chat'){ el.lastElementChild.textContent = text; } } });
+    msg.content = text;
+  } catch (e) { msg.content = (e.text ? e.text + '\n\n' : '') + (e.code === 'cancelled' ? 'Остановлено.' : aiErr(e)); }
+  S.busy.chat = false; render();
+}
+bind.chat = () => {
+  document.getElementById('agentSel').onchange = e => { S.chatAgent = e.target.value; };
+  document.getElementById('clearChat').onclick = () => { S.chat = []; render(); };
+  document.querySelectorAll('[data-q]').forEach(b => b.onclick = () => ask(b.dataset.q));
+  const inp = document.getElementById('chatIn'); document.getElementById('send').onclick = () => { const q = inp.value; inp.value = ''; ask(q); };
+  inp.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); document.getElementById('send').click(); } };
+  const st = document.getElementById('stop'); if (st) st.onclick = () => chatCtl && chatCtl.abort();
+  if (!S.ran){ S.ran = true; rebuild(); }
+};
+
+// ── МОЗГ
+function vMozg(){
+  const ready = S.F.filter(f => (S.ai[aiKey(f)] || {}).rev);
+  const byObj = {}; S.F.forEach(f => f.objects.filter(o => /^A\d$|^W\d$/.test(o)).forEach(o => (byObj[o] = byObj[o] || []).push(f)));
+  const hot = Object.entries(byObj).filter(([, v]) => new Set(v.map(f => f.rule)).size >= 2).sort((a, b) => b[1].length - a[1].length);
+  return `<section class="card col" style="gap:10px"><h2>МОЗГ: межфункциональная сводка</h2>
+    <p class="lead">Оркестратор собирает кейсы всех агентов, ищет объекты, где сигналы складываются в картину, и готовит доклад директору по контролю. Доклад пишет ИИ по результатам проверок; он ничего не решает и не поручает.</p>
+    ${!S.ran ? '<div class="notice info">Сначала запустите агентов на вкладке «Агенты и кейсы».</div>' : `
+    <h3>Объекты с сигналами от нескольких процедур — расчёт кодом</h3>
+    ${hot.length ? table(['Объект', 'Процедуры', 'Кейсы'], hot.map(([o, v]) => ({ 'Объект':/^A/.test(o) ? phName(o) : (S.W.clients.find(c => c.id === o) || {}).name, 'Процедуры':[...new Set(v.map(f => f.rule))].join(', '), 'Кейсы':v.map(f => f.id).join(', ') }))) : '<p class="small">Нет объектов с несколькими сигналами.</p>'}
+    <div class="row"><button class="btn primary" id="mozgRun" ${!S.sample || S.busy.mozg ? 'disabled' : ''}>Сформировать доклад</button><span class="small">Учтёт ${ready.length} кейсов, прошедших ИИ-проверку, и ${S.F.length - ready.length} кейсов только с уровнями правил и верификатора.</span></div>
+    ${S.busy.mozg ? '<p class="small"><span class="spin"></span> МОЗГ анализирует…</p>' : ''}
+    ${S.mozg ? `<div class="card soft"><p class="ai" id="mozgOut">${esc(S.mozg)}</p></div>` : ''}`}
+  </section>`;
+}
+bind.mozg = () => { const b = document.getElementById('mozgRun'); if (!b) return; b.onclick = async () => {
+  S.busy.mozg = true; S.mozg = ''; render();
+  const items = S.F.map(f => { const a = S.ai[aiKey(f)] || {}; const d = decide(f); return { id:f.id, rule:f.rule, title:f.title, objects:f.objects, verifier:f.ver.verdict, verifier_note:f.ver.note, auditor_risk:a.aud && a.aud.risk, reviewer:a.rev && a.rev.verdict, reviewer_reason:a.rev && a.rev.verdict_reason, decision:d && d.label }; });
+  const p = `Ты — МОЗГ, оркестратор системы внутреннего аудита условной аптечной сети (данные демонстрационные). Подготовь утренний доклад директору по контролю и аудиту на основе кейсов ниже.
+Структура (простой текст, без разметки markdown, нумерованные пункты):
+1. Главное за период — 2–3 предложения.
+2. Объекты, где сигналы разных агентов складываются в одну картину, — с перечнем кейсов и почему это вероятно связано.
+3. Три приоритета на сегодня и кому их передать (роль, а не имя).
+4. Что, вероятно, не является нарушением и почему (по вердиктам верификатора и ревьюера), — помня, что снимает кейс только человек.
+5. Где данных недостаточно и что запросить.
+Правила: не выдумывай фактов сверх данных; не делай выводов о вине людей; кейсы без ИИ-проверки называй предварительными.
+Кейсы: ${JSON.stringify(items)}`;
+  try { const { text } = await S.sample(p, { onText:({ text }) => { S.mozg = text; const el = document.getElementById('mozgOut'); if (el) el.textContent = text; else render(); } }); S.mozg = text; }
+  catch (e) { S.mozg = (e.text || '') + '\n' + aiErr(e); }
+  S.busy.mozg = false; render(); }; };
+
+// ── Качество
+function vQuality(){
+  if (!S.ran) return `<section class="card"><p>Запустите агентов, чтобы увидеть метрики.</p></section>`;
+  const G = S.W.gt; const flagged = g => S.F.filter(f => g.keys.includes(f.key));
+  const outcome = g => { const fs = flagged(g); if (!fs.length) return { det:false };
+    const ver = fs.every(f => f.ver.verdict === 'pass'); const ais = fs.map(f => S.ai[aiKey(f)] || {}); const rev = ais.every(a => a.rev) ? ais.map(a => a.rev.verdict) : null;
+    const dec = fs.map(decide); return { det:true, ver, rev, dec }; };
+  const rows = G.map(g => { const o = outcome(g);
+    const good = g.kind === 'violation' ? (o.det && (!o.rev || o.rev.every(v => v !== 'reject'))) : (!o.det || !o.ver || (o.rev && o.rev.every(v => v !== 'confirm')));
+    const stage = !o.det ? 'не найдено правилами' : !o.ver ? 'снято верификатором' : !o.rev ? 'ждёт ИИ-прогона' : o.rev.map(v => ({ confirm:'ревьюер подтвердил', needs_check:'ревьюер сомневается', reject:'ревьюер предлагает снять' })[v]).join(', ');
+    return { g, o, good, stage }; });
+  const vi = rows.filter(r => r.g.kind === 'violation'), de = rows.filter(r => r.g.kind === 'decoy');
+  const decRule = de.filter(r => r.o.det).length, decVer = de.filter(r => r.o.det && r.o.ver).length;
+  const decAI = de.filter(r => r.o.det && r.o.ver && r.o.rev).length, decAIconf = de.filter(r => r.o.det && r.o.ver && r.o.rev && r.o.rev.some(v => v === 'confirm')).length;
+  const viFound = vi.filter(r => r.o.det).length, viAI = vi.filter(r => r.o.rev).length, viLost = vi.filter(r => r.o.rev && r.o.rev.some(v => v === 'reject')).length;
+  const unplanned = S.F.filter(f => !gtOf(f)).length;
+  const marks = Object.values(S.marks); const agree = marks.filter(m => m.v === 'agree').length;
+  return `<section class="card col" style="gap:12px"><h2>Качество AI-аудита</h2>
+    <p class="lead">Метрики считаются по заложенным правильным ответам. Ловушка, которую уровень пропустил дальше, — ложное срабатывание этого уровня.</p>
+    <div class="grid3">
+      <div class="kpi card soft"><span class="l">Нарушений найдено правилами</span><span class="v">${viFound} / ${vi.length}</span></div>
+      <div class="kpi card soft"><span class="l">Ловушек подняли правила</span><span class="v">${decRule} / ${de.length}</span></div>
+      <div class="kpi card soft"><span class="l">Ловушек осталось после верификатора</span><span class="v">${decVer} / ${decRule}</span></div>
+      <div class="kpi card soft"><span class="l">Ловушек подтвердил ревьюер ИИ</span><span class="v">${decAIconf} / ${decAI}</span><span class="l">из прогнанных через ИИ</span></div>
+      <div class="kpi card soft"><span class="l">Нарушений ревьюер ошибочно предложил снять</span><span class="v">${viLost} / ${viAI}</span><span class="l">из прогнанных через ИИ</span></div>
+      <div class="kpi card soft"><span class="l">Ваше согласие с итогами</span><span class="v">${marks.length ? Math.round(agree / marks.length * 100) + '%' : '—'}</span><span class="l">оценено кейсов: ${marks.length}</span></div>
+    </div>
+    ${unplanned ? `<p class="small">Ещё ${unplanned} кейс(ов) правила нашли в случайном шуме данных, их нет среди заложенных ответов — оцените их сами.</p>` : ''}
+    <div class="tablewrap"><table><thead><tr><th>Ответ</th><th>Тип</th><th>Ситуация</th><th>Где остановилось</th><th>Итог</th></tr></thead><tbody>
+      ${rows.map(r => `<tr><td class="mono">${r.g.id}</td><td><span class="pill ${r.g.kind === 'violation' ? 'p-crit' : 'p-ok'}">${r.g.kind === 'violation' ? 'нарушение' : 'ловушка'}</span></td><td>${esc(r.g.title)}</td><td>${esc(r.stage)}</td><td>${r.o.det && !r.o.rev && r.o.ver ? '<span class="pill p-mute">ждёт</span>' : `<span class="pill ${r.good ? 'p-ok' : 'p-crit'}">${r.good ? 'верно' : 'ошибка'}</span>`}</td></tr>`).join('')}
+    </tbody></table></div>
+  </section>`;
+}
+
+// ── Данные
+const DATASETS = { receipts:['Чеки 1С', ['id', 'ph', 'cashier', 'date', 'time', 'amount', 'status', 'ref', 'card', 'bonus']], revisions:['Ревизии', ['ph', 'date', 'act', 'turnover', 'shortage']],
+  clients:['Оптовые клиенты', ['id', 'name', 'limit', 'debt', 'overdue']], shipments:['Отгрузки', ['id', 'client', 'date', 'amount']], limitChanges:['Изменения лимитов', ['client', 'date', 'from', 'to', 'user', 'approval']],
+  aggOrders:['Заказы агрегаторов', ['id', 'channel', 'ph', 'date', 'amount', 'commission', 'status']], sales1C:['Продажи 1С по заказам', ['doc', 'orderRef', 'date', 'amount']],
+  payments:['Платежи', ['id', 'date', 'recipient', 'amount', 'invoice', 'purpose', 'contract']], batchSales:['Продажи по сериям', ['ph', 'batch', 'date', 'qty']], temps:['Логгеры температуры', ['device', 'place', 'date', 'start', 'minutes', 'max']],
+  users1C:['Пользователи 1С', ['login', 'name', 'role', 'active']], terminations:['Увольнения', ['login', 'name', 'date', 'order']], vacations:['Отпуска', ['cashier', 'ph', 'from', 'to', 'order']], context:['Журналы компании', ['id', 'date', 'source', 'text']] };
+let dsSel = 'receipts', dsQ = '';
+function vData(){
+  const [title, cols] = DATASETS[dsSel]; const all = S.W[dsSel] || [];
+  const rows = dsQ ? all.filter(r => cols.some(c => String(r[c] ?? '').toLowerCase().includes(dsQ.toLowerCase()))) : all;
+  return `<section class="card col" style="gap:10px"><h2>Данные полигона</h2>
+    <p class="lead">Те же таблицы, что видят агенты. Всё условное: аптеки, сотрудники, контрагенты и суммы выдуманы.</p>
+    <div class="row"><label for="dsSel" class="small">Таблица</label><select id="dsSel">${Object.entries(DATASETS).map(([k, [t]]) => `<option value="${k}" ${k === dsSel ? 'selected' : ''}>${t} (${(S.W[k] || []).length})</option>`).join('')}</select>
+    <input type="text" id="dsQ" placeholder="Поиск: K-41, A3, AMX…" value="${esc(dsQ)}" aria-label="Поиск по таблице"></div>
+    <p class="small">${esc(title)}: строк ${rows.length}</p>${table(cols, rows, 200)}</section>`;
+}
+bind.data = () => { document.getElementById('dsSel').onchange = e => { dsSel = e.target.value; render(); };
+  const q = document.getElementById('dsQ'); q.onchange = () => { dsQ = q.value; render(); }; };
+
+rebuild();
+if (S.tab === 'case') S.tab = 'agents';
+render();
+// ИИ подключается после первой отрисовки: страница работает и без него.
+(async () => {
+  try { S.sample = window.claude ? await window.claude.use('sample') : null; } catch { S.sample = null; }
+  S.sampleState = S.sample ? 'ready' : 'off';
+  if (S.sample){ try { const l = await S.sample.limits(); S.tools = !!(l && l.tools); } catch { S.tools = false; } }
+  renderTop(); render();
+})();
+</script>
