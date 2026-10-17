@@ -14,15 +14,15 @@ import { SCENARIOS } from '@/lib/control/scenarios';
 
 export type ControlView = 'hub' | 'cases' | 'approvals' | 'agents' | 'scenarios' | 'log';
 
-const MUTED = 'var(--muted)';
-const FAINT = 'var(--faint)';
-const PANEL = 'var(--surface)';
+const MUTED = 'rgba(255,255,255,0.5)';
+const FAINT = 'rgba(255,255,255,0.35)';
+const PANEL = 'rgba(255,255,255,0.05)';
 
 const LEVEL_COLOR = {
-  crit: { text: 'text-danger', bg: 'rgba(239,68,68,0.15)', badge: 'bg-red-500/20 text-danger' },
-  warn: { text: 'text-warn', bg: 'rgba(244,114,22,0.15)', badge: 'bg-orange-500/20 text-warn' },
-  ok:   { text: 'text-ok', bg: 'rgba(77,194,176,0.15)', badge: 'bg-teal-500/20 text-ok' },
-  info: { text: 'text-info', bg: 'rgba(56,189,248,0.12)', badge: 'bg-sky-500/20 text-info' },
+  crit: { text: 'text-red-400', bg: 'rgba(239,68,68,0.15)', badge: 'bg-red-500/20 text-red-400' },
+  warn: { text: 'text-orange-400', bg: 'rgba(249,115,22,0.15)', badge: 'bg-orange-500/20 text-orange-400' },
+  ok:   { text: 'text-teal-400', bg: 'rgba(29,158,117,0.15)', badge: 'bg-teal-500/20 text-teal-400' },
+  info: { text: 'text-sky-400', bg: 'rgba(56,189,248,0.12)', badge: 'bg-sky-500/20 text-sky-400' },
 };
 
 const STATUS_LABEL: Record<CaseStatus, string> = {
@@ -52,10 +52,10 @@ const objectName = (id: string) => RISK_OBJECTS.find(o => o.id === id)?.name ?? 
 // ─── UI primitives ───────────────────────────────────────
 function Panel({ title, subtitle, children }: { title?: string; subtitle?: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl p-4 mb-3 border border-line" style={{ background: PANEL }}>
+    <div className="rounded-xl p-4 mb-3 border border-white/10" style={{ background: PANEL }}>
       {title && (
         <div className="flex items-center justify-between gap-2 mb-3">
-          <span className="text-sm font-semibold text-ink">{title}</span>
+          <span className="text-sm font-semibold text-white">{title}</span>
           {subtitle && <span className="text-xs text-right" style={{ color: FAINT }}>{subtitle}</span>}
         </div>
       )}
@@ -65,9 +65,9 @@ function Panel({ title, subtitle, children }: { title?: string; subtitle?: strin
 }
 
 function Kpi({ label, value, hint, tone = 'gray' }: { label: string; value: string; hint?: string; tone?: 'crit' | 'warn' | 'ok' | 'gray' }) {
-  const color = tone === 'gray' ? 'text-ink' : LEVEL_COLOR[tone].text;
+  const color = tone === 'gray' ? 'text-white' : LEVEL_COLOR[tone].text;
   return (
-    <div className="rounded-xl p-4 border border-line" style={{ background: PANEL }}>
+    <div className="rounded-xl p-4 border border-white/10" style={{ background: PANEL }}>
       <div className="text-xs mb-1.5" style={{ color: MUTED }}>{label}</div>
       <div className={`text-2xl font-bold ${color}`}>{value}</div>
       {hint && <div className="text-xs mt-1" style={{ color: FAINT }}>{hint}</div>}
@@ -76,7 +76,7 @@ function Kpi({ label, value, hint, tone = 'gray' }: { label: string; value: stri
 }
 
 function Badge({ tone, children }: { tone: keyof typeof LEVEL_COLOR | 'gray'; children: React.ReactNode }) {
-  const cls = tone === 'gray' ? 'bg-surface-2 text-faint' : LEVEL_COLOR[tone].badge;
+  const cls = tone === 'gray' ? 'bg-white/5 text-white/50' : LEVEL_COLOR[tone].badge;
   return <span className={`text-xs px-2 py-0.5 rounded-full font-medium whitespace-nowrap ${cls}`}>{children}</span>;
 }
 
@@ -85,9 +85,9 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
     <button onClick={onClick}
       className="text-xs px-2.5 py-1 rounded-full border transition-all"
       style={{
-        borderColor: active ? 'var(--brand-strong)' : 'var(--line)',
-        background: active ? 'rgba(77,194,176,0.2)' : 'transparent',
-        color: active ? 'var(--brand-strong)' : MUTED,
+        borderColor: active ? '#1D9E75' : 'rgba(255,255,255,0.1)',
+        background: active ? 'rgba(29,158,117,0.2)' : 'transparent',
+        color: active ? '#1D9E75' : MUTED,
       }}>
       {children}
     </button>
@@ -97,7 +97,7 @@ function Chip({ active, onClick, children }: { active: boolean; onClick: () => v
 function DemoBanner() {
   if (!IS_DEMO) return null;
   return (
-    <div className="text-xs px-3 py-2 rounded-lg mb-3 border border-orange-500/30" style={{ background: 'rgba(244,114,22,0.08)', color: 'var(--warn)' }}>
+    <div className="text-xs px-3 py-2 rounded-lg mb-3 border border-orange-500/30" style={{ background: 'rgba(249,115,22,0.08)', color: '#FDBA74' }}>
       <i className="ti ti-flask text-xs mr-1"></i>
       Демо-данные. Цифры и объекты условные — заменяются реальными после подключения 1С, ОФД, агрегаторов и Bitrix24.
     </div>
@@ -109,10 +109,10 @@ const DIRECTIONS = Object.keys(DIRECTION_LABEL) as Direction[];
 const CATEGORIES = Object.keys(CATEGORY_LABEL) as RiskCategory[];
 
 function heatTone(v: number) {
-  if (v >= 0.6) return { bg: `rgba(214,48,40,${0.45 + (v - 0.6) * 1.2})`, fg: '#fff' };
-  if (v >= 0.35) return { bg: `rgba(244,114,22,${0.2 + (v - 0.35) * 0.8})`, fg: '#7A3606' };
-  if (v > 0) return { bg: 'rgba(77,194,176,0.22)', fg: '#1F5F58' };
-  return { bg: 'var(--surface-2)', fg: FAINT };
+  if (v >= 0.6) return { bg: `rgba(239,68,68,${0.25 + v * 0.5})`, fg: '#fff' };
+  if (v >= 0.35) return { bg: `rgba(249,115,22,${0.2 + v * 0.4})`, fg: '#fff' };
+  if (v > 0) return { bg: 'rgba(29,158,117,0.25)', fg: 'rgba(255,255,255,0.7)' };
+  return { bg: 'rgba(255,255,255,0.03)', fg: FAINT };
 }
 
 function Hub({ drill, approvalsPending }: { drill: (f: CaseFilter) => void; approvalsPending: number }) {
@@ -155,7 +155,7 @@ function Hub({ drill, approvalsPending }: { drill: (f: CaseFilter) => void; appr
             <tbody>
               {matrix.map(row => (
                 <tr key={row.d}>
-                  <td className="pr-2 py-1 text-ink whitespace-nowrap">{DIRECTION_LABEL[row.d]}</td>
+                  <td className="pr-2 py-1 text-white whitespace-nowrap">{DIRECTION_LABEL[row.d]}</td>
                   {row.cells.map((v, i) => {
                     const t = heatTone(v);
                     return (
@@ -186,12 +186,12 @@ function Hub({ drill, approvalsPending }: { drill: (f: CaseFilter) => void; appr
             return (
               <button key={o.id} onClick={() => drill({ objectId: o.id })}
                 className="w-full flex items-center gap-3 py-1.5 text-left hover:opacity-80">
-                <span className="text-xs w-40 flex-shrink-0 truncate text-ink">{o.name}</span>
+                <span className="text-xs w-40 flex-shrink-0 truncate text-white">{o.name}</span>
                 <span className="text-xs w-24 flex-shrink-0 truncate" style={{ color: FAINT }}>{DIRECTION_LABEL[o.direction]}</span>
-                <div className="flex-1 h-1.5 rounded-full" style={{ background: 'var(--line)' }}>
+                <div className="flex-1 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.1)' }}>
                   <div className="h-full rounded-full" style={{
                     width: `${o.score}%`,
-                    background: lvl === 'crit' ? '#EF4444' : lvl === 'warn' ? 'var(--orange)' : 'var(--brand-strong)',
+                    background: lvl === 'crit' ? '#EF4444' : lvl === 'warn' ? '#F97316' : '#1D9E75',
                   }} />
                 </div>
                 <span className={`text-xs w-8 text-right font-semibold ${LEVEL_COLOR[lvl].text}`}>{o.score}</span>
@@ -203,16 +203,16 @@ function Hub({ drill, approvalsPending }: { drill: (f: CaseFilter) => void; appr
         <Panel title="Критические кейсы" subtitle="требуют решения сегодня">
           {crit.slice(0, 5).map(c => (
             <button key={c.id} onClick={() => drill({ objectId: c.objectId })}
-              className="w-full text-left flex items-start gap-3 p-2.5 rounded-xl mb-2 border border-line-soft"
+              className="w-full text-left flex items-start gap-3 p-2.5 rounded-xl mb-2 border border-white/5"
               style={{ background: LEVEL_COLOR.crit.bg }}>
-              <i className="ti ti-alert-circle text-sm text-danger mt-0.5"></i>
+              <i className="ti ti-alert-circle text-sm text-red-400 mt-0.5"></i>
               <div className="flex-1 min-w-0">
-                <div className="text-xs text-ink leading-relaxed">{c.title}</div>
+                <div className="text-xs text-white leading-relaxed">{c.title}</div>
                 <div className="text-xs mt-0.5" style={{ color: FAINT }}>
                   {c.id} · {objectName(c.objectId)} · {STATUS_LABEL[c.status]}
                 </div>
               </div>
-              {c.exposure ? <span className="text-xs text-danger font-medium">{fmtKZT(c.exposure)}</span> : null}
+              {c.exposure ? <span className="text-xs text-red-300 font-medium">{fmtKZT(c.exposure)}</span> : null}
             </button>
           ))}
         </Panel>
@@ -221,9 +221,9 @@ function Hub({ drill, approvalsPending }: { drill: (f: CaseFilter) => void; appr
       <Panel title="Состояние агентов контроля">
         <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {AGENTS.map(a => (
-            <div key={a.id} className="flex items-center gap-2 p-2 rounded-lg border border-line-soft" style={{ background: 'var(--surface-2)' }}>
-              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${a.status === 'active' ? 'bg-brand' : a.status === 'pilot' ? 'bg-orange-400' : 'bg-gray-600'}`}></span>
-              <span className="text-xs text-ink truncate flex-1">{a.name}</span>
+            <div key={a.id} className="flex items-center gap-2 p-2 rounded-lg border border-white/5" style={{ background: 'rgba(255,255,255,0.03)' }}>
+              <span className={`w-2 h-2 rounded-full flex-shrink-0 ${a.status === 'active' ? 'bg-teal-400' : a.status === 'pilot' ? 'bg-orange-400' : 'bg-gray-600'}`}></span>
+              <span className="text-xs text-white truncate flex-1">{a.name}</span>
               <span className="text-xs" style={{ color: FAINT }}>{AGENT_STATUS_LABEL[a.status]}</span>
             </div>
           ))}
@@ -267,23 +267,23 @@ function Cases({ filter, setFilter }: { filter: CaseFilter; setFilter: (f: CaseF
       </div>
       {filter.objectId && (
         <div className="text-xs mb-3 flex items-center gap-2" style={{ color: MUTED }}>
-          Объект: <span className="text-ink">{objectName(filter.objectId)}</span>
-          <button className="text-ok" onClick={() => setFilter({ ...filter, objectId: undefined })}>сбросить</button>
+          Объект: <span className="text-white">{objectName(filter.objectId)}</span>
+          <button className="text-teal-400" onClick={() => setFilter({ ...filter, objectId: undefined })}>сбросить</button>
         </div>
       )}
 
       {list.length === 0 && (
-        <div className="text-xs p-4 rounded-xl border border-line" style={{ color: MUTED, background: PANEL }}>
+        <div className="text-xs p-4 rounded-xl border border-white/10" style={{ color: MUTED, background: PANEL }}>
           По выбранным фильтрам открытых кейсов нет.
         </div>
       )}
 
       {list.map(c => (
-        <div key={c.id} className="rounded-xl mb-2 border border-line" style={{ background: PANEL }}>
+        <div key={c.id} className="rounded-xl mb-2 border border-white/10" style={{ background: PANEL }}>
           <button className="w-full text-left p-3 flex items-start gap-3" onClick={() => setOpenId(openId === c.id ? null : c.id)}>
             <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${c.severity === 'crit' ? 'bg-red-400' : c.severity === 'warn' ? 'bg-orange-400' : 'bg-sky-400'}`}></span>
             <div className="flex-1 min-w-0">
-              <div className="text-xs text-ink font-medium leading-relaxed">{c.title}</div>
+              <div className="text-xs text-white font-medium leading-relaxed">{c.title}</div>
               <div className="text-xs mt-0.5" style={{ color: FAINT }}>
                 {c.id} · {objectName(c.objectId)} · {DIRECTION_LABEL[c.direction]} · {CATEGORY_LABEL[c.category]} · срок {c.dueAt}
               </div>
@@ -293,16 +293,16 @@ function Cases({ filter, setFilter }: { filter: CaseFilter; setFilter: (f: CaseF
           {openId === c.id && (
             <div className="px-3 pb-3 pl-8 text-xs space-y-2">
               <div style={{ color: MUTED }}>
-                Открыл: <span className="text-ink">{agentName(c.openedBy)}</span> · Владелец устранения:{' '}
-                <span className="text-ink">{ROLE_LABEL[c.owner]}</span>
-                {c.exposure ? <> · Оценка риска: <span className="text-danger">{fmtKZT(c.exposure)}</span></> : null}
+                Открыл: <span className="text-white">{agentName(c.openedBy)}</span> · Владелец устранения:{' '}
+                <span className="text-white">{ROLE_LABEL[c.owner]}</span>
+                {c.exposure ? <> · Оценка риска: <span className="text-red-300">{fmtKZT(c.exposure)}</span></> : null}
               </div>
               <div>
                 <div className="mb-1" style={{ color: FAINT }}>Доказательства</div>
                 {c.evidence.map((e, i) => (
                   <div key={i} className="flex gap-2 py-0.5">
-                    <span className="text-ok flex-shrink-0">{e.source}:</span>
-                    <span className="text-body">{e.text}</span>
+                    <span className="text-teal-400 flex-shrink-0">{e.source}:</span>
+                    <span className="text-white/80">{e.text}</span>
                   </div>
                 ))}
               </div>
@@ -342,10 +342,10 @@ function Approvals({ role, setRole, decisions, decide }: {
         const c = CASES.find(x => x.id === ap.caseId);
         const canDecide = outcome === 'pending' && policy.approvers.includes(role) && !dec[role];
         return (
-          <div key={ap.id} className="rounded-xl p-3 mb-2 border border-line" style={{ background: PANEL }}>
+          <div key={ap.id} className="rounded-xl p-3 mb-2 border border-white/10" style={{ background: PANEL }}>
             <div className="flex flex-wrap items-start gap-2 mb-1.5">
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-semibold text-ink">{policy.label}</div>
+                <div className="text-xs font-semibold text-white">{policy.label}</div>
                 <div className="text-xs mt-0.5" style={{ color: FAINT }}>
                   {ap.id} · кейс {ap.caseId}{c ? ` · ${objectName(c.objectId)}` : ''} · предложил {agentName(ap.proposedBy)} · {ap.createdAt}
                 </div>
@@ -355,18 +355,18 @@ function Approvals({ role, setRole, decisions, decide }: {
                 {outcome === 'approved' ? 'Согласовано' : outcome === 'rejected' ? 'Отклонено' : 'Ожидает'}
               </Badge>
             </div>
-            <div className="text-xs text-body mb-2">{ap.rationale}</div>
-            {policy.note && <div className="text-xs mb-2" style={{ color: 'var(--warn)' }}>{policy.note}</div>}
+            <div className="text-xs text-white/80 mb-2">{ap.rationale}</div>
+            {policy.note && <div className="text-xs mb-2" style={{ color: '#FDBA74' }}>{policy.note}</div>}
             <div className="flex flex-wrap items-center gap-2">
               {policy.approvers.map(r => (
-                <span key={r} className="text-xs px-2 py-0.5 rounded-md border border-line" style={{ color: MUTED }}>
+                <span key={r} className="text-xs px-2 py-0.5 rounded-md border border-white/10" style={{ color: MUTED }}>
                   {dec[r] === 'approved' ? '✓' : dec[r] === 'rejected' ? '✕' : '○'} {ROLE_LABEL[r]}
                 </span>
               ))}
               {canDecide && (
                 <div className="ml-auto flex gap-2">
-                  <button onClick={() => decide(ap.id, 'rejected')} className="text-xs px-3 py-1 rounded-lg bg-red-500/15 text-danger">Отклонить</button>
-                  <button onClick={() => decide(ap.id, 'approved')} className="text-xs px-3 py-1 rounded-lg bg-teal-500/20 text-ok">Согласовать</button>
+                  <button onClick={() => decide(ap.id, 'rejected')} className="text-xs px-3 py-1 rounded-lg bg-red-500/15 text-red-300">Отклонить</button>
+                  <button onClick={() => decide(ap.id, 'approved')} className="text-xs px-3 py-1 rounded-lg bg-teal-500/20 text-teal-300">Согласовать</button>
                 </div>
               )}
             </div>
@@ -389,8 +389,8 @@ function Approvals({ role, setRole, decisions, decide }: {
                 const p = ACTION_POLICY[a];
                 const tone = p.level === 'FORBIDDEN' || p.level === 'L3' ? 'crit' : p.level === 'L2' ? 'warn' : 'ok';
                 return (
-                  <tr key={a} className="border-t border-line-soft">
-                    <td className="py-1.5 pr-2 text-ink">{p.label}</td>
+                  <tr key={a} className="border-t border-white/5">
+                    <td className="py-1.5 pr-2 text-white">{p.label}</td>
                     <td className="py-1.5 pr-2"><Badge tone={tone}>{LEVEL_LABEL[p.level]}</Badge></td>
                     <td className="py-1.5" style={{ color: MUTED }}>{p.approvers.map(r => ROLE_LABEL[r]).join(' + ') || (p.level === 'FORBIDDEN' ? 'Фармацевт/провизор' : '—')}</td>
                   </tr>
@@ -409,14 +409,14 @@ function AgentCard({ a }: { a: AgentManifest }) {
   const [open, setOpen] = useState(false);
   const errors = validateManifest(a);
   const row = (label: string, value: React.ReactNode) => (
-    <div className="grid grid-cols-1 sm:grid-cols-[170px_1fr] gap-1 sm:gap-3 py-1 border-t border-line-soft">
-      <span style={{ color: FAINT }}>{label}</span><span className="text-body">{value}</span>
+    <div className="grid grid-cols-1 sm:grid-cols-[170px_1fr] gap-1 sm:gap-3 py-1 border-t border-white/5">
+      <span style={{ color: FAINT }}>{label}</span><span className="text-white/85">{value}</span>
     </div>
   );
   return (
-    <div className="rounded-xl mb-2 border border-line" style={{ background: PANEL }}>
+    <div className="rounded-xl mb-2 border border-white/10" style={{ background: PANEL }}>
       <button className="w-full text-left p-3 flex flex-wrap items-center gap-2" onClick={() => setOpen(!open)}>
-        <span className="text-xs font-semibold text-ink flex-1 min-w-[180px]">{a.name}</span>
+        <span className="text-xs font-semibold text-white flex-1 min-w-[180px]">{a.name}</span>
         <Badge tone="info">{KIND_LABEL[a.kind]}</Badge>
         <Badge tone="gray">Волна {a.wave}</Badge>
         <Badge tone={a.status === 'active' ? 'ok' : a.status === 'pilot' ? 'warn' : 'gray'}>{AGENT_STATUS_LABEL[a.status]}</Badge>
@@ -440,7 +440,7 @@ function AgentCard({ a }: { a: AgentManifest }) {
           {row('Сложность / срок', `${a.complexity === 'low' ? 'Низкая' : a.complexity === 'medium' ? 'Средняя' : 'Высокая'} · ${a.duration}`)}
           {row('Риски', a.risks.join('; '))}
           {row('Сигналы', `публикует: ${a.emits.join(', ') || '—'} · слушает: ${a.consumes.join(', ') || '—'}`)}
-          {errors.length > 0 && <div className="mt-2 text-danger">{errors.join('; ')}</div>}
+          {errors.length > 0 && <div className="mt-2 text-red-300">{errors.join('; ')}</div>}
         </div>
       )}
     </div>
@@ -486,12 +486,12 @@ function Scenarios() {
               return (
                 <li key={i} className="flex gap-2 text-xs">
                   <span className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-[10px]"
-                    style={{ background: agent ? 'rgba(77,194,176,0.2)' : 'rgba(244,114,22,0.2)', color: agent ? 'var(--brand-strong)' : 'var(--warn)' }}>
+                    style={{ background: agent ? 'rgba(29,158,117,0.2)' : 'rgba(249,115,22,0.2)', color: agent ? '#1D9E75' : '#FB923C' }}>
                     {i + 1}
                   </span>
                   <div className="flex-1">
-                    <span className={agent ? 'text-ok' : 'text-warn'}>{agent ? agent.name : st.actor}</span>
-                    <span className="text-body"> — {st.text}</span>
+                    <span className={agent ? 'text-teal-400' : 'text-orange-300'}>{agent ? agent.name : st.actor}</span>
+                    <span className="text-white/80"> — {st.text}</span>
                     {gate && <span className="ml-1"><Badge tone={gate.level === 'L3' ? 'crit' : 'warn'}>{gate.level}</Badge></span>}
                   </div>
                 </li>
@@ -523,14 +523,14 @@ function Log({ entries }: { entries: AgentLogEntry[] }) {
             </thead>
             <tbody>
               {entries.map((e, i) => (
-                <tr key={i} className="border-t border-line-soft align-top">
+                <tr key={i} className="border-t border-white/5 align-top">
                   <td className="py-1.5 pr-2 whitespace-nowrap" style={{ color: MUTED }}>{e.at}</td>
-                  <td className="py-1.5 pr-2 text-ink">
-                    {e.actor === 'human' ? <span className="text-warn">{e.agent}</span> : agentName(e.agent)}
+                  <td className="py-1.5 pr-2 text-white">
+                    {e.actor === 'human' ? <span className="text-orange-300">{e.agent}</span> : agentName(e.agent)}
                   </td>
-                  <td className="py-1.5 pr-2 text-body">{ACTION_POLICY[e.action].label}</td>
+                  <td className="py-1.5 pr-2 text-white/80">{ACTION_POLICY[e.action].label}</td>
                   <td className="py-1.5 pr-2 whitespace-nowrap" style={{ color: MUTED }}>{e.caseId ?? '—'}</td>
-                  <td className="py-1.5 text-body">{e.result}</td>
+                  <td className="py-1.5 text-white/80">{e.result}</td>
                 </tr>
               ))}
             </tbody>
