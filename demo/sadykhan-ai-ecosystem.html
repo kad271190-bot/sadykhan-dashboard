@@ -13,22 +13,23 @@
   --ok:#1F7A55; --ok-soft:#DFF2E8; --info:#2D6497; --info-soft:#E2ECF7;
   --side:#204D52; --side-2:#1A4145; --side-ink:#FFFFFF; --side-muted:rgba(255,255,255,.66); --side-hover:rgba(255,255,255,.08); --side-active:rgba(77,194,176,.24);
   --font:'Open Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --shadow:0 1px 2px rgba(20,50,50,.06),0 4px 14px rgba(20,50,50,.05);
+  --shadow:0 1px 2px rgba(20,50,50,.05),0 2px 8px rgba(20,50,50,.04);
+  --on-strong:#FFFFFF; --c1:#009180; --c2:#EA6A12; --c3:#2F6DB5; --c4:#C2408A; /* регионы сети: проверено валидатором, соседние пары различимы */
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0F1C1D; --panel:#152627; --panel-2:#1B302F; --line:#2A4442; --ink:#EAF4F2; --body:#C8D9D6; --muted:#8FA6A3;
   --brand-d:#6FD6C5; --brand-soft:#173B37; --orange-soft:#3A2414; --crit:#F2827B; --crit-soft:#3B1D1B; --warn:#F0A55B; --warn-soft:#38281A; --amber:#E8B95A;
-  --ok:#6CD29B; --ok-soft:#173325; --info:#8BB6EE; --info-soft:#1A2A3E; --side:#14363A; --side-2:#102E31; --shadow:none; color-scheme:dark}}
+  --ok:#6CD29B; --ok-soft:#173325; --info:#8BB6EE; --info-soft:#1A2A3E; --side:#14363A; --side-2:#102E31; --shadow:none; --on-strong:#1F0F0D; --c1:#11A08F; --c2:#D96A22; --c3:#5487D0; --c4:#D35B9E; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0F1C1D; --panel:#152627; --panel-2:#1B302F; --line:#2A4442; --ink:#EAF4F2; --body:#C8D9D6; --muted:#8FA6A3;
   --brand-d:#6FD6C5; --brand-soft:#173B37; --orange-soft:#3A2414; --crit:#F2827B; --crit-soft:#3B1D1B; --warn:#F0A55B; --warn-soft:#38281A; --amber:#E8B95A;
-  --ok:#6CD29B; --ok-soft:#173325; --info:#8BB6EE; --info-soft:#1A2A3E; --side:#14363A; --side-2:#102E31; --shadow:none; color-scheme:dark}
+  --ok:#6CD29B; --ok-soft:#173325; --info:#8BB6EE; --info-soft:#1A2A3E; --side:#14363A; --side-2:#102E31; --shadow:none; --on-strong:#1F0F0D; --c1:#11A08F; --c2:#D96A22; --c3:#5487D0; --c4:#D35B9E; color-scheme:dark}
 *{box-sizing:border-box}
 html,body{height:100%}
-body{background:var(--bg);color:var(--body);font-family:var(--font);font-size:14px;line-height:1.5}
+body{background:var(--bg);color:var(--body);font-family:var(--font);font-size:13.5px;line-height:1.5}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--side)}
 h1,h2,h3,h4{color:var(--ink);margin:0;text-wrap:balance}
-h1{font-size:22px;font-weight:700;letter-spacing:-.01em} h2{font-size:17px;font-weight:700} h3{font-size:14.5px;font-weight:650} h4{font-size:13px;font-weight:650}
+h1{font-size:20px;font-weight:700;letter-spacing:-.01em} h2{font-size:16px;font-weight:700} h3{font-size:14px;font-weight:650;display:flex;align-items:center;gap:6px} h4{font-size:12.5px;font-weight:650}
 p{margin:0}
 button{font:inherit;cursor:pointer;color:inherit}
 :focus-visible{outline:2px solid var(--brand);outline-offset:2px}
@@ -42,7 +43,7 @@ svg.lucide{width:18px;height:18px;stroke-width:1.9;flex-shrink:0}
 .brandbox svg.logo{height:30px;width:auto;display:block}
 .brandbox .tag{font-size:11.5px;color:var(--side-muted);margin-top:8px;letter-spacing:.02em}
 .navsec{padding:14px 12px 4px;font-size:10.5px;text-transform:uppercase;letter-spacing:.12em;color:var(--side-muted);font-weight:600}
-.navbtn{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:10px;width:calc(100% - 16px);margin:1px 8px;padding:8px 10px;border-radius:8px;color:rgba(255,255,255,.88);font-size:13.5px;font-weight:500}
+.navbtn{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:10px;width:calc(100% - 16px);margin:1px 8px;padding:7px 10px;border-radius:8px;color:rgba(255,255,255,.88);font-size:13px;font-weight:500;line-height:1.3}
 .navbtn:hover{background:var(--side-hover)}
 .navbtn[aria-current="page"]{background:var(--side-active);color:#fff;font-weight:650;box-shadow:inset 3px 0 0 var(--brand)}
 .navbtn:focus-visible{outline:2px solid var(--brand)}
@@ -80,18 +81,25 @@ mark{background:var(--orange-soft);color:inherit;border-radius:3px;padding:0 1px
 .crumbs{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;min-width:0;flex-wrap:wrap}
 .crumbs b{color:var(--ink)}
 .topbar .sp{flex:1}
-.view{padding-block:22px 60px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.view{padding-block:18px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
 /* Elements */
-.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0;box-shadow:var(--shadow)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0;box-shadow:var(--shadow)}
 .card.flat{box-shadow:none;background:var(--panel-2)}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .col{display:flex;flex-direction:column;gap:8px}
-.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.g6{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.g6{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .span2{grid-column:span 2}
+.top{align-items:start}
+.dash{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:12px;align-items:start}
+@media (max-width:1100px){.dash{grid-template-columns:minmax(0,1fr)}}
+details.sect>summary{list-style:none;display:flex;align-items:center;gap:10px;color:var(--ink);font-weight:650}
+details.sect>summary::-webkit-details-marker{display:none}
+details.sect>summary>svg:first-child{color:var(--muted);transition:transform .15s} details.sect[open]>summary>svg:first-child{transform:rotate(90deg)}
+details.sect[open]>summary{margin-bottom:10px}
 .lead{color:var(--muted);max-width:80ch}
 .small{font-size:12.5px;color:var(--muted)}
 .pill{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 10px;font-size:11.5px;font-weight:600;white-space:nowrap}
@@ -105,11 +113,40 @@ mark{background:var(--orange-soft);color:inherit;border-radius:3px;padding:0 1px
 .btn.or{background:var(--orange);border-color:var(--orange);color:#fff}
 .btn.sm{padding:4px 9px;font-size:12px}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-.kpi{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-radius:12px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);min-width:0}
-.kpi .l{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px}
-.kpi .v{font-size:26px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.15}
-.kpi .d{font-size:11.5px;color:var(--muted)}
-.kpi.accent{border-top:3px solid var(--brand)} .kpi.alert{border-top:3px solid var(--crit)} .kpi.or{border-top:3px solid var(--orange)}
+.kpi{display:flex;flex-direction:column;gap:2px;padding:11px 14px;border-radius:10px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);min-width:0}
+.kpi .l{font-size:11.5px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.kpi .v{font-size:21px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.2}
+.kpi .d{font-size:11px;color:var(--muted)}
+.kpi.alert .v{color:var(--crit)} .kpi.or .v{color:var(--warn)}
+/* строка показателей: второстепенные цифры в одной полосе, без отдельной карточки на каждую */
+.strip{display:flex;flex-wrap:wrap;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);overflow:hidden}
+.strip .si{flex:1 1 150px;display:flex;flex-direction:column;gap:1px;padding:9px 16px;border-right:1px solid var(--line);margin-right:-1px;min-width:0}
+.strip .l{font-size:11.5px;color:var(--muted)} .strip .v{font-size:17px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;line-height:1.3}
+.strip .v.crit{color:var(--crit)} .strip .v.warn{color:var(--warn)} .strip .d{font-size:11px;color:var(--muted)}
+/* приоритетные плитки: то, что требует действия */
+.ptile{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:40px minmax(0,1fr);grid-template-rows:auto auto auto;column-gap:12px;align-items:center;padding:13px 16px;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);min-width:0}
+.ptile:hover{border-color:var(--brand)} .ptile:focus-visible{outline:2px solid var(--brand)}
+.ptile .ico{grid-row:1/4;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--panel-2);color:var(--muted)}
+.ptile .l{font-size:12px;font-weight:600;color:var(--body)} .ptile .v{font-size:27px;font-weight:700;line-height:1.15;color:var(--ink)} .ptile .d{font-size:11.5px;color:var(--muted)}
+.ptile.crit .ico{background:var(--crit-soft);color:var(--crit)} .ptile.crit .v{color:var(--crit)}
+.ptile.warn .ico{background:var(--warn-soft);color:var(--warn)} .ptile.warn .v{color:var(--warn)}
+.ptile.ok .ico{background:var(--ok-soft);color:var(--ok)}
+/* сводка аптечной сети */
+.sbar{display:flex;gap:2px;height:14px}
+.sbar .seg{all:unset;cursor:pointer;height:100%;min-width:4px} .sbar .seg:first-child{border-radius:4px 0 0 4px} .sbar .seg:last-child{border-radius:0 4px 4px 0}
+.sbar .seg:hover{filter:brightness(1.12)} .sbar .seg:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.rgs{display:flex;flex-direction:column}
+.rg{border-top:1px solid var(--line)}
+details.rg>summary{list-style:none;display:grid;grid-template-columns:12px minmax(110px,1.1fr) 40px minmax(140px,2fr) 150px minmax(110px,1fr) 16px;gap:12px;align-items:center;padding:8px 2px;color:var(--body);font-weight:400}
+details.rg>summary::-webkit-details-marker{display:none}
+details.rg>summary:hover{background:var(--panel-2)}
+.rg .sw{width:12px;height:12px;border-radius:3px} .rg .rn{color:var(--ink);font-weight:650} .rg .n{text-align:right;font-weight:700;color:var(--ink)}
+.rg .shr{display:flex;align-items:center;gap:8px} .rg .shr .prog{flex:1}
+.rg summary>svg:last-child{color:var(--muted);transition:transform .15s} .rg[open] summary>svg:last-child{transform:rotate(90deg)}
+.rgb{padding:2px 2px 12px 24px;display:flex;flex-direction:column;gap:8px}
+.plist{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:3px 18px}
+.chip{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;background:var(--panel-2);font-size:12px;color:var(--body)} .chip:hover{background:var(--brand-soft);color:var(--brand-d)} .chip:focus-visible{outline:2px solid var(--brand)}
+.mbar{display:flex;gap:2px;height:8px;min-width:60px;flex:1} .mbar span{height:100%} .mbar span:first-child{border-radius:3px 0 0 3px} .mbar span:last-child{border-radius:0 3px 3px 0}
 .sec-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .sec-h .sp{flex:1}
 .tw{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
@@ -123,7 +160,7 @@ tr.click{cursor:pointer} tr.click:hover td{background:var(--panel-2)}
 .agent:hover{border-color:var(--brand)}
 .av{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand-d);flex-shrink:0}
 .av.pl{background:var(--orange-soft);color:var(--warn)}
-.av.lg{width:56px;height:56px;border-radius:14px} .av.lg svg.lucide{width:28px;height:28px}
+.av.lg{width:44px;height:44px;border-radius:12px} .av.lg svg.lucide{width:22px;height:22px}
 .stat{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)} .stat b{color:var(--ink);font-variant-numeric:tabular-nums}
 .case{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:start;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);cursor:pointer;text-align:left;width:100%}
 .case:hover{border-color:var(--brand)}
@@ -168,20 +205,21 @@ textarea{width:100%;resize:vertical}
 .chart text{fill:var(--muted);font-size:11px;font-family:var(--font)}
 .chart .ax{stroke:var(--line)}
 .legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)} .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
-.heat td{text-align:center;font-weight:600;font-variant-numeric:tabular-nums;padding:8px 6px;border:2px solid var(--panel);border-radius:6px}
+.heat td{text-align:center;font-weight:600;font-variant-numeric:tabular-nums;padding:6px 6px;border:2px solid var(--panel);border-radius:6px}
 .heat th{text-align:center}
 .heat td.lbl,.heat th.lbl{text-align:left;font-weight:500;background:transparent;color:var(--body);white-space:nowrap}
 .feed{display:flex;flex-direction:column;gap:10px}
 .feed .it{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:start}
 .feed .ic{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--panel-2);color:var(--brand-d)}
 .hide-m{} .menu-btn{display:none}
-@media (max-width:1100px){ .g4{grid-template-columns:repeat(2,minmax(0,1fr))} .g6{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (max-width:1100px){ .g4{grid-template-columns:repeat(2,minmax(0,1fr))} }
 @media (max-width:860px){
   .app{grid-template-columns:minmax(0,1fr)}
   .side{position:fixed;inset:0 auto 0 0;width:min(300px,86vw);z-index:40;transform:translateX(-102%);transition:transform .2s}
   .side.open{transform:none;box-shadow:0 0 40px rgba(0,0,0,.35)}
   .menu-btn{display:inline-flex}
-  .g2,.g3,.g4{grid-template-columns:minmax(0,1fr)} .g6{grid-template-columns:repeat(2,minmax(0,1fr))} .span2{grid-column:auto}
+  .g2,.g3,.g4{grid-template-columns:minmax(0,1fr)} .span2{grid-column:auto}
+  details.rg>summary{grid-template-columns:12px minmax(0,1fr) 34px 96px 16px;gap:8px} .rgb{padding-left:4px}
   .claim{grid-template-columns:minmax(0,1fr)} .hide-m{display:none}
 }
 @media (prefers-reduced-motion: reduce){.spin{animation:none}.side{transition:none}}
@@ -945,7 +983,7 @@ function svgDonut(parts, label){ const tot = parts.reduce((a, p) => a + p.v, 0) 
   return `<svg class="chart" viewBox="0 0 160 160" width="150" height="150" role="img" aria-label="${esc(label)}">${g}<text x="80" y="78" text-anchor="middle" style="font-size:22px;font-weight:700;fill:var(--ink)">${tot === 1 && !parts.some(p => p.v) ? 0 : tot}</text><text x="80" y="96" text-anchor="middle">${esc(label)}</text></svg>`; }
 function bars(rows){ const max = Math.max(1, ...rows.map(r => r.parts.reduce((a, p) => a + p.v, 0)));
   return `<div class="col" style="gap:10px">${rows.map(r => { const tot = r.parts.reduce((a, p) => a + p.v, 0); return `<button class="row" style="all:unset;cursor:pointer;display:grid;grid-template-columns:150px minmax(0,1fr) 36px;gap:10px;align-items:center" data-go='${r.go}'><span class="small" style="color:var(--body)">${esc(r.label)}</span><span style="display:flex;height:14px;border-radius:4px;overflow:hidden;background:var(--panel-2)">${r.parts.map(p => p.v ? `<span title="${esc(p.n)}: ${p.v}" style="width:${p.v / max * 100}%;background:${p.c}"></span>` : '').join('')}</span><b class="num" style="text-align:right;color:var(--ink)">${tot}</b></button>`; }).join('')}</div>`; }
-function heatColor(v, max){ if (!v) return 'background:var(--panel-2);color:var(--muted)'; const t = v / max; if (t > .66) return 'background:var(--crit);color:#fff'; if (t > .33) return 'background:var(--orange);color:#fff'; return 'background:var(--brand-soft);color:var(--brand-d)'; }
+function heatColor(v, max){ if (!v) return 'background:var(--panel-2);color:var(--muted)'; const t = v / max; if (t > .66) return 'background:var(--crit);color:var(--on-strong)'; if (t > .33) return 'background:var(--orange);color:var(--on-strong)'; return 'background:var(--brand-soft);color:var(--brand-d)'; }
 
 // ═════════════════════════ общие фрагменты ═════════════════════════
 const sevPill = s => `<span class="pill ${s === 'critical' ? 'p-crit' : s === 'high' ? 'p-or' : s === 'medium' ? 'p-warn' : 'p-brand'}">${SEV[s]}</span>`;
@@ -966,6 +1004,21 @@ function agentCard(a, u){ const s = agentStats(a); const dirn = scopeName(a.id);
     <span class="small" style="color:var(--body)">${esc(a.spec)}</span><div class="stat">${s.lbl.map((l, i) => `<span>${l}: <b>${[s.checks, s.found, s.conf][i]}</b></span>`).join('')}</div>
     <div class="row"><span class="pill p-ok">${ic('circle-check', 'ico-sm')} Активен</span>${a.rules.length ? `<span class="pill p-mute">${a.rules.join(' · ')}</span>` : ''}</div></button>`; }
 
+// ── общие компоненты интерфейса: строка показателей, приоритетные плитки, сводка аптечной сети
+const strip = items => `<section class="strip">${items.map(([l, v, d, tone]) => `<div class="si"><span class="l">${esc(l)}</span><span class="v ${tone || ''}">${esc(v)}</span>${d ? `<span class="d">${esc(d)}</span>` : ''}</div>`).join('')}</section>`;
+const ptile = (go, icon, label, value, detail, tone) => `<button class="ptile ${tone}" data-go='${JSON.stringify(go)}'><span class="ico">${ic(icon)}</span><span class="l">${esc(label)}</span><span class="v num">${esc(value)}</span><span class="d">${detail}</span></button>`;
+const REGC = { 'Тараз':'var(--c1)', 'Алматы':'var(--c2)', 'Алматинская область':'var(--c3)', 'Астана':'var(--c4)' };
+function netSummary(full){ const T = NETWORK.length; const regs = NET_REG.map(r => { const ps = NETWORK.filter(p => p.r === r); return { r, ps, n:ps.length, share:ps.length / T, cities:netCities(r), ents:Object.keys(NET_ENT).filter(k => ps.some(p => p.e === k)) }; });
+  const head = `<div class="sec-h"><h3>${ic('map-pin', 'ico-sm')} Аптечная сеть</h3><span class="small num">${T} аптек · ${plural(netCities().length, 'населённый пункт', 'населённых пункта', 'населённых пунктов')} · ${Object.keys(NET_ENT).length} юрлица</span><span class="sp"></span>${full ? '' : `<button class="btn sm" data-go='{"page":"network"}'>Все аптеки ${ic('arrow-right', 'ico-sm')}</button>`}</div>`;
+  const bar = `<div class="sbar" role="img" aria-label="Доли регионов в аптечной сети">${regs.map(x => `<button class="seg" style="flex:${x.n};background:${REGC[x.r]}" data-go='${JSON.stringify({ page:'network', region:x.r })}' title="${esc(x.r)}: ${x.n} аптек, ${pct(x.share, 0)} сети" aria-label="${esc(x.r)}: ${x.n} аптек"></button>`).join('')}</div>
+    <div class="legend">${regs.map(x => `<span><i style="background:${REGC[x.r]}"></i>${esc(x.r)} <b class="num">${pct(x.share, 0)}</b></span>`).join('')}</div>`;
+  const rows = regs.map(x => `<details class="rg"><summary><span class="sw" style="background:${REGC[x.r]}"></span><b class="rn">${esc(x.r)}</b><span class="num n">${x.n}</span><span class="shr"><span class="prog"><span style="width:${(x.share * 100).toFixed(1)}%;background:${REGC[x.r]}"></span></span><span class="num small">${pct(x.share, 0)}</span></span><span class="small hide-m">${plural(x.cities.length, 'населённый пункт', 'населённых пункта', 'населённых пунктов')}</span><span class="small hide-m">${x.ents.map(k => NET_ABBR[k] + ' ' + x.ps.filter(p => p.e === k).length).join(' · ')}</span>${ic('chevron-right', 'chev ico-sm')}</summary>
+    <div class="rgb">${x.cities.length > 1 ? `<div class="row" style="gap:6px">${x.cities.map(c => `<button class="chip" data-go='${JSON.stringify({ page:'network', city:c.c })}'>${esc(c.c)} <b class="num">${c.n}</b></button>`).join('')}</div>` : ''}
+      <div class="plist">${x.ps.slice(0, 8).map(p => `<span class="small"><b style="color:var(--ink)">${esc(p.n)}</b> · ${esc(p.a)}</span>`).join('')}</div>
+      <div><button class="btn sm" data-go='${JSON.stringify({ page:'network', region:x.r })}'>${x.n > 8 ? `Все ${x.n} аптек региона` : 'Открыть в справочнике'} ${ic('arrow-right', 'ico-sm')}</button></div></div></details>`).join('');
+  return `<div class="card col">${head}${bar}<div class="rgs">${rows}</div></div>`; }
+function netEntCard(){ const T = NETWORK.length; return `<div class="card col"><h3>${ic('building', 'ico-sm')} Юрлица аптечной сети</h3>${Object.entries(NET_ENT).map(([k, v]) => { const n = NETWORK.filter(p => p.e === k).length; return `<div class="col" style="gap:3px"><div class="row" style="justify-content:space-between;flex-wrap:nowrap"><span class="small" style="color:var(--body)">${esc(v)}</span><b class="num">${n}</b></div><span class="prog"><span style="width:${n / T * 100}%;background:var(--brand-d)"></span></span><span class="small">${esc([...new Set(NETWORK.filter(p => p.e === k).map(p => p.r))].join(', '))}</span></div>`; }).join('')}</div>`; }
+
 // ═════════════════════════ страницы ═════════════════════════
 const V = {}, B = {};
 // ── Главная панель
@@ -973,49 +1026,50 @@ V.home = () => { const F = visF(); const crit = F.filter(f => f.sev === 'critica
   const dec = F.map(f => statusOf(f)); const conf = dec.filter(d => ['task', 'wait', 'specialist'].includes(d.st)).length; const checked = F.filter(f => (S.ai[aiKey(f)] || {}).rev).length;
   const tasks = (S.tasks || []).filter(t => S.role !== 'retail' || t.dir === 'retail'); const od = tasks.filter(overdue).length; const openT = tasks.filter(t => t.status !== 'closed').length;
   const exp = F.reduce((a, f) => a + f.exposure, 0); const recs = S.W.receipts.length + S.W.payments.length + S.W.shipments.length + S.W.aggOrders.length + S.W.purchases.length + S.W.reviews.length + S.W.esf.length;
-  const dirs = S.role === 'retail' ? DIRS.slice(0, 1) : DIRS;
+  const dirs = S.role === 'retail' ? DIRS.slice(0, 1) : DIRS; const sr = sopRows().filter(x => S.role !== 'retail' || UNIT_DIR[x.v.u] === 'retail'); const sopBad = x => ['Требует актуализации', 'Высокий правовой риск'].includes(x.act[0]);
   const rowsHeat = S.role === 'retail' ? [['retail', null, 'Retail']] : [['retail', null, 'Retail'], ['wholesale', null, 'Wholesale'], ['stock', null, 'Склад'], ['ecom', null, 'E-commerce'], ...['fin', 'acc', 'hr', 'leg', 'it'].map(u => ['corp', u, unitById(u).name])];
   const hv = rowsHeat.map(([d, u, n]) => ({ n, d, u, vals:Object.keys(CATS).map(c => F.filter(f => f.dir === d && (!u || f.unit === u) && f.cat === c).reduce((a, f) => a + 1 + RANK[f.sev], 0)) }));
   const hmax = Math.max(1, ...hv.flatMap(r => r.vals));
   const dayCnt = sevs => DAYS.map(d => F.filter(f => sevs.includes(f.sev)).reduce((a, f) => a + f.rows.filter(x => x.date === d || x.docDate === d).length, 0));
   const objs = {}; F.forEach(f => f.objects.filter(o => /^A\d$|^W\d$|^WH$/.test(o)).forEach(o => { objs[o] = objs[o] || { o, n:0, score:0, rules:new Set() }; objs[o].n++; objs[o].score += 1 + RANK[f.sev] * 2; objs[o].rules.add(f.rule); }));
   const top = Object.values(objs).sort((a, b) => b.score - a.score).slice(0, 6); const tmax = Math.max(1, ...top.map(t => t.score));
-  return `<section class="row" style="justify-content:space-between;gap:12px"><div class="col" style="gap:2px"><h1>Главная панель ГК Садыхан</h1><span class="small">Сводка AI-экосистемы внутреннего контроля · период 03–16.10.2026 · тестовые данные · ${esc(ROLES[S.role])}</span></div>
-    <div class="row"><button class="btn" id="rerun">${ic('refresh-cw')} Запустить плановую проверку всех агентов</button></div></section>
-  ${S.role === 'retail' ? `<div class="note info">${ic('eye')} Режим руководителя подразделения: видны только кейсы и задачи Retail. Изменять доказательства и заключения аудита нельзя.</div>` : ''}
-  <section class="g6">
-    <div class="kpi accent"><span class="l">${ic('bot', 'ico-sm')} ИИ-агентов в работе</span><span class="v">${AGENTS.length}</span><span class="d">${AGENTS.filter(a => a.kind === 'auditor').length} аудиторов + ${AGENTS.filter(a => a.kind === 'platform').length} агентов платформы</span></div>
-    <div class="kpi accent"><span class="l">${ic('database', 'ico-sm')} Проверено записей</span><span class="v">${recs.toLocaleString('ru-RU')}</span><span class="d">${Object.keys(RULES).length} контрольных процедур</span></div>
-    <div class="kpi alert"><span class="l">${ic('triangle-alert', 'ico-sm')} Выявлено отклонений</span><span class="v">${F.length}</span><span class="d">${crit} критических · ${high} высоких</span></div>
-    <div class="kpi"><span class="l">${ic('shield-check', 'ico-sm')} Прошли 3 уровня ИИ</span><span class="v">${checked}<span style="font-size:15px;color:var(--muted)"> / ${F.length}</span></span><span class="d">подтверждено: ${conf}</span></div>
-    <div class="kpi or"><span class="l">${ic('kanban', 'ico-sm')} Открытые задачи</span><span class="v">${openT}</span><span class="d" style="color:${od ? 'var(--crit)' : 'var(--muted)'}">просрочено: ${od}</span></div>
-    <div class="kpi or"><span class="l">${ic('banknote', 'ico-sm')} В зоне риска</span><span class="v">${mln(exp)}</span><span class="d">сумма по кейсам (тест)</span></div>
+  const dmax = Math.max(1, ...dirs.map(d => F.filter(f => f.dir === d.id).length));
+  return `<section class="row" style="justify-content:space-between;gap:12px"><div class="col" style="gap:0"><h1>Главная панель ГК Садыхан</h1><span class="small">Внутренний контроль · период 03–16.10.2026 · операционные данные тестовые · ${esc(ROLES[S.role])}</span></div>
+    <button class="btn" id="rerun">${ic('refresh-cw', 'ico-sm')} Плановая проверка всех агентов</button></section>
+  ${S.role === 'retail' ? `<div class="note info">${ic('eye', 'ico-sm')} Режим руководителя подразделения: видны только кейсы и задачи Retail. Изменять доказательства и заключения аудита нельзя.</div>` : ''}
+  <section class="g4">
+    ${ptile({ page:'cases' }, 'siren', 'Критические и высокие кейсы', crit + high, `${crit} критических · ${high} высоких · всего ${F.length}`, crit ? 'crit' : high ? 'warn' : 'ok')}
+    ${ptile({ page:'tasks' }, 'alarm-clock', 'Открытые задачи Bitrix24', openT, od ? `<b style="color:var(--crit)">${od} просрочено</b> · имитация` : 'просроченных нет · имитация', od ? 'crit' : openT ? 'warn' : 'ok')}
+    ${ptile({ page:'soplist' }, 'file-warning', 'СОП требуют актуализации', sr.filter(sopBad).length, `высокий правовой риск: ${sr.filter(x => x.act[0] === 'Высокий правовой риск').length} · всего ${sr.length} СОП`, sr.some(x => x.act[0] === 'Высокий правовой риск') ? 'crit' : 'warn')}
+    ${ptile({ page:'docs' }, 'inbox', 'Документы ждут решения', KB.db ? kbPending() : '—', KB.db ? `в базе знаний: ${kbVis().length} · действующих ${kbVis().filter(d => d.st === 'active').length}` : 'хранилище доступно в Claude', KB.db && kbPending() ? 'warn' : 'ok')}
   </section>
-  <section class="g3">
-    <div class="card span2 col"><div class="sec-h"><h3>Тепловая карта рисков</h3><span class="sp"></span><span class="small">вес = число кейсов × критичность · нажмите ячейку</span></div>
+  ${strip([['ИИ-агентов', AGENTS.length, `${AGENTS.filter(a => a.kind === 'auditor').length} аудиторов + ${AGENTS.filter(a => a.kind === 'platform').length} платформы`], ['Проверено записей', recs.toLocaleString('ru-RU'), `${Object.keys(RULES).length} контрольных процедур`], ['Прошли 3 уровня ИИ', `${checked} / ${F.length}`, `подтверждено: ${conf}`], ['В зоне риска', mln(exp), 'сумма по кейсам (тест)', 'warn'], ['Аптек в сети', NETWORK.length, `${NET_REG.length} региона · реальный справочник`]])}
+  <section class="dash"><div class="col" style="gap:12px">
+    <div class="card col"><div class="sec-h"><h3>${ic('grid-3x3', 'ico-sm')} Карта рисков</h3><span class="sp"></span><span class="small">вес = кейсы × критичность · нажмите ячейку</span></div>
       <div class="tw" style="border:0"><table class="heat"><thead><tr><th class="lbl">Направление</th>${Object.values(CATS).map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>
-      ${hv.map(r => `<tr><td class="lbl">${esc(r.n)}</td>${r.vals.map((v, i) => `<td style="${heatColor(v, hmax)};cursor:${v ? 'pointer' : 'default'}" ${v ? `data-heat='${JSON.stringify({ d:r.d, u:r.u, c:Object.keys(CATS)[i] })}'` : ''}>${v || '—'}</td>`).join('')}</tr>`).join('')}</tbody></table></div></div>
-    <div class="card col"><h3>Статусы кейсов</h3><div class="row" style="flex-wrap:nowrap;gap:14px">${svgDonut([{ v:dec.filter(d => d.st === 'new' || d.st === 'busy').length, c:'var(--line)' }, { v:dec.filter(d => d.st === 'check' || d.st === 'docs').length, c:'var(--orange)' }, { v:dec.filter(d => d.st === 'task' || d.st === 'wait').length, c:'var(--brand)' }, { v:dec.filter(d => d.st === 'specialist').length, c:'var(--crit)' }], 'кейсов')}
-      <div class="legend" style="flex-direction:column;gap:6px"><span><i style="background:var(--line)"></i>Ждут ИИ-проверки</span><span><i style="background:var(--orange)"></i>Требуют доп. проверки</span><span><i style="background:var(--brand)"></i>Подтверждены ИИ</span><span><i style="background:var(--crit)"></i>У специалиста</span></div></div>
-      <p class="small">Окончательное решение по каждому кейсу принимает человек.</p></div>
+      ${hv.map(r => `<tr><td class="lbl">${esc(r.n)}</td>${r.vals.map((v, i) => `<td style="${heatColor(v, hmax)};cursor:${v ? 'pointer' : 'default'}" ${v ? `data-heat='${JSON.stringify({ d:r.d, u:r.u, c:Object.keys(CATS)[i] })}' title="${esc(r.n)} · ${Object.values(CATS)[i]}: вес ${v}"` : ''}>${v || '·'}</td>`).join('')}</tr>`).join('')}</tbody></table></div></div>
+    <div class="card col"><div class="sec-h"><h3>${ic('trending-up', 'ico-sm')} Отклонения по дням</h3><span class="sp"></span><div class="legend"><span><i style="background:var(--crit)"></i>Критические и высокие</span><span><i style="background:var(--brand-d)"></i>Средние</span></div></div>
+      ${svgLine([{ vals:dayCnt(['critical', 'high']), color:'var(--crit)' }, { vals:dayCnt(['medium', 'low']), color:'var(--brand-d)' }], DAYS, 170)}<p class="small">Операции-доказательства в кейсах по дате операции.</p></div>
+  </div><div class="col" style="gap:12px">
+    <div class="card col"><h3>${ic('pie-chart', 'ico-sm')} Статусы кейсов</h3><div class="row" style="flex-wrap:nowrap;gap:14px">${svgDonut([{ v:dec.filter(d => d.st === 'new' || d.st === 'busy').length, c:'var(--line)' }, { v:dec.filter(d => d.st === 'check' || d.st === 'docs').length, c:'var(--orange)' }, { v:dec.filter(d => d.st === 'task' || d.st === 'wait').length, c:'var(--brand)' }, { v:dec.filter(d => d.st === 'specialist').length, c:'var(--crit)' }], 'кейсов')}
+      <div class="legend" style="flex-direction:column;gap:6px"><span><i style="background:var(--line)"></i>Ждут ИИ-проверки · <b class="num">${dec.filter(d => d.st === 'new' || d.st === 'busy').length}</b></span><span><i style="background:var(--orange)"></i>Доп. проверка · <b class="num">${dec.filter(d => d.st === 'check' || d.st === 'docs').length}</b></span><span><i style="background:var(--brand)"></i>Подтверждены ИИ · <b class="num">${dec.filter(d => d.st === 'task' || d.st === 'wait').length}</b></span><span><i style="background:var(--crit)"></i>У специалиста · <b class="num">${dec.filter(d => d.st === 'specialist').length}</b></span></div></div>
+      <p class="small">Решение по каждому кейсу принимает человек.</p></div>
+    <div class="card col"><h3>${ic('crosshair', 'ico-sm')} Объекты с наибольшим риском</h3>${top.map(t => `<button class="row" style="all:unset;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) 80px 26px;gap:8px;align-items:center" data-go='{"page":"cases","obj":"${t.o}"}'><span class="small" style="color:var(--body)">${esc(objName(t.o))}<br><span class="small">${[...t.rules].join(', ')}</span></span><span class="prog"><span style="width:${t.score / tmax * 100}%;background:${t.rules.size > 2 ? 'var(--crit)' : 'var(--orange)'}"></span></span><b class="num" style="text-align:right">${t.score}</b></button>`).join('')}</div>
+  </div></section>
+  <section class="g3 top">
+    <div class="card span2 col"><div class="sec-h"><h3>${ic('layers', 'ico-sm')} Направления</h3><span class="sp"></span><div class="legend"><span><i style="background:var(--crit)"></i>критич.</span><span><i style="background:var(--orange)"></i>высок.</span><span><i style="background:var(--amber)"></i>средн.</span></div></div>
+      <div class="tw"><table><thead><tr><th>Направление</th><th style="min-width:170px">Кейсы по критичности</th><th class="n">Задачи</th><th class="n">СОП к актуализации</th><th class="n">Агентов</th></tr></thead><tbody>
+      ${dirs.map(d => { const fs = F.filter(f => f.dir === d.id); const n = fs.length; const sp = sr.filter(x => UNIT_DIR[x.v.u] === d.id && sopBad(x)).length; const ot = tasks.filter(t => t.dir === d.id && t.status !== 'closed').length;
+        return `<tr class="click" data-go='{"page":"dir","id":"${d.id}"}'><td><span class="row" style="flex-wrap:nowrap;gap:8px">${ic(d.icon, 'ico-sm')}<b style="color:var(--ink)">${esc(d.name)}</b></span></td><td><span class="row" style="flex-wrap:nowrap;gap:8px"><span class="mbar" style="max-width:${Math.max(8, n / dmax * 100)}%" title="${['critical', 'high', 'medium'].map(s => SEV[s] + ': ' + fs.filter(f => f.sev === s).length).join(', ')}">${['critical', 'high', 'medium'].map(s => { const k = fs.filter(f => f.sev === s).length; return k ? `<span style="flex:${k};background:${SEVCOL[s]}"></span>` : ''; }).join('')}</span><b class="num">${n}</b></span></td><td class="n">${ot}</td><td class="n" style="color:${sp ? 'var(--warn)' : 'inherit'}">${sp}</td><td class="n">${dirAgents(d).length}</td></tr>`; }).join('')}</tbody></table></div></div>
+    <div class="card col"><div class="sec-h"><h3>${ic('siren', 'ico-sm')} Срочные кейсы</h3><span class="sp"></span><button class="btn sm" data-go='{"page":"cases"}'>Все</button></div>${F.filter(f => f.sev === 'critical').concat(F.filter(f => f.sev === 'high')).slice(0, 3).map(f => `<button class="row" style="all:unset;cursor:pointer;display:grid;grid-template-columns:4px minmax(0,1fr);gap:10px;padding:6px 0;border-bottom:1px solid var(--line)" data-go='{"page":"case","id":"${f.id}"}'><span style="background:${SEVCOL[f.sev]};border-radius:2px"></span><span class="col" style="gap:1px"><span style="color:var(--ink);font-weight:600;font-size:12.5px">${esc(f.title)}</span><span class="small">${f.id} · ${esc(agentById(f.agent).short || agentById(f.agent).name)} · ${statusOf(f).label}</span></span></button>`).join('') || '<p class="small">Нет.</p>'}</div>
   </section>
-  <section class="g3">
-    <div class="card span2 col"><div class="sec-h"><h3>Отклонения по дням</h3><span class="sp"></span><div class="legend"><span><i style="background:var(--crit)"></i>Критические и высокие</span><span><i style="background:var(--brand-d)"></i>Средние</span></div></div>
-      ${svgLine([{ vals:dayCnt(['critical', 'high']), color:'var(--crit)' }, { vals:dayCnt(['medium', 'low']), color:'var(--brand-d)' }], DAYS)}<p class="small">Число операций-доказательств в кейсах по дате операции.</p></div>
-    <div class="card col"><h3>Объекты с наибольшим риском</h3>${top.map(t => `<button class="row" style="all:unset;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) 90px 30px;gap:8px;align-items:center" data-go='{"page":"cases","obj":"${t.o}"}'><span class="small" style="color:var(--body)">${esc(objName(t.o))}<br><span class="small">${[...t.rules].join(', ')}</span></span><span class="prog"><span style="width:${t.score / tmax * 100}%;background:${t.rules.size > 2 ? 'var(--crit)' : 'var(--orange)'}"></span></span><b class="num" style="text-align:right">${t.score}</b></button>`).join('')}</div>
-  </section>
-  <section class="g3">
-    <div class="card col"><div class="sec-h"><h3>Кейсы по направлениям</h3></div>${bars([...dirs.filter(d => d.id !== 'corp').map(d => ({ label:d.name, go:JSON.stringify({ page:'dir', id:d.id }), parts:['critical', 'high', 'medium'].map(s => ({ n:SEV[s], v:F.filter(f => f.dir === d.id && f.sev === s).length, c:SEVCOL[s] })) })), ...(S.role === 'retail' ? [] : ['fin', 'acc', 'hr', 'leg', 'it'].map(unitById).map(u => ({ label:u.name, go:JSON.stringify({ page:'dir', id:'corp', unit:u.id }), parts:['critical', 'high', 'medium'].map(s => ({ n:SEV[s], v:F.filter(f => f.unit === u.id && f.sev === s).length, c:SEVCOL[s] })) })))])}
-      <div class="legend"><span><i style="background:var(--crit)"></i>критич.</span><span><i style="background:var(--orange)"></i>высок.</span><span><i style="background:var(--amber)"></i>средн.</span></div></div>
-    <div class="card col"><div class="sec-h"><h3>Критические кейсы</h3><span class="sp"></span><button class="btn sm" data-go='{"page":"cases"}'>Все кейсы</button></div>${F.filter(f => f.sev === 'critical' || f.sev === 'high').slice(0, 4).map(caseRow).join('') || '<p class="small">Нет.</p>'}</div>
-    <div class="card col"><div class="sec-h"><h3>Лента агентов</h3></div><div class="feed">${S.events.slice(0, 7).map(e => `<div class="it"><span class="ic">${ic(e.icon, 'ico-sm')}</span><span class="small" style="color:var(--body)"><b class="num">${e.t}</b> ${esc(e.text)} ${e.sim ? '<span class="pill p-sim">имитация</span>' : ''}</span></div>`).join('') || '<p class="small">Событий пока нет.</p>'}</div></div>
-  </section>
-  ${(() => { const rw = sopRows().filter(x => S.role !== 'retail' || UNIT_DIR[x.v.u] === 'retail'); const n = k => rw.filter(x => x.act[0] === k).length; return `<section class="g2"><div class="card col"><div class="sec-h"><h3>${ic('library', 'ico-sm')} Нормативный контроль СОП</h3><span class="sp"></span><button class="btn sm" data-go='{"page":"soplist"}'>Реестр СОП</button></div>
-    ${bars([['Высокий правовой риск', 'critical'], ['Требует актуализации', 'high'], ['Требует уточнения', 'medium'], ['Актуален', 'low']].map(([k, sv]) => ({ label:k, go:JSON.stringify({ page:'soplist' }), parts:[{ n:k, v:n(k), c:sv === 'low' ? 'var(--brand)' : SEVCOL[sv] }] })))}
-    <p class="small">СОП прежнего юрлица: <b>${rw.filter(x => x.v.ent !== x.v.app && !x.v.retired).length}</b>, из них без приказа о распространении: <b>${rw.filter(x => x.v.ent !== x.v.app && !x.v.adopt && !x.v.retired).length}</b>. Правовой статус устанавливает только юрист.</p>${KB.db ? `<p class="small">Реальных документов в базе знаний: <b>${kbVis().length}</b>, действующих: <b>${kbVis().filter(d => d.st === 'active').length}</b>, ждут решения: <b>${kbPending()}</b>. <button class="btn sm" data-go='{"page":"docs"}'>Документы</button></p>` : ''}</div>
-    <div class="card col"><div class="sec-h"><h3>${ic('radar', 'ico-sm')} Изменения законодательства</h3><span class="pill p-sim">имитация</span></div>${LAWFEED.map(l => `<button class="row" style="all:unset;cursor:pointer;display:grid;grid-template-columns:70px minmax(0,1fr) 40px;gap:8px;align-items:center" data-go='{"page":"soplist"}'><span class="small num">${ruDate(l.date)}</span><span class="small" style="color:var(--body)">${esc(l.title)}</span><b class="num" style="text-align:right">${lawAffected(l).length}</b></button>`).join('')}<p class="small">Число справа — затронутые СОП. В пилоте источник — adilet.zan.kz.</p></div></section>`; })()}
-  <section class="card col"><div class="sec-h"><h3>Направления</h3><span class="sp"></span><span class="small">быстрый переход</span></div><div class="g4">
-    ${dirs.map(d => `<button class="agent" data-go='{"page":"dir","id":"${d.id}"}'><div class="row" style="flex-wrap:nowrap"><span class="av">${ic(d.icon)}</span><div class="col" style="gap:0"><b style="color:var(--ink)">${esc(d.name)}</b><span class="small">${esc(d.title)}</span></div></div><div class="stat"><span>Подразделений: <b>${d.units.length}</b></span><span>Агентов: <b>${dirAgents(d).length}</b></span><span>Кейсов: <b>${F.filter(f => f.dir === d.id).length}</b></span><span>Задач: <b>${tasks.filter(t => t.dir === d.id && t.status !== 'closed').length}</b></span></div></button>`).join('')}</div></section>`; };
+  <section class="g3 top">
+    <div class="card col"><div class="sec-h"><h3>${ic('library', 'ico-sm')} Нормативный контроль</h3><span class="sp"></span><button class="btn sm" data-go='{"page":"soplist"}'>Реестр</button></div>
+      ${(() => { const groups = [['Высокий правовой риск', 'var(--crit)'], ['Требует актуализации', 'var(--orange)'], ['Требует уточнения', 'var(--amber)'], ['Актуален', 'var(--brand)']]; return `<div class="sbar" style="height:12px">${groups.map(([k, c]) => { const v = sr.filter(x => x.act[0] === k).length; return v ? `<span class="seg" style="flex:${v};background:${c};cursor:default" title="${k}: ${v}"></span>` : ''; }).join('')}</div><div class="legend" style="flex-direction:column;gap:4px">${groups.map(([k, c]) => `<span><i style="background:${c}"></i>${k} · <b class="num">${sr.filter(x => x.act[0] === k).length}</b></span>`).join('')}</div>`; })()}
+      <p class="small">Прежнее юрлицо: <b>${sr.filter(x => x.v.ent !== x.v.app && !x.v.retired).length}</b> СОП, без приказа о распространении: <b>${sr.filter(x => x.v.ent !== x.v.app && !x.v.adopt && !x.v.retired).length}</b>.</p></div>
+    <div class="card col"><div class="sec-h"><h3>${ic('radar', 'ico-sm')} Изменения законодательства</h3><span class="pill p-sim">имитация</span></div>${LAWFEED.map(l => `<button class="row" style="all:unset;cursor:pointer;display:grid;grid-template-columns:44px minmax(0,1fr) 28px;gap:8px;align-items:start" data-go='{"page":"soplist"}'><span class="small num">${ruDate(l.date)}</span><span class="small" style="color:var(--body)">${esc(l.title)}</span><b class="num" style="text-align:right" title="затронутые СОП">${lawAffected(l).length}</b></button>`).join('')}<p class="small">Справа — затронутые СОП.</p></div>
+    <div class="card col"><h3>${ic('activity', 'ico-sm')} Лента агентов</h3><div class="feed">${S.events.slice(0, 5).map(e => `<div class="it"><span class="ic">${ic(e.icon, 'ico-sm')}</span><span class="small" style="color:var(--body)"><b class="num">${e.t}</b> ${esc(e.text)} ${e.sim ? '<span class="pill p-sim">имитация</span>' : ''}</span></div>`).join('') || '<p class="small">Событий пока нет.</p>'}</div></div>
+  </section>`; };
 B.home = () => { document.getElementById('rerun').onclick = () => { AGENTS.filter(a => a.kind === 'auditor').forEach(a => { (S.runs[a.id] = S.runs[a.id] || []).unshift({ t:new Date().toTimeString().slice(0, 5), n:S.F.filter(f => f.agent === a.id).length }); }); rebuild(); ev('refresh-cw', `Плановая проверка: ${AGENTS.filter(a => a.kind === 'auditor').length} аудиторов выполнили ${Object.keys(RULES).length} процедур, найдено ${S.F.length} отклонений`); save(); render(); };
   document.querySelectorAll('[data-heat]').forEach(td => td.onclick = () => { const h = JSON.parse(td.dataset.heat); go({ page:'cases', dir:h.d, unit:h.u, cat:h.c }); }); };
 
@@ -1056,22 +1110,20 @@ V.dir = () => { const r = S.route; const d = dirById(r.id); const u = r.unit ? u
   const agents = u ? u.agents : dirAgents(d); const F = visF().filter(f => f.dir === d.id && (!u || f.unit === u.id)); const tasks = (S.tasks || []).filter(t => t.dir === d.id && (!u || (t.sop ? sopUnits(SOPS.find(s => s.id === t.sop)).includes(u.id) : (S.F.find(f => f.key === t.key) || {}).unit === u.id)));
   const procs = procRows(agents, u && u.id, F); const sops = sopRows().filter(x => u ? sopUnits(x.v).includes(u.id) : UNIT_DIR[x.v.u] === d.id);
   return `<section class="row" style="gap:14px;flex-wrap:nowrap"><span class="av lg">${ic(u ? u.icon : d.icon)}</span><div class="col" style="gap:2px"><h1>${esc(u ? u.name : d.title)}</h1><span class="small">${esc(u ? d.name + ' · ' + plural(agents.length, 'ИИ-агент', 'ИИ-агента', 'ИИ-агентов') + ' · ' + plural(sops.length, 'СОП', 'СОП', 'СОП') : d.about)}</span></div></section>
+  ${strip(dirKpis(d.id, u && u.id).map(([l, v]) => [l, String(v)]))}
   ${!u ? `<section class="col"><div class="sec-h"><h2>Подразделения</h2><span class="sp"></span><span class="small">путь: подразделение → ИИ-аудитор → процессы → нарушения → задачи</span></div><div class="g3">${d.units.map(x => { const n = visF().filter(f => f.unit === x.id).length; const ts = (S.tasks || []).filter(t => t.status !== 'closed' && (t.sop ? sopUnits(SOPS.find(s => s.id === t.sop)).includes(x.id) : (S.F.find(f => f.key === t.key) || {}).unit === x.id)).length;
       return `<button class="agent" data-go='{"page":"dir","id":"${d.id}","unit":"${x.id}"}'><div class="row" style="flex-wrap:nowrap"><span class="av">${ic(x.icon)}</span><b style="color:var(--ink)">${esc(x.name)}</b></div><span class="small">${x.agents.map(id => esc(agentById(id).name)).join(', ')}</span><div class="stat"><span>Нарушений: <b style="color:${n ? 'var(--crit)' : 'inherit'}">${n}</b></span><span>Задач: <b>${ts}</b></span><span>СОП: <b>${sopRows().filter(s => sopUnits(s.v).includes(x.id)).length}</b></span></div></button>`; }).join('')}</div></section>` : ''}
   ${u && u.id === 'r-ast' ? `<section class="card row" style="justify-content:space-between"><div class="col" style="gap:2px"><b style="color:var(--ink)">${ic('table-2', 'ico-sm')} Ассортиментная матрица</b><span class="small">${AMATRIX.length} позиций × ${AM_CL.length} кластера городов; обязательный ассортимент — основа контроля дефектуры (матрица пока тестовая).</span></div><button class="btn pri" data-go='{"page":"assort"}'>Открыть матрицу</button></section>` : ''}
   ${d.id === 'stock' && !u ? `<section class="card row" style="gap:12px;flex-wrap:nowrap"><span class="av">${ic('building')}</span><div class="col" style="gap:2px"><b style="color:var(--ink)">Склады работают на ТОО «Садыхан Премиум»</b><span class="small">Юрлицо оптового направления (головной офис — г. Алматы, филиал — г. Тараз). СОП склада, лицензия на оптовую реализацию и соответствие GDP проверяются применительно к этому ТОО; документы филиала оформляются от имени ТОО.</span></div></section>` : ''}
   ${d.id === 'wholesale' && !u ? `<section class="card col"><div class="sec-h"><h3>${ic('building', 'ico-sm')} Юрлицо и филиалы оптового направления</h3></div><div class="g2"><div class="card flat col" style="gap:4px"><b style="color:var(--ink)">ТОО «Садыхан Премиум» — головной офис</b><span class="small">г. Алматы · оптовые продажи и склады</span></div><div class="card flat col" style="gap:4px"><b style="color:var(--ink)">Филиал ТОО «Садыхан Премиум»</b><span class="small">г. Тараз · филиал не является отдельным юрлицом: СОП, приказы и договоры филиала оформляются от имени ТОО</span></div></div></section>` : ''}
-  ${d.id === 'retail' && !u ? `<section class="card col"><div class="sec-h"><h3>${ic('map-pin', 'ico-sm')} Аптечная сеть по регионам и городам</h3><span class="sp"></span><button class="btn sm" data-go='{"page":"network"}'>Все аптеки по городам</button></div>
-    <div class="g4">${NET_REG.map(r => `<div class="card flat col" style="gap:6px"><button class="row" style="all:unset;cursor:pointer;display:flex;justify-content:space-between;gap:8px" data-go='${JSON.stringify({ page:'network', region:r })}'><b style="color:var(--ink)">${esc(r)}</b><b class="num">${NETWORK.filter(p => p.r === r).length}</b></button><div class="row" style="gap:4px">${netCities(r).map(x => `<button class="pill p-mute" style="border:0;cursor:pointer" data-go='${JSON.stringify({ page:'network', city:x.c })}'>${esc(x.c)} · ${x.n}</button>`).join('')}</div></div>`).join('')}</div></section>` : ''}
-  <section class="g6">${dirKpis(d.id, u && u.id).map(([l, v]) => `<div class="kpi"><span class="l">${esc(l)}</span><span class="v" style="font-size:20px">${esc(v)}</span></div>`).join('')}</section>
-  <p class="small">Показатели рассчитаны по тестовым данным.</p>
+  ${d.id === 'retail' && !u ? netSummary(false) : ''}
   <section class="col"><div class="sec-h"><h2>${u ? 'ИИ-аудитор подразделения' : 'ИИ-агенты направления'}</h2></div><div class="g3">${agents.map(id => agentCard(agentById(id), u ? u.id : null)).join('')}</div></section>
-  ${procs.length ? `<section class="card col"><h3>Контролируемые бизнес-процессы</h3><div class="tw"><table><thead><tr><th>Процесс</th>${u ? '' : '<th>Подразделение</th>'}<th>ИИ-аудитор</th><th>Процедуры</th><th class="n">Нарушений</th><th>Состояние</th></tr></thead><tbody>
-    ${procs.map(x => `<tr class="click" data-go='{"page":"agent","id":"${x.a.id}","u":"${x.u}"}'><td>${esc(x.p)}</td>${u ? '' : `<td class="small">${esc(unitById(x.u).name)}</td>`}<td>${esc(x.a.name)}</td><td class="small">${x.rules.join(', ') || 'автономный ИИ-аудит'}</td><td class="n">${x.n}</td><td><span class="pill ${x.n ? 'p-or' : 'p-ok'}">${x.n ? 'есть отклонения' : 'в норме'}</span></td></tr>`).join('')}</tbody></table></div></section>` : ''}
-  <section class="g2"><div class="card col"><div class="sec-h"><h3>Выявленные нарушения</h3><span class="pill p-mute">${F.length}</span></div>${F.map(caseRow).join('') || '<p class="small">Отклонений нет.</p>'}</div>
+  ${procs.length ? `<details class="card sect" ${u ? 'open' : ''}><summary>${ic('chevron-right', 'ico-sm')}Контролируемые бизнес-процессы <span class="pill p-mute">${procs.length}</span><span class="small" style="font-weight:400">· с отклонениями: ${procs.filter(x => x.n).length}</span></summary><div class="tw"><table><thead><tr><th>Процесс</th>${u ? '' : '<th>Подразделение</th>'}<th>ИИ-аудитор</th><th>Процедуры</th><th class="n">Нарушений</th><th>Состояние</th></tr></thead><tbody>
+    ${procs.map(x => `<tr class="click" data-go='{"page":"agent","id":"${x.a.id}","u":"${x.u}"}'><td>${esc(x.p)}</td>${u ? '' : `<td class="small">${esc(unitById(x.u).name)}</td>`}<td>${esc(x.a.name)}</td><td class="small">${x.rules.join(', ') || 'автономный ИИ-аудит'}</td><td class="n">${x.n}</td><td><span class="pill ${x.n ? 'p-or' : 'p-ok'}">${x.n ? 'есть отклонения' : 'в норме'}</span></td></tr>`).join('')}</tbody></table></div></details>` : ''}
+  <section class="g2 top"><div class="card col"><div class="sec-h"><h3>Выявленные нарушения</h3><span class="pill p-mute">${F.length}</span><span class="sp"></span>${F.length > 5 ? `<button class="btn sm" data-go='${JSON.stringify(u ? { page:'cases', dir:d.id, unit:u.id } : { page:'cases', dir:d.id })}'>Все ${F.length}</button>` : ''}</div>${F.slice().sort((a, b) => RANK[b.sev] - RANK[a.sev]).slice(0, 5).map(caseRow).join('') || '<p class="small">Отклонений нет.</p>'}</div>
     <div class="card col"><div class="sec-h"><h3>Задачи Bitrix24</h3><span class="pill p-sim">имитация</span></div>${tasks.map(taskCard).join('') || '<p class="small">Задач нет.</p>'}</div></section>
   ${(() => { const ds = kbVis().filter(x => u ? x.unit === u.id : x.dir === d.id); return `<section class="card col"><div class="sec-h"><h3>${ic('folder-open', 'ico-sm')} Документы ${u ? 'подразделения' : 'направления'} — база знаний</h3><span class="sp"></span><button class="btn sm" data-go='${JSON.stringify({ page:'docs', folder:u ? u.id : d.id })}'>Открыть папку</button></div>${ds.length ? `<div class="tw"><table><tbody>${ds.map(x => `<tr class="click" data-go='{"page":"doc","id":"${x.id}"}'><td><b>${esc(x.number || '')}</b> ${esc(x.title)}</td><td class="small">${esc(x.type)} · ред. ${x.cur}</td><td>${kbBadge(x)}</td></tr>`).join('')}</tbody></table></div>` : '<p class="small">Реальных документов в этой папке пока нет.</p>'}</section>`; })()}
-  <section class="card col"><div class="sec-h"><h3>${ic('library', 'ico-sm')} СОП ${u ? 'подразделения' : 'направления'}</h3><span class="sp"></span><button class="btn sm" data-go='{"page":"soplist"}'>Весь реестр</button></div>${sopMini(sops)}</section>`; };
+  <section class="card col"><div class="sec-h"><h3>${ic('library', 'ico-sm')} СОП ${u ? 'подразделения' : 'направления'}</h3><span class="sp"></span><button class="btn sm" data-go='{"page":"soplist"}'>Весь реестр</button></div>${sopMini(sops.slice().sort((a, b) => b.I.length - a.I.length).slice(0, u ? 20 : 8))}${!u && sops.length > 8 ? `<p class="small">Показаны 8 из ${sops.length} — с наибольшим числом несоответствий.</p>` : ''}</section>`; };
 
 // ── Агенты
 V.agents = () => { const aud = AGENTS.filter(a => a.kind === 'auditor').length, pl = AGENTS.length - aud;
@@ -1854,8 +1906,7 @@ V.docs = () => { if (S.route.folder){ KB.folder = S.route.folder; delete S.route
   const off = !KB.db; const vis = kbVis();
   return `<section class="row" style="gap:14px;flex-wrap:nowrap"><span class="av lg">${ic('folder-open')}</span><div class="col" style="gap:2px"><h1>Документы — корпоративная база знаний</h1><span class="small">Реальные документы компании: хранятся постоянно, разложены по направлениям и подразделениям, связаны с профильными ИИ-аудиторами. Нормой для агентов документ становится только после проверки и решения человека.</span></div></section>
   ${off ? `<div class="note warn">${ic('triangle-alert', 'ico-sm')} <span>${KB.state === 'pending' ? 'Подключение к хранилищу документов…' : 'Хранилище документов доступно, когда страница открыта в Claude. В этом окне документы не загружаются и не сохраняются.'}</span></div>` : ''}
-  <section class="g6"><div class="kpi accent"><span class="l">${ic('library', 'ico-sm')} Документов</span><span class="v">${vis.length}</span></div><div class="kpi accent"><span class="l">${ic('circle-check', 'ico-sm')} Действующие (норма)</span><span class="v">${vis.filter(d => d.st === 'active').length}</span><span class="d">условно: ${vis.filter(d => d.st === 'cond').length}</span></div><div class="kpi or"><span class="l">${ic('inbox', 'ico-sm')} Ждут решения</span><span class="v">${kbPending()}</span></div>
-    <div class="kpi"><span class="l">${ic('history', 'ico-sm')} Редакций</span><span class="v">${vis.reduce((a, d) => a + (d.versions || []).length, 0)}</span></div><div class="kpi"><span class="l">${ic('bot', 'ico-sm')} Агентов с документами</span><span class="v">${new Set(vis.flatMap(d => d.agents || [])).size}</span></div><div class="kpi alert"><span class="l">${ic('ban', 'ico-sm')} Не применяются</span><span class="v">${vis.filter(d => d.st === 'rework').length}</span></div></section>
+  ${strip([['Документов', vis.length], ['Действующие (норма)', vis.filter(d => d.st === 'active').length, 'условно: ' + vis.filter(d => d.st === 'cond').length], ['Ждут решения', kbPending(), '', kbPending() ? 'warn' : ''], ['Редакций', vis.reduce((a, d) => a + (d.versions || []).length, 0)], ['Агентов с документами', new Set(vis.flatMap(d => d.agents || [])).size], ['Не применяются', vis.filter(d => d.st === 'rework').length, '', vis.some(d => d.st === 'rework') ? 'crit' : '']])}
   <div class="kbwrap"><aside class="card col kbtree" style="gap:2px;padding:10px">${kbTree()}</aside>
   <div class="col" style="min-width:0">
     <section class="card col"><div class="row"><input type="text" id="kbQ" placeholder="Поиск по тексту всех документов: температура хранения, возврат без чека…" value="${esc(KB.q)}" aria-label="Поиск по документам" style="flex:1;min-width:200px"><button class="btn pri" id="kbGo" ${off ? 'disabled' : ''}>${KB.searching ? '<span class="spin"></span>' : ic('search', 'ico-sm')} Найти</button>${KB.res ? '<button class="btn sm" id="kbClr">Сбросить</button>' : ''}</div>
@@ -1960,20 +2011,15 @@ V.network = () => { if (S.route.city !== undefined){ netF = { r:'', c:S.route.ci
   const L = netList(); const cities = netCities(); const ents = KB.conf.entities || [];
   return `<section class="row" style="gap:14px;flex-wrap:nowrap"><span class="av lg">${ic('map-pin')}</span><div class="col" style="gap:2px"><h1>Аптечная сеть по городам</h1><span class="small">Реальный справочник аптек ГК из файла «Данные аптек» (17.10.2026): ${NETWORK.length} аптек, ${cities.length} населённых пунктов, ${Object.keys(NET_ENT).length} юрлица.</span></div></section>
   <div class="note info">${ic('shield-check', 'ico-sm')} <span>ФИО, телефоны и даты рождения заведующих не перенесены: это персональные данные, для структуры сети они не нужны. Операционные данные для проверки агентов (чеки, кейсы, нарушения) по-прежнему тестовые и относятся к 6 тест-аптекам — реальные аптеки нарушениями не помечаются.</span></div>
-  <section class="g6"><div class="kpi accent"><span class="l">${ic('store', 'ico-sm')} Аптек в сети</span><span class="v">${NETWORK.length}</span></div>${NET_REG.map(r => `<button class="kpi" style="text-align:left;cursor:pointer;font:inherit" data-go='${JSON.stringify({ page:'network', region:r })}'><span class="l">${ic('map', 'ico-sm')} ${esc(r)}</span><span class="v">${NETWORK.filter(p => p.r === r).length}</span><span class="d">${plural(netCities(r).length, 'населённый пункт', 'населённых пункта', 'населённых пунктов')}</span></button>`).join('')}
-    <div class="kpi"><span class="l">${ic('building', 'ico-sm')} Юрлица</span><span class="v">${Object.keys(NET_ENT).length}</span><span class="d">${Object.keys(NET_ENT).map(k => NET_ABBR[k] + ': ' + NETWORK.filter(p => p.e === k).length).join(' · ')}</span></div></section>
-  <section class="g2"><div class="card col"><h3>Аптеки по городам</h3>${bars(cities.slice(0, 12).map(x => ({ label:x.c, go:JSON.stringify({ page:'network', city:x.c }), parts:Object.keys(NET_ENT).map((k, i) => ({ n:NET_ABBR[k], v:NETWORK.filter(p => p.c === x.c && p.e === k).length, c:['var(--brand)', 'var(--brand-d)', 'var(--orange)'][i] })) })))}
-      <div class="legend">${Object.keys(NET_ENT).map((k, i) => `<span><i style="background:${['var(--brand)', 'var(--brand-d)', 'var(--orange)'][i]}"></i>${esc(NET_ENT[k])}</span>`).join('')}</div>${cities.length > 12 ? `<p class="small">Ещё ${cities.length - 12} населённых пунктов — по 1–2 аптеки, см. таблицу ниже.</p>` : ''}</div>
-    <div class="card col"><h3>${ic('building', 'ico-sm')} Юрлица аптечной сети</h3><div class="tw"><table><thead><tr><th>Юрлицо</th><th class="n">Аптек</th><th>Регионы</th></tr></thead><tbody>${Object.entries(NET_ENT).map(([k, v]) => `<tr><td>${esc(v)}</td><td class="n">${NETWORK.filter(p => p.e === k).length}</td><td class="small">${esc([...new Set(NETWORK.filter(p => p.e === k).map(p => p.r))].join(', '))}</td></tr>`).join('')}</tbody></table></div>
-      <p class="small">Тараз (с районами) — ТОО «TARAZ DAUA Pharma» и ТОО «Садыхан Фарм Лидер»; Алматы, Алматинская область и Астана — ТОО «Дауа Фарма» (подтверждено 17.10.2026). На листе «Садыхан+СТ+СФЛ» заполнены только аптеки СФЛ.</p>
-      ${KB.db && kbCanDecide() ? (Object.values(NET_ENT).every(v => ents.includes(v)) ? '<span class="pill p-ok">Все юрлица сети есть в перечне действующих юрлиц раздела «Документы»</span>' : '<button class="btn sm" id="netEnt">Добавить юрлица сети в перечень действующих (Документы)</button>') : ''}</div></section>
+  <section class="g3"><div class="span2">${netSummary(true)}</div><div class="col" style="gap:12px">${netEntCard()}<div class="card col" style="gap:8px"><p class="small">Тараз (с районами) — ТОО «TARAZ DAUA Pharma» и ТОО «Садыхан Фарм Лидер»; Алматы, Алматинская область и Астана — ТОО «Дауа Фарма».</p>
+      ${KB.db && kbCanDecide() ? (Object.values(NET_ENT).every(v => ents.includes(v)) ? '<span class="pill p-ok">Все юрлица сети есть в перечне действующих юрлиц раздела «Документы»</span>' : '<button class="btn sm" id="netEnt">Добавить юрлица сети в перечень действующих (Документы)</button>') : ''}</div></div></section>
   <section class="card row"><span class="small">Регион</span><select id="nR"><option value="">все</option>${NET_REG.map(r => `<option ${netF.r === r ? 'selected' : ''}>${esc(r)}</option>`).join('')}</select>
     <span class="small">Город</span><select id="nC"><option value="">все</option>${netCities(netF.r).map(x => `<option ${netF.c === x.c ? 'selected' : ''} value="${esc(x.c)}">${esc(x.c)} (${x.n})</option>`).join('')}</select>
     <span class="small">Юрлицо</span><select id="nE"><option value="">все</option>${Object.entries(NET_ENT).map(([k, v]) => `<option value="${k}" ${netF.e === k ? 'selected' : ''}>${esc(v)}</option>`).join('')}</select>
     <input type="text" id="nQ" placeholder="Поиск: Мынбулак, Абая, Конаев" value="${esc(netF.q)}" aria-label="Поиск аптеки">${netF.r || netF.c || netF.e || netF.q ? '<button class="btn sm" id="nX">Сбросить</button>' : ''}<span class="sp" style="flex:1"></span><span class="pill p-mute">${L.length}</span></section>
-  ${NET_REG.filter(r => L.some(p => p.r === r)).map(r => `<section class="card col"><div class="sec-h"><h3>${ic('map', 'ico-sm')} ${esc(r)}</h3><span class="pill p-mute">${L.filter(p => p.r === r).length}</span></div>
-    ${netCities(r).filter(x => L.some(p => p.r === r && p.c === x.c)).map(x => { const ps = L.filter(p => p.r === r && p.c === x.c); return `<details ${ps.length <= 8 || netF.c || netF.q ? 'open' : ''}><summary><b style="color:var(--ink)">${esc(x.c)}</b> <span class="small">— ${plural(ps.length, 'аптека', 'аптеки', 'аптек')}</span></summary>
-      <div class="tw" style="margin-top:6px"><table><thead><tr><th>№</th><th>Аптека</th><th>Юрлицо</th><th>Адрес</th><th>Режим работы</th><th>Открыта</th></tr></thead><tbody>${ps.map(p => `<tr><td>${esc(p.no)}</td><td><b>${esc(p.n)}</b></td><td class="small">${NET_ABBR[p.e]}</td><td class="small">${esc(p.a)}</td><td class="small">${esc(p.h || '—')}</td><td class="small">${esc(p.o ? (/^\d{4}-/.test(p.o) ? ruDate(p.o) + '.' + p.o.slice(0, 4) : p.o) : '—')}</td></tr>`).join('')}</tbody></table></div></details>`; }).join('')}</section>`).join('') || '<div class="card"><p class="small">Ничего не найдено.</p></div>'}`; };
+  ${NET_REG.filter(r => L.some(p => p.r === r)).map(r => { const cs = netCities(r).filter(x => L.some(p => p.r === r && p.c === x.c)); const tbl = ps => `<div class="tw"><table><thead><tr><th>№</th><th>Аптека</th><th>Юрлицо</th><th>Адрес</th><th>Режим работы</th><th>Открыта</th></tr></thead><tbody>${ps.map(p => `<tr><td>${esc(p.no)}</td><td><b>${esc(p.n)}</b></td><td class="small">${NET_ABBR[p.e]}</td><td class="small">${esc(p.a)}</td><td class="small">${esc(p.h || '—')}</td><td class="small">${esc(p.o ? (/^\d{4}-/.test(p.o) ? ruDate(p.o) + '.' + p.o.slice(0, 4) : p.o) : '—')}</td></tr>`).join('')}</tbody></table></div>`;
+    return `<details class="card sect" ${netF.r || netF.c || netF.e || netF.q ? 'open' : ''}><summary>${ic('chevron-right', 'ico-sm')}<span class="sw" style="width:12px;height:12px;border-radius:3px;background:${REGC[r]}"></span>${esc(r)} <span class="pill p-mute">${L.filter(p => p.r === r).length}</span>${cs.length > 1 ? `<span class="small" style="font-weight:400">· ${plural(cs.length, 'населённый пункт', 'населённых пункта', 'населённых пунктов')}</span>` : ''}</summary>
+    ${cs.length === 1 ? tbl(L.filter(p => p.r === r)) : cs.map(x => `<div class="col" style="gap:6px;margin-bottom:12px"><h4>${esc(x.c)} <span class="small" style="font-weight:400">· ${plural(L.filter(p => p.r === r && p.c === x.c).length, 'аптека', 'аптеки', 'аптек')}</span></h4>${tbl(L.filter(p => p.r === r && p.c === x.c))}</div>`).join('')}</details>`; }).join('') || '<div class="card"><p class="small">Ничего не найдено.</p></div>'}`; };
 B.network = () => { const set = (k, v) => { netF[k] = v; if (k === 'r') netF.c = ''; render(); };
   document.getElementById('nR').onchange = e => set('r', e.target.value); document.getElementById('nC').onchange = e => set('c', e.target.value); document.getElementById('nE').onchange = e => set('e', e.target.value);
   const q = document.getElementById('nQ'); q.onchange = () => set('q', q.value); const x = document.getElementById('nX'); if (x) x.onclick = () => { netF = { r:'', c:'', e:'', q:'' }; render(); };
