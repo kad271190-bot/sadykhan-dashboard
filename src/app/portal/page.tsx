@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import ControlTower, { CONTROL_TITLES, CONTROL_VIEWS } from '@/components/control/ControlTower';
 
 // ─── COLORS (Sadykhan brand) ───────────────────────────────
 // Dark green bg: #0A2218
@@ -17,6 +18,12 @@ const NAV = [
   ]},
   { section: 'Отделы', items: [
     { id: 'control',    icon: 'shield-check',    label: 'Контроль и аудит', subs: [
+      { id: 'control/hub',         icon: 'radar',          label: 'Центр контроля' },
+      { id: 'control/cases',       icon: 'folders',        label: 'Кейсы' },
+      { id: 'control/approvals',   icon: 'checks',         label: 'Согласования' },
+      { id: 'control/agents',      icon: 'robot',          label: 'Агенты контроля' },
+      { id: 'control/scenarios',   icon: 'route',          label: 'Сценарии' },
+      { id: 'control/log',         icon: 'history',        label: 'Журнал' },
       { id: 'control/reputation',  icon: 'star',           label: 'Репутация' },
       { id: 'control/nps',         icon: 'heart',          label: 'NPS и сервис' },
       { id: 'control/revision',    icon: 'clipboard-list', label: 'Ревизии' },
@@ -75,6 +82,7 @@ const NAV = [
 ];
 
 const TITLES: Record<string,string> = {
+  ...CONTROL_TITLES,
   overview:'Обзор компании', alerts:'Алерты',
   'control/reputation':'Репутация', 'control/nps':'NPS и сервис',
   'control/revision':'Ревизии', 'control/antifraud':'Антифрод',
@@ -92,6 +100,14 @@ const TITLES: Record<string,string> = {
 };
 
 const MOZG: Record<string,{text:string,level:'crit'|'warn'}[]> = {
+  'control/hub':[
+    {text:'Алматы-3: сигналы в 4 категориях (фрод, потери, сервис, исполнение). Предложено служебное расследование — ждёт вашего согласования.',level:'crit'},
+    {text:'Центральный склад: температурное отклонение 2–8 °C, 12 серий. Решение по карантину — у уполномоченного по качеству.',level:'crit'},
+    {text:'Опт: отгрузки контрагенту при просрочке > 60 дней, лимит изменён вручную. Проверьте, кто менял лимит.',level:'warn'},
+  ],
+  'control/approvals':[
+    {text:'6 предложений агентов ждут решения. Действия L3 требуют второго согласования владельца процесса.',level:'warn'},
+  ],
   overview:[
     {text:'Выручка растёт +4% но NPS падает −6 — клиенты платят но недовольны. Требует немедленного внимания.',level:'crit'},
     {text:'Алматы-3: тройная аномалия — антифрод + текучесть + жалобы. Рекомендую внутреннюю проверку.',level:'crit'},
@@ -269,7 +285,7 @@ function PageOverview({setPage}:{setPage:(p:string)=>void}) {
       <div className="grid grid-cols-2 gap-3">
         <Card title="Отделы — статус">
           {[
-            {id:'control/antifraud',icon:'shield-check',name:'Контроль и аудит',kpi:'3 тикета · Рейтинг 3.48',s:'crit'},
+            {id:'control/hub',icon:'shield-check',name:'Контроль и аудит',kpi:'Центр контроля · 10 открытых кейсов',s:'crit'},
             {id:'retail/network',icon:'building-store',name:'Розница',kpi:'24 аптеки · Выручка ₸48.2М',s:'ok'},
             {id:'wholesale/orders',icon:'truck',name:'Опт',kpi:'3 клиента неактивны',s:'warn'},
             {id:'develop/procurement',icon:'trending-up',name:'Развитие',kpi:'Дефицит 34 SKU',s:'warn'},
@@ -360,6 +376,10 @@ function SimpleKPI(items:{label:string,value:string,delta?:string,color?:string}
 }
 
 function renderContent(page:string, setPage:(p:string)=>void) {
+  if(CONTROL_VIEWS[page]) {
+    const toPage = Object.fromEntries(Object.entries(CONTROL_VIEWS).map(([p,v])=>[v,p]));
+    return <ControlTower view={CONTROL_VIEWS[page]} go={v=>setPage(toPage[v])}/>;
+  }
   switch(page) {
     case 'overview': return <PageOverview setPage={setPage}/>;
     case 'board': return <PageBoard/>;
