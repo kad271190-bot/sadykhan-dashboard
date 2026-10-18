@@ -1,0 +1,17 @@
+# systemd: автозапуск сервера на Linux.
+# Скопируйте папку в /opt/sadykhan-ecosystem, затем:
+#   sudo cp sadykhan-ecosystem.service /etc/systemd/system/
+#   sudo systemctl enable --now sadykhan-ecosystem
+[Unit]
+Description=AI-экосистема контроля и аудита ГК Садыхан
+After=network-online.target
+
+[Service]
+WorkingDirectory=/opt/sadykhan-ecosystem
+ExecStart=/usr/bin/node /opt/sadykhan-ecosystem/server.js
+Restart=always
+User=sadykhan
+Environment=NODE_ENV=production
+
+[Install]
+WantedBy=multi-user.target

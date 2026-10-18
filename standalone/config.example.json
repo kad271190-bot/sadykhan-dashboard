@@ -1,0 +1,10 @@
+{
+  "PORT": 8080,
+  "HOST": "0.0.0.0",
+  "ANTHROPIC_API_KEY": "",
+  "AI_MODEL": "claude-opus-5-5",
+  "AI_MODEL_QUICK": "claude-sonnet-5-5",
+  "AI_MAX_TOKENS": 8192,
+  "BASIC_AUTH": "",
+  "DATA_DIR": "data"
+}
