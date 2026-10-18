@@ -236,6 +236,38 @@ textarea{width:100%;resize:vertical}
 .lane{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:10px;background:var(--panel-2);min-width:0}
 @media (max-width:860px){ .proc dl{grid-template-columns:minmax(0,1fr)} .proc dt{margin-top:4px} .mini{grid-template-columns:minmax(0,1fr) minmax(0,1fr)} }
 @media (prefers-reduced-motion: reduce){.spin{animation:none}.side{transition:none}}
+/* 3D-центр управления */
+.c3d{position:relative;height:clamp(520px,calc(100vh - 210px),860px);border-radius:14px;overflow:hidden;border:1px solid var(--line);background:linear-gradient(180deg,#F7FBFA,#E3EFEC);box-shadow:var(--shadow)}
+.c3host,.c3d-canvas{position:absolute;inset:0}.c3d-canvas canvas{display:block;width:100%!important;height:100%!important;touch-action:none;cursor:grab}
+.c3load{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:10px;color:var(--muted);font-size:14px;flex-wrap:wrap;padding:20px;text-align:center}
+.c3hud,.c3ctl,.c3feed,.c3panel,.c3help,.c3sim{position:absolute;background:color-mix(in srgb,var(--panel) 92%,transparent);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);z-index:2}
+.c3hud{left:12px;top:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;max-width:calc(100% - 330px)}
+.c3stat{display:flex;gap:16px;flex-wrap:wrap}.c3stat span{display:flex;flex-direction:column;font-size:11.5px;color:var(--muted);line-height:1.2}.c3stat b{font-size:19px;color:var(--ink)}
+.c3leg{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;color:var(--body)}.c3leg span{display:flex;align-items:center;gap:5px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}.c3leg .ln{display:inline-block;width:16px;height:3px;border-radius:2px}
+.c3ctl{right:12px;top:12px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;font-size:12.5px}
+.c3sw{display:flex;align-items:center;gap:7px;cursor:pointer;color:var(--body)}
+.c3sim{left:12px;top:auto;bottom:196px;padding:6px 10px;font-size:11.5px;color:var(--warn);background:color-mix(in srgb,var(--warn-soft) 94%,transparent);display:flex;gap:6px;align-items:center;max-width:min(560px,calc(100% - 24px))}
+.c3feed{left:12px;bottom:12px;width:min(440px,calc(100% - 24px));max-height:176px;display:flex;flex-direction:column}
+.c3fh{display:flex;justify-content:space-between;gap:8px;padding:8px 12px 6px;border-bottom:1px solid var(--line);font-size:12.5px;color:var(--ink)}
+#c3feed{overflow:auto;padding:4px}
+.c3fi{all:unset;box-sizing:border-box;display:grid;grid-template-columns:auto auto 1fr;gap:8px;align-items:start;width:100%;padding:5px 8px;border-radius:8px;font-size:12px;color:var(--body);cursor:pointer}
+.c3fi:hover{background:var(--panel-2)}.c3fi .tx{display:flex;gap:6px;align-items:baseline}.c3fi .tx .dot{transform:translateY(1px)}
+.c3k{font-size:10px;text-transform:uppercase;letter-spacing:.04em;padding:1px 6px;border-radius:5px;font-weight:650;white-space:nowrap}
+.c3k.demo,.c3k.sim{background:var(--warn-soft);color:var(--warn)}.c3k.fact{background:var(--ok-soft);color:var(--ok)}
+.c3panel{right:12px;top:150px;bottom:12px;width:min(360px,calc(100% - 24px));padding:14px;overflow:auto;display:none;flex-direction:column;gap:10px}
+.c3panel.open{display:flex}.c3x{margin-left:auto;flex:none}
+.c3sec h4{margin:4px 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.c3kp{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}.c3kp span{display:flex;flex-direction:column;background:var(--panel-2);border-radius:8px;padding:6px 8px;font-size:11px;color:var(--muted)}.c3kp b{font-size:17px;color:var(--ink)}
+.c3li{all:unset;box-sizing:border-box;display:flex;gap:6px;align-items:center;flex-wrap:wrap;width:100%;padding:7px 8px;border-radius:8px;font-size:12.5px;color:var(--body);cursor:pointer}.c3li:hover{background:var(--panel-2)}
+.c3u{display:flex;flex-direction:column;gap:4px;padding:6px 0;border-bottom:1px dashed var(--line)}
+.c3pipe{display:flex;flex-direction:column;gap:4px}.c3pipe div{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;background:var(--panel-2);border-radius:8px;padding:6px 8px}
+.c3pipe .n{width:20px;height:20px;border-radius:50%;background:var(--brand-d);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center}
+.c3help{right:12px;bottom:12px;padding:6px 10px;max-width:300px;font-size:11px}
+.c3d .c3panel.open~.c3help{display:none}
+@media (max-width:760px){.c3d{height:78vh}.c3hud{max-width:calc(100% - 24px)}.c3ctl{top:auto;bottom:12px;right:12px}.c3help,.c3sim{display:none}
+ .c3feed{display:none}.c3panel{top:auto;left:8px;right:8px;width:auto;max-height:58%}.c3stat{gap:10px}.c3stat b{font-size:16px}.c3leg{display:none}}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .c3d{background:linear-gradient(180deg,#F7FBFA,#DCE9E6)}}
 </style>
 
 <div class="app">
@@ -3587,7 +3619,8 @@ function navItems(){
   const nF = d => visF().filter(f => f.dir === d).length; const crit = visF().filter(f => f.sev === 'critical').length; const sc = activeScope();
   const od = (S.tasks || []).filter(t => overdue(t) && (S.role !== 'retail' || t.dir === 'retail')).length;
   const btn = (attrs, icon, label, cnt, hot) => `<button class="navbtn" ${attrs}>${ic(icon)}<span>${label}</span>${cnt !== undefined && cnt !== null ? `<span class="cnt ${hot ? 'hot' : ''}">${cnt}</span>` : ''}</button>`;
-  let h = '<div class="navsec">Управление</div>' + btn(`data-go='{"page":"home"}' ${cur('home')}`, 'layout-dashboard', 'Главная панель ГК', crit || null, true);
+  let h = '<div class="navsec">Управление</div>' + btn(`data-go='{"page":"home"}' ${cur('home')}`, 'layout-dashboard', 'Главная панель ГК', crit || null, true)
+    + btn(`data-go='{"page":"center3d"}' ${cur('center3d')}`, 'box', '3D-центр управления', null, true);
   h += '<div class="navsec">Направления</div>';
   DIRS.forEach(d => { if (S.role === 'retail' && d.id !== 'retail') return; const open = sc.d === d.id;
     h += btn(`data-go='{"page":"dir","id":"${d.id}"}' ${r.page === 'dir' && r.id === d.id && !r.unit ? 'aria-current="page"' : ''} aria-expanded="${open}"`, d.icon, d.name, nF(d.id));
@@ -3603,7 +3636,7 @@ function navItems(){
   h += '<div class="navsec">Оценка демоверсии</div>' + btn(`data-go='{"page":"tests"}' ${cur('tests')}`, 'list-checks', 'Как тестировать') + btn(`data-go='{"page":"quality"}' ${cur('quality')}`, 'gauge', 'Качество AI-аудита') + btn(`data-go='{"page":"sandbox"}' ${cur('sandbox')}`, 'flask-conical', 'Песочница', S.sandbox.length || null) + btn(`data-go='{"page":"data"}' ${cur('data')}`, 'database', 'Тестовые данные');
   return h; }
 function crumbs(){ const r = S.route; const parts = ['<span>ГК Садыхан</span>']; const lk = (g, t) => `<button class="crumb" data-go='${JSON.stringify(g)}'>${esc(t)}</button>`;
-  const map = { home:'Главная панель', agents:'ИИ-агенты', mozg:'МОЗГ и взаимодействие', cases:'Кейсы аудита', tasks:'Задачи Bitrix24 (имитация)', soplist:'Реестр СОП и нормативный контроль', docs:'Документы — база знаний', proc:'Аудит закупа — реальные данные', council:'Стратегический совет', tests:'Как тестировать', quality:'Качество AI-аудита', sandbox:'Песочница', data:'Тестовые данные' };
+  const map = { home:'Главная панель', center3d:'3D-центр управления', agents:'ИИ-агенты', mozg:'МОЗГ и взаимодействие', cases:'Кейсы аудита', tasks:'Задачи Bitrix24 (имитация)', soplist:'Реестр СОП и нормативный контроль', docs:'Документы — база знаний', proc:'Аудит закупа — реальные данные', council:'Стратегический совет', tests:'Как тестировать', quality:'Качество AI-аудита', sandbox:'Песочница', data:'Тестовые данные' };
   const du = (d, u, last) => { if (!d) return; parts.push(u || !last ? lk({ page:'dir', id:d }, dirById(d).name) : `<b>${esc(dirById(d).name)}</b>`); if (u) parts.push(last ? `<b>${esc(unitById(u).name)}</b>` : lk({ page:'dir', id:d, unit:u }, unitById(u).name)); };
   if (r.page === 'dir') du(r.id, r.unit, true);
   else if (r.page === 'network'){ du('retail'); parts.push('<b>Аптеки по городам</b>'); }
@@ -3682,7 +3715,7 @@ V.home = () => { const F = visF(); const crit = F.filter(f => f.sev === 'critica
   const top = Object.values(objs).sort((a, b) => b.score - a.score).slice(0, 6); const tmax = Math.max(1, ...top.map(t => t.score));
   const dmax = Math.max(1, ...dirs.map(d => F.filter(f => f.dir === d.id).length));
   return `<section class="row" style="justify-content:space-between;gap:12px"><div class="col" style="gap:0"><h1>Главная панель ГК Садыхан</h1><span class="small">Внутренний контроль · период 03–16.10.2026 · операционные данные тестовые · ${esc(ROLES[S.role])}</span></div>
-    <button class="btn" id="rerun">${ic('refresh-cw', 'ico-sm')} Плановая проверка всех агентов</button></section>
+    <div class="row" style="gap:8px"><div class="row" role="group" aria-label="Режим отображения" style="gap:4px"><button class="btn sm pri" aria-pressed="true">${ic('layout-dashboard', 'ico-sm')} 2D</button><button class="btn sm" data-go='{"page":"center3d"}'>${ic('box', 'ico-sm')} 3D-центр</button></div><button class="btn" id="rerun">${ic('refresh-cw', 'ico-sm')} Плановая проверка всех агентов</button></div></section>
   ${S.role === 'retail' ? `<div class="note info">${ic('eye', 'ico-sm')} Режим руководителя подразделения: видны только кейсы и задачи Retail. Изменять доказательства и заключения аудита нельзя.</div>` : ''}
   <section class="g4">
     ${ptile({ page:'cases' }, 'siren', 'Критические и высокие кейсы', crit + high, `${crit} критических · ${high} высоких · всего ${F.length}`, crit ? 'crit' : high ? 'warn' : 'ok')}
@@ -4945,6 +4978,258 @@ V.data = () => { const [t, cols] = DATASETS[dsSel]; const all = S.W[dsSel] || []
 B.data = () => { document.getElementById('dsSel').onchange = e => { dsSel = e.target.value; render(); }; const q = document.getElementById('dsQ'); q.onchange = () => { dsQ = q.value; render(); }; };
 
 // ═════════════════════════ рендер ═════════════════════════
+// ═════════════════════════ 3D-центр управления ИИ-аудиторами ═════════════════════════
+// Цифровой офис ГК: направления — зоны, ИИ-аудиторы — сотрудники за рабочими местами, центр — «Контроль и аудит».
+// Данные те же, что у 2D-дашборда: AGENTS, DIRS, кейсы S.F, задачи S.tasks, журнал S.events, база знаний KB, профили PROFILES.
+// Работа агентов показывается двумя потоками, раздельно: «журнал платформы» — фактические действия в системе;
+// «демо-воспроизведение регламента» — ИМИТАЦИЯ ежедневных процедур, пока интеграции не подключены (отключается переключателем).
+const C3_LIBS = ['https://cdnjs.cloudflare.com/ajax/libs/three.js/0.147.0/three.min.js', 'https://unpkg.com/three@0.147.0/examples/js/controls/OrbitControls.js'];
+const C3 = { el:null, ready:false, err:'', loading:null, sel:null, hover:null, demo:true, links:'flow', labels:true, step:0, clock:'06:00', feed:[], lastEv:null, flows:[], active:{}, zones:{}, agents:{}, t0:0, roleBuilt:null };
+const C3_DIRCOL = { retail:0x4DC2B0, wholesale:0xF47216, stock:0x2F6DB5, ecom:0xC2408A, corp:0x2D7C73 };
+const C3_ST = { ok:{ c:0x2FA58F, css:'var(--ok)', l:'В норме', sym:'✓' }, warn:{ c:0xF08A24, css:'var(--orange)', l:'Предупреждение', sym:'!' }, crit:{ c:0xD83A31, css:'var(--crit)', l:'Критическое отклонение', sym:'?!' }, off:{ c:0xB8C4C2, css:'var(--muted)', l:'Нет доступа', sym:'' } };
+const c3Load = src => new Promise((ok, no) => { const s = document.createElement('script'); s.src = src; s.onload = ok; s.onerror = () => no(new Error('Не загрузилась библиотека 3D: ' + src)); document.head.appendChild(s); });
+async function c3Libs(){ if (window.THREE && THREE.OrbitControls) return; if (!window.THREE) await c3Load(C3_LIBS[0]); if (!THREE.OrbitControls) await c3Load(C3_LIBS[1]); }
+const c3Vis = () => AGENTS.filter(agentVisible);
+// ── состояние агента и зоны из данных платформы
+function c3Agent(id){ const a = agentById(id); const fs = visF().filter(f => f.agent === id);
+  const closed = new Set((S.tasks || []).filter(t => t.status === 'closed' && t.fid).map(t => t.fid)); const open = fs.filter(f => !closed.has(f.id));
+  const st = open.some(f => f.sev === 'critical') ? 'crit' : open.some(f => f.sev === 'high' || f.sev === 'medium') ? 'warn' : 'ok';
+  const ts = (S.tasks || []).filter(t => t.agent === id && (S.role !== 'retail' || t.dir === 'retail'));
+  const docs = (KB.docs ? kbVis() : []).filter(d => (d.agents || []).includes(id));
+  return { a, fs, open, st, ts, docs, crit:open.filter(f => f.sev === 'critical').length, high:open.filter(f => f.sev === 'high').length }; }
+function c3Zone(d){ const ids = d.id === 'corp' ? dirAgents(d).filter(id => agentById(id).kind === 'auditor') : dirAgents(d); const vis = ids.filter(id => agentVisible(agentById(id)));
+  if (!vis.length) return { ids, vis, st:'off', fs:[], crit:0 };
+  const xs = vis.map(c3Agent); const st = xs.some(x => x.st === 'crit') ? 'crit' : xs.some(x => x.st === 'warn') ? 'warn' : 'ok';
+  const fs = visF().filter(f => f.dir === d.id); return { ids, vis, st, fs, crit:fs.filter(f => f.sev === 'critical').length, tasks:(S.tasks || []).filter(t => t.dir === d.id && t.status !== 'closed').length }; }
+const C3_HUB = ['MOZG', 'VER', 'REV', 'NRM', 'EXE'];
+// процедура регламента, идущая сейчас (по времени Алматы) или по часам демо-воспроизведения
+function c3Proc(id, hhmm){ const p = profOf(agentById(id)) || {}; const d = [...(p.daily || []), ...(PROC_DAILY[id] || [])].sort((x, y) => x.t.localeCompare(y.t)); let cur = null; d.forEach(x => { if (x.t <= hhmm) cur = x; }); return cur || d[0] || null; }
+const c3Now = () => new Date().toLocaleTimeString('ru-RU', { timeZone:'Asia/Almaty', hour:'2-digit', minute:'2-digit' });
+// шаги демо-воспроизведения: весь дневной регламент видимых агентов по времени
+function c3Steps(){ const out = []; c3Vis().forEach(a => { const p = profOf(a) || {}; [...(p.daily || []), ...(PROC_DAILY[a.id] || [])].forEach(d => out.push({ id:a.id, d })); }); return out.sort((x, y) => x.d.t.localeCompare(y.d.t) || x.id.localeCompare(y.id)); }
+
+// ── текстуры-подписи
+function c3Tex(draw, w, h){ const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d'); draw(g, w, h); const t = new THREE.CanvasTexture(c); t.anisotropy = 4; if ('colorSpace' in t) t.colorSpace = THREE.SRGBColorSpace; else t.encoding = THREE.sRGBEncoding; return t; }
+const C3F = '"Open Sans",system-ui,sans-serif';
+function c3RR(g, x, y, w, h, r){ g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+function c3Label(lines, opt = {}){ const W = opt.w || 512, H = opt.h || 128; const tex = c3Tex((g, w, h) => {
+    g.fillStyle = opt.bg || 'rgba(255,255,255,.94)'; c3RR(g, 4, 4, w - 8, h - 8, 26); g.fill();
+    if (opt.bar){ g.fillStyle = opt.bar; c3RR(g, 4, 4, 18, h - 8, 9); g.fill(); }
+    g.fillStyle = opt.ink || '#1A2B2D'; g.textBaseline = 'middle'; g.textAlign = 'center';
+    lines.forEach((l, i) => { g.font = (i ? '500 ' : '700 ') + (i ? (opt.f2 || 30) : (opt.f1 || 44)) + 'px ' + C3F; g.fillStyle = i ? (opt.ink2 || '#5E7174') : (opt.ink || '#1A2B2D');
+      g.fillText(l, w / 2 + (opt.bar ? 8 : 0), lines.length === 1 ? h / 2 : h * (i ? .7 : .34), w - 50); }); }, W, H);
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthWrite:false })); s.scale.set(opt.sx || 6, (opt.sx || 6) * H / W, 1); s.renderOrder = 5; return s; }
+function c3Bubble(st){ const S2 = C3_ST[st]; const tex = c3Tex((g, w, h) => { g.fillStyle = '#' + S2.c.toString(16).padStart(6, '0'); g.beginPath(); g.arc(w / 2, h / 2 - 6, w / 2 - 10, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.moveTo(w / 2 - 14, h - 34); g.lineTo(w / 2, h - 4); g.lineTo(w / 2 + 14, h - 34); g.fill(); g.fillStyle = '#fff'; g.font = '800 ' + (S2.sym.length > 1 ? 66 : 84) + 'px ' + C3F; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(S2.sym, w / 2, h / 2 - 4); }, 160, 170);
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, depthWrite:false })); s.scale.set(.95, 1.01, 1); s.renderOrder = 6; return s; }
+
+// ── построение сцены
+function c3Build(){
+  const host = document.createElement('div'); host.className = 'c3d-canvas'; C3.el = host;
+  const R = new THREE.WebGLRenderer({ antialias:true, alpha:false, powerPreference:'high-performance' }); R.setPixelRatio(Math.min(devicePixelRatio || 1, 2)); R.shadowMap.enabled = true; R.shadowMap.type = THREE.PCFSoftShadowMap;
+  if ('outputColorSpace' in R) R.outputColorSpace = THREE.SRGBColorSpace; else R.outputEncoding = THREE.sRGBEncoding;
+  host.appendChild(R.domElement); const scene = new THREE.Scene(); scene.background = new THREE.Color(0xEEF5F3); scene.fog = new THREE.Fog(0xEEF5F3, 110, 230); const cam = new THREE.PerspectiveCamera(38, 1, .5, 400); cam.position.set(0, 44, 46);
+  const ctl = new THREE.OrbitControls(cam, R.domElement); ctl.enableDamping = true; ctl.dampingFactor = .08; ctl.maxPolarAngle = 1.38; ctl.minDistance = 9; ctl.maxDistance = 120; ctl.target.set(0, 0, -1); ctl.addEventListener('start', () => { C3.moved = true; C3.fly = null; }); ctl.screenSpacePanning = false;
+  Object.assign(C3, { R, scene, cam, ctl, pick:[], anim:[] });
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xC9DCD8, .85)); const sun = new THREE.DirectionalLight(0xffffff, .75); sun.position.set(-30, 60, 30); sun.castShadow = true;
+  sun.shadow.mapSize.set(1024, 1024); Object.assign(sun.shadow.camera, { left:-60, right:60, top:60, bottom:-60, near:10, far:160 }); sun.shadow.bias = -.0005; scene.add(sun);
+  const M = (c, o = {}) => new THREE.MeshStandardMaterial({ color:c, roughness:.85, metalness:0, ...o }); C3.M = M;
+  const floor = new THREE.Mesh(new THREE.CircleGeometry(95, 96), M(0xE9F1EF)); floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor); C3.floor = floor;
+  C3.G = { box:new THREE.BoxGeometry(1, 1, 1), cyl:new THREE.CylinderGeometry(1, 1, 1, 24), sph:new THREE.SphereGeometry(1, 20, 14), cap:new THREE.CapsuleGeometry(.42, .7, 6, 14), leaf:new THREE.IcosahedronGeometry(1, 0) };
+  const mesh = (geo, mat, x, y, z, sx = 1, sy = 1, sz = 1, par = scene) => { const m = new THREE.Mesh(geo, mat); m.position.set(x, y, z); m.scale.set(sx, sy, sz); m.castShadow = m.receiveShadow = true; par.add(m); return m; }; C3.mesh = mesh;
+  const plant = (x, z, par) => { mesh(C3.G.cyl, M(0xDDE6E4), x, .45, z, .45, .9, .45, par); [[0, 1.4, 0, .7], [.35, 1.15, .2, .5], [-.3, 1.2, -.2, .55], [.1, 1.75, -.15, .45]].forEach(([dx, y, dz, s]) => mesh(C3.G.leaf, M(0x5FAE86, { flatShading:true }), x + dx, y, z + dz, s, s * 1.1, s, par)); };
+  // центр «Контроль и аудит»
+  const hub = new THREE.Group(); hub.position.set(0, 0, 4); scene.add(hub); C3.hub = hub;
+  mesh(C3.G.cyl, M(0xD8ECE8), 0, .15, 0, 9, .3, 9, hub).userData = { zone:'hub' };
+  C3.hubRing = mesh(new THREE.TorusGeometry(9.1, .16, 8, 96), new THREE.MeshBasicMaterial({ color:0x4DC2B0 }), 0, .32, 0, 1, 1, 1, hub); C3.hubRing.rotation.x = Math.PI / 2;
+  mesh(C3.G.cyl, M(0xFFFFFF), 0, 1.05, 2.4, 2.2, .12, 2.2, hub); mesh(C3.G.cyl, M(0x5E7174), 0, .55, 2.4, .25, 1, .25, hub);
+  const scr = new THREE.Group(); scr.position.set(0, 0, -4.6); hub.add(scr); mesh(C3.G.box, M(0x204D52), 0, 3.6, -.12, 9.4, 5.6, .18, scr); mesh(C3.G.box, M(0x5E7174), -3, 1, -.12, .18, 2, .18, scr); mesh(C3.G.box, M(0x5E7174), 3, 1, -.12, .18, 2, .18, scr);
+  C3.screenCv = document.createElement('canvas'); C3.screenCv.width = 1280; C3.screenCv.height = 720; C3.screenTex = new THREE.CanvasTexture(C3.screenCv); if ('colorSpace' in C3.screenTex) C3.screenTex.colorSpace = THREE.SRGBColorSpace; else C3.screenTex.encoding = THREE.sRGBEncoding;
+  const sm = new THREE.Mesh(new THREE.PlaneGeometry(9, 5.06), new THREE.MeshBasicMaterial({ map:C3.screenTex })); sm.position.set(0, 3.6, .0); scr.add(sm); sm.userData = { zone:'hub' }; C3.pick.push(sm);
+  plant(-7, -5, hub); plant(7.2, -4.6, hub);
+  const logo = document.querySelector('.brandbox svg.logo'); if (logo){ const img = new Image(); const svg = logo.outerHTML.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"').replace(/fill="currentColor"/g, 'fill="#ffffff"'); img.onload = () => { C3.logo = img; c3Screen(); }; img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg); }
+  // зоны направлений по кругу
+  const dirs = DIRS; const N = dirs.length; const RAD = 25; const ARC = [-168, -128, -90, -52, -12];
+  dirs.forEach((d, i) => { const ang = (ARC[i] ?? (-180 + 180 * (i + .5) / N)) * Math.PI / 180; const zx = Math.cos(ang) * RAD * 1.22, zz = Math.sin(ang) * RAD + 4; const g = new THREE.Group(); g.position.set(zx, 0, zz); g.rotation.y = Math.atan2(-Math.cos(ang), -Math.sin(ang)); scene.add(g);
+    const ids = dirAgents(d).filter(id => agentById(id).kind === 'auditor' && dirOfAgent(id).dir === d.id); const n = ids.length; const cols = Math.ceil(n / 2); const W = Math.max(10, cols * 3 + 4), D = 10.5;
+    const base = mesh(C3.G.box, M(0xFFFFFF), 0, .15, 0, W, .3, D, g); base.userData = { zone:d.id }; C3.pick.push(base);
+    const rim = mesh(C3.G.box, new THREE.MeshBasicMaterial({ color:C3_DIRCOL[d.id] }), 0, .05, 0, W + .7, .12, D + .7, g);
+    const tint = mesh(C3.G.box, M(C3_DIRCOL[d.id], { transparent:true, opacity:.12 }), 0, .31, 0, W - .6, .02, D - .6, g); tint.receiveShadow = true;
+    mesh(C3.G.box, M(0xFFFFFF), 0, 1.05, 0, cols * 3 + .6, .12, 2.1, g); [-1, 1].forEach(sx => mesh(C3.G.box, M(0x34505A), sx * (cols * 1.5), .55, 0, .14, 1, 1.6, g));
+    plant(W / 2 - 1, -D / 2 + 1.1, g); if (W > 11) plant(-W / 2 + 1, -D / 2 + 1.1, g);
+    const lab = c3Label([d.name, d.title], { sx:9.5, bar:'#' + C3_DIRCOL[d.id].toString(16).padStart(6, '0') }); lab.position.set(0, 5.6, -D / 2 + .6); g.add(lab);
+    const beacon = mesh(C3.G.sph, new THREE.MeshBasicMaterial({ color:C3_ST.ok.c }), W / 2 - .6, .45, D / 2 - .6, .32, .32, .32, g);
+    C3.zones[d.id] = { g, d, base, rim, tint, lab, beacon, W, D, ids };
+    ids.forEach((id, k) => { const row = k % 2, col = Math.floor(k / 2); const x = (col - (cols - 1) / 2) * 3, z = row ? 1.4 : -1.4; c3Person(id, g, x, z, row ? 0 : Math.PI, C3_DIRCOL[d.id]); }); });
+  // агенты платформы за круглым столом центра; МОЗГ — у экрана, как ведущий
+  [['VER', 215], ['REV', 325], ['NRM', 145], ['EXE', 35]].forEach(([id, deg]) => { const a = deg * Math.PI / 180, x = Math.cos(a) * 1.95, z = 2.4 + Math.sin(a) * 1.95; c3Person(id, hub, x, z, Math.atan2(x, z - 2.4), 0x204D52); });
+  c3Person('MOZG', hub, -5.6, -2.4, .5, 0x204D52, true);
+  // связи: аудитор → верификатор → ревьюер → МОЗГ / контроль исполнения
+  C3.linkGroup = new THREE.Group(); scene.add(C3.linkGroup); C3.selLinks = new THREE.Group(); scene.add(C3.selLinks);
+  scene.updateMatrixWorld(true);
+  Object.keys(C3.agents).forEach(id => { if (C3_HUB.includes(id)) return; const L = c3Line(id, 'VER', 0x8FC7BD, .32); C3.agents[id].link = L; });
+  [['VER', 'REV'], ['REV', 'MOZG'], ['REV', 'EXE'], ['NRM', 'MOZG']].forEach(([a, b]) => c3Line(a, b, 0x2D7C73, .8));
+  // взаимодействие
+  const ray = new THREE.Raycaster(), v2 = new THREE.Vector2(); let down = null;
+  const hit = e => { const r = R.domElement.getBoundingClientRect(); v2.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1); ray.setFromCamera(v2, cam);
+    const h = ray.intersectObjects(C3.pick, false).find(x => x.object.visible); return h ? h.object.userData : null; };
+  R.domElement.addEventListener('pointerdown', e => { down = [e.clientX, e.clientY]; });
+  R.domElement.addEventListener('pointerup', e => { if (!down || Math.hypot(e.clientX - down[0], e.clientY - down[1]) > 6) return; const u = hit(e);
+    if (u && u.agent) c3Select({ type:'agent', id:u.agent }); else if (u && u.zone) c3Select({ type:'zone', id:u.zone }); else c3Select(null); });
+  R.domElement.addEventListener('pointermove', e => { const u = hit(e); const k = u ? (u.agent || u.zone) : null; R.domElement.style.cursor = k ? 'pointer' : 'grab'; if (k !== C3.hover){ C3.hover = k; } });
+  R.domElement.addEventListener('dblclick', () => c3Fly(null));
+  new ResizeObserver(() => c3Size()).observe(host);
+  C3.ready = true; C3.t0 = performance.now(); C3.stepAt = 0; requestAnimationFrame(c3Loop); }
+function c3Person(id, par, x, z, rot, col, standing){ const a = agentById(id); if (!a) return; const M = C3.M, G = C3.G, mesh = C3.mesh; const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = rot; par.add(g);
+  const skin = [0xF2C7A5, 0xE0A882, 0xC98C68][id.charCodeAt(0) % 3], hair = [0x2E2A33, 0x5A3A2A, 0x1F2A30][id.charCodeAt(1) % 3];
+  let body, head; if (standing){ body = mesh(G.cap, M(col), 0, 1.25, 0, 1.05, 1.15, 1.05, g); mesh(G.box, M(0x34505A), -.17, .35, 0, .22, .7, .26, g); mesh(G.box, M(0x34505A), .17, .35, 0, .22, .7, .26, g); head = mesh(G.sph, M(skin), 0, 2.32, 0, .34, .36, .34, g); mesh(G.sph, M(hair), 0, 2.45, -.05, .36, .26, .36, g); }
+  else { mesh(G.cyl, M(0x5B7FA6), 0, .62, .95, .55, .12, .55, g); mesh(G.box, M(0x5B7FA6), 0, 1.15, 1.45, 1, 1, .12, g); mesh(G.cyl, M(0x34505A), 0, .3, .95, .06, .6, .06, g);
+    body = mesh(G.cap, M(col), 0, 1.42, .95, .95, .82, .95, g); head = mesh(G.sph, M(skin), 0, 2.27, .92, .33, .35, .33, g); mesh(G.sph, M(hair), 0, 2.4, .99, .35, .25, .35, g);
+    mesh(G.box, M(0xC9D4D6), 0, 1.13, -.15, .95, .05, .62, g); }
+  const scrM = new THREE.MeshStandardMaterial({ color:0x9FB4B1, emissive:0x4DC2B0, emissiveIntensity:.25, roughness:.5 });
+  const lap = standing ? null : mesh(G.box, scrM, 0, 1.45, -.42, .95, .62, .04, g); if (lap) lap.rotation.x = -.25;
+  const hitBox = mesh(G.box, new THREE.MeshBasicMaterial({ visible:false }), 0, 1.4, standing ? 0 : .6, 1.6, 2.9, 1.8, g); hitBox.castShadow = false; hitBox.userData = { agent:id }; C3.pick.push(hitBox);
+  const ring = new THREE.Mesh(new THREE.RingGeometry(.85, 1.05, 40), new THREE.MeshBasicMaterial({ color:C3_ST.ok.c, transparent:true, opacity:.9, side:THREE.DoubleSide })); ring.rotation.x = -Math.PI / 2; ring.position.set(0, .33, standing ? 0 : .95); g.add(ring);
+  const name = c3Label([a.short || a.name], { sx:3.6, h:96, w:420, f1:48 }); name.position.set(0, 3.55, standing ? 0 : .9); g.add(name);
+  const bub = {}; ['ok', 'warn', 'crit'].forEach(k => { const b = c3Bubble(k); b.position.set(0, 4.45, standing ? 0 : .9); b.visible = false; g.add(b); bub[k] = b; });
+  C3.agents[id] = { id, g, body, head, lap, scrM, ring, name, bub, standing, base:{ y:body.position.y, hy:head.position.y }, anchor:new THREE.Vector3(0, 2.6, standing ? 0 : .9) }; }
+function c3Pos(id){ const A = C3.agents[id]; const v = A.anchor.clone(); A.g.localToWorld(v); return v; }
+function c3Curve(a, b){ const p = c3Pos(a), q = c3Pos(b); const m = p.clone().add(q).multiplyScalar(.5); m.y += 4 + p.distanceTo(q) * .18; return new THREE.QuadraticBezierCurve3(p, m, q); }
+function c3Line(a, b, col, op, grp){ if (!C3.agents[a] || !C3.agents[b]) return null; const cv = c3Curve(a, b); const geo = new THREE.BufferGeometry().setFromPoints(cv.getPoints(40));
+  const ln = new THREE.Line(geo, new THREE.LineBasicMaterial({ color:col, transparent:true, opacity:op })); ln.userData = { a, b, cv }; (grp || C3.linkGroup).add(ln); return ln; }
+// поток «документа» по связи; цвет — риск
+function c3Flow(a, b, sev, then){ if (!C3.agents[a] || !C3.agents[b] || !C3.agents[a].g.visible || !C3.agents[b].g.visible) return; const cv = c3Curve(a, b);
+  const m = new THREE.Mesh(C3.G.box, new THREE.MeshBasicMaterial({ color:sev === 'critical' ? 0xD83A31 : sev === 'high' ? 0xF08A24 : sev === 'medium' ? 0xD99A1E : 0x4DC2B0 })); m.scale.set(.5, .06, .66); C3.scene.add(m);
+  C3.flows.push({ m, cv, t:0, dur:1.5 + cv.getLength() / 40, then }); }
+// расстояние общего вида: вся модель помещается в окно при любых пропорциях
+function c3HomeDist(){ const v = C3.cam.fov * Math.PI / 360, hz = Math.atan(Math.tan(v) * C3.cam.aspect); return Math.max(40, 37 / Math.tan(Math.min(v * 1.3, hz))); }
+function c3Size(){ if (!C3.R || !C3.el) return; const w = C3.el.clientWidth, h = C3.el.clientHeight; if (!w || !h) return; C3.R.setSize(w, h, false); C3.cam.aspect = w / h; C3.cam.updateProjectionMatrix(); if (!C3.moved){ c3Fly(null); C3.fly.s = -1e9; } }
+function c3Fly(target, dist){ const to = target ? target.clone() : new THREE.Vector3(0, 0, -1); const dir = C3.cam.position.clone().sub(C3.ctl.target).normalize(); if (!target) dir.set(0, .69, .72).normalize();
+  const D = dist || (target ? 20 : c3HomeDist()); if (target && C3.el && C3.el.clientWidth > 760){ const right = dir.clone().negate().cross(new THREE.Vector3(0, 1, 0)).normalize(); to.add(right.multiplyScalar(D * .2)); }
+  const pos = to.clone().add(dir.multiplyScalar(D)); C3.fly = { p0:C3.cam.position.clone(), t0:C3.ctl.target.clone(), p1:pos, t1:to, s:performance.now() }; }
+function c3Select(sel){ C3.sel = sel; C3.moved = !!sel; C3.selLinks.clear();
+  if (sel && sel.type === 'agent'){ const id = sel.id; const p = c3Pos(id); c3Fly(new THREE.Vector3(p.x, 1.5, p.z), 19);
+    const pr = profOf(agentById(id)) || {}; (pr.sendsTo || []).forEach(s => { if (C3.agents[s.to] && agentVisible(agentById(s.to))) c3Line(id, s.to, 0xF47216, .95, C3.selLinks); });
+    if (!C3_HUB.includes(id)) c3Line(id, 'VER', 0x2D7C73, 1, C3.selLinks); }
+  else if (sel && sel.type === 'zone'){ const z = sel.id === 'hub' ? null : C3.zones[sel.id]; if (z){ const v = new THREE.Vector3(); z.g.getWorldPosition(v); c3Fly(v, 34); } else c3Fly(new THREE.Vector3(0, 1.5, 4), 30); }
+  c3Panel(); }
+// ── обновление состояния сцены по данным платформы (роль, статусы, документы)
+function c3Sync(){ if (!C3.ready) return;
+  Object.values(C3.zones).forEach(z => { const s = c3Zone(z.d); z.st = s.st; const col = C3_ST[s.st].c; z.beacon.material.color.setHex(col); z.rim.material.color.setHex(s.st === 'off' ? 0xC9D4D2 : s.st === 'ok' ? C3_DIRCOL[z.d.id] : col);
+    const old = z.lab.material.map; const L = c3Label([z.d.name, s.st === 'off' ? 'нет доступа в этой роли' : `${plural(s.vis.length, 'аудитор', 'аудитора', 'аудиторов')} · кейсов ${s.fs.length}${s.crit ? ' · критических ' + s.crit : ''}`], { sx:9.5, bar:'#' + (s.st === 'off' ? 0xC9D4D2 : C3_DIRCOL[z.d.id]).toString(16).padStart(6, '0') });
+    z.lab.material.map = L.material.map; z.lab.material.needsUpdate = true; old.dispose(); L.material.dispose(); });
+  Object.values(C3.agents).forEach(A => { const vis = agentVisible(agentById(A.id)); A.g.visible = vis; if (A.link) A.link.visible = vis;
+    const st = vis ? c3Agent(A.id).st : 'off'; A.st = st; A.ring.material.color.setHex(C3_ST[st].c); Object.entries(A.bub).forEach(([k, b]) => b.visible = vis && k === st && st !== 'ok'); });
+  C3.linkGroup.children.forEach(l => { const a = agentById(l.userData.a), b = agentById(l.userData.b); if (a && b) l.visible = (C3.links !== 'off') && agentVisible(a) && agentVisible(b); });
+  C3.hubVis = C3_HUB.some(id => agentVisible(agentById(id))); C3.roleBuilt = S.role; c3Screen(); }
+// большой экран центра: сводка как на презентационной доске
+function c3Screen(){ const cv = C3.screenCv; if (!cv) return; const g = cv.getContext('2d'); const w = cv.width, h = cv.height;
+  g.fillStyle = '#204D52'; g.fillRect(0, 0, w, h); g.fillStyle = '#1A4145'; g.fillRect(0, 0, w, 110);
+  if (C3.logo) g.drawImage(C3.logo, 40, 30, 50 * (C3.logo.width / C3.logo.height || 4.5), 50);
+  g.fillStyle = '#fff'; g.font = '700 40px ' + C3F; g.textAlign = 'right'; g.fillText(c3Now(), w - 40, 70); g.font = '500 22px ' + C3F; g.fillStyle = 'rgba(255,255,255,.7)'; g.fillText('Алматы', w - 40, 96);
+  g.textAlign = 'left'; g.fillStyle = 'rgba(255,255,255,.75)'; g.font = '600 24px ' + C3F; g.fillText('ЦЕНТР КОНТРОЛЯ И АУДИТА · ' + (ROLES[S.role] || '').toUpperCase(), 40, 160);
+  const F = visF(); const T = (S.tasks || []).filter(t => S.role !== 'retail' || t.dir === 'retail'); const crit = F.filter(f => f.sev === 'critical').length, high = F.filter(f => f.sev === 'high').length;
+  [['Кейсов', F.length, '#fff'], ['Критических', crit, '#FF9B92'], ['Высокий риск', high, '#FFB873'], ['Задач открыто', T.filter(t => t.status !== 'closed').length, '#9FE3D6']].forEach(([l, v, c], i) => { const x = 40 + i * 300;
+    g.fillStyle = 'rgba(255,255,255,.08)'; c3RR(g, x, 190, 280, 150, 18); g.fill(); g.fillStyle = c; g.font = '700 72px ' + C3F; g.fillText(String(v), x + 24, 285); g.fillStyle = 'rgba(255,255,255,.75)'; g.font = '500 24px ' + C3F; g.fillText(l, x + 24, 322); });
+  const dirs = DIRS.filter(d => c3Zone(d).st !== 'off'); const mx = Math.max(1, ...dirs.map(d => visF().filter(f => f.dir === d.id).length));
+  dirs.forEach((d, i) => { const y = 400 + i * 58, n = visF().filter(f => f.dir === d.id).length, c = visF().filter(f => f.dir === d.id && f.sev === 'critical').length; g.fillStyle = '#fff'; g.font = '600 26px ' + C3F; g.fillText(d.name, 40, y + 30);
+    g.fillStyle = 'rgba(255,255,255,.12)'; c3RR(g, 330, y + 8, 760, 30, 8); g.fill(); g.fillStyle = '#' + C3_DIRCOL[d.id].toString(16).padStart(6, '0'); c3RR(g, 330, y + 8, Math.max(8, 760 * n / mx), 30, 8); g.fill();
+    if (c){ g.fillStyle = '#FF9B92'; c3RR(g, 330, y + 8, Math.max(8, 760 * c / mx), 30, 8); g.fill(); } g.fillStyle = '#fff'; g.font = '700 26px ' + C3F; g.fillText(String(n), 1110, y + 32); });
+  g.fillStyle = 'rgba(255,255,255,.55)'; g.font = '500 20px ' + C3F; g.fillText('Тестовые данные демоверсии · красным — критические кейсы', 40, h - 24); C3.screenTex.needsUpdate = true; }
+// ── анимация
+function c3Loop(now){ if (!C3.ready) return; requestAnimationFrame(c3Loop); if (!C3.el || !C3.el.isConnected || document.hidden) return;
+  const t = (now - C3.t0) / 1000; const dt = Math.min(.05, (now - (C3.prev || now)) / 1000); C3.prev = now;
+  if (C3.fly){ const k = Math.min(1, (now - C3.fly.s) / 900), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2; C3.cam.position.lerpVectors(C3.fly.p0, C3.fly.p1, e); C3.ctl.target.lerpVectors(C3.fly.t0, C3.fly.t1, e); if (k >= 1) C3.fly = null; }
+  C3.ctl.update();
+  Object.values(C3.zones).forEach(z => { const s = z.st === 'crit' ? 1 + .35 * Math.sin(t * 5) : 1; z.beacon.scale.setScalar(.32 * s); if (z.st === 'crit') z.rim.material.color.setHex(Math.sin(t * 5) > 0 ? C3_ST.crit.c : 0xF2A49E); });
+  C3.hubRing.material.color.setHSL(.47, .5, .55 + .08 * Math.sin(t * 2));
+  Object.values(C3.agents).forEach(A => { if (!A.g.visible) return; const act = C3.active[A.id] && C3.active[A.id] > now; const sel = C3.sel && C3.sel.type === 'agent' && C3.sel.id === A.id; const hov = C3.hover === A.id;
+    A.body.position.y = A.base.y + (act ? .06 * Math.sin(t * 9) : 0); A.head.position.y = A.base.hy + (act ? .06 * Math.sin(t * 9) : 0) + .015 * Math.sin(t * 1.3 + A.id.length);
+    if (A.lap){ A.scrM.emissive.setHex(act ? 0x9FF5E6 : C3_ST[A.st || 'ok'].c); A.scrM.emissiveIntensity = act ? .9 + .3 * Math.sin(t * 12) : .3; }
+    A.ring.scale.setScalar(sel ? 1.25 + .06 * Math.sin(t * 4) : hov ? 1.15 : 1); A.ring.material.opacity = sel || act ? 1 : .75;
+    A.name.visible = C3.labels || sel || hov || act; Object.values(A.bub).forEach(b => { if (b.visible) b.position.y = 4.45 + .12 * Math.sin(t * 3); }); });
+  for (let i = C3.flows.length - 1; i >= 0; i--){ const f = C3.flows[i]; f.t += dt / f.dur; if (f.t >= 1){ C3.scene.remove(f.m); f.m.material.dispose(); C3.flows.splice(i, 1); f.then && f.then(); continue; }
+    f.m.position.copy(f.cv.getPoint(f.t)); f.m.rotation.y += dt * 4; }
+  if (C3.demo && now > (C3.stepAt || 0)) c3DemoStep(now);
+  if (S.events[0] !== C3.lastEv){ c3Facts(); }
+  if ((C3.scrAt || 0) < now){ C3.scrAt = now + 15000; c3Screen(); }
+  C3.R.render(C3.scene, C3.cam); }
+// ── демо-воспроизведение регламента (ИМИТАЦИЯ) и факты из журнала платформы
+function c3DemoStep(now){ const steps = C3.steps || (C3.steps = c3Steps()); if (!steps.length) return; const s = steps[C3.step % steps.length]; C3.step++; C3.stepAt = now + 2300; C3.clock = s.d.t;
+  C3.active[s.id] = now + 2100; const a = agentById(s.id); const fs = s.d.code ? visF().filter(f => f.rule === s.d.code) : [];
+  let text = `${a.short || a.name}: ${s.d.what}`; let sev = null;
+  if (s.d.code){ text += fs.length ? ` — найдено ${plural(fs.length, 'отклонение', 'отклонения', 'отклонений')}` : ' — отклонений нет'; if (fs.length){ const f = fs.reduce((m, x) => RANK[x.sev] > RANK[m.sev] ? x : m, fs[0]); sev = f.sev;
+      const task = (S.tasks || []).find(t => t.fid === f.id); C3.feedFid = f.id;
+      c3Flow(s.id, 'VER', f.sev, () => { C3.active.VER = performance.now() + 1500; c3Flow('VER', 'REV', f.sev, () => { C3.active.REV = performance.now() + 1500; c3Flow('REV', task ? 'EXE' : 'MOZG', f.sev, () => { C3.active[task ? 'EXE' : 'MOZG'] = performance.now() + 1500; }); }); }); } }
+  else if (s.d.real) text += ' — разовая проверка по реальной выгрузке';
+  C3.feed.unshift({ t:s.d.t, kind:'demo', id:s.id, text, sev, fid:fs[0] && fs[0].id }); C3.feed = C3.feed.slice(0, 40); c3FeedDraw(); c3ActiveDraw(); }
+function c3Facts(){ C3.lastEv = S.events[0]; const facts = S.events.slice(0, 12).map(e => ({ t:e.t, kind:e.sim ? 'sim' : 'fact', text:e.text, id:(AGENTS.find(a => e.text.includes(a.name)) || {}).id }));
+  const seen = new Set(C3.feed.filter(x => x.kind !== 'demo').map(x => x.t + x.text)); const fresh = facts.filter(x => !seen.has(x.t + x.text));
+  fresh.forEach(x => { if (x.id && C3.agents[x.id]) C3.active[x.id] = performance.now() + 3000; }); C3.feed = [...fresh, ...C3.feed].slice(0, 40); c3FeedDraw(); }
+function c3FeedDraw(){ const el = document.getElementById('c3feed'); if (!el) return; const L = C3.feed.filter(x => C3.demo || x.kind !== 'demo').slice(0, 14);
+  el.innerHTML = L.map(x => `<button class="c3fi" ${x.id ? `data-c3a="${x.id}"` : ''}><span class="c3k ${x.kind}">${x.kind === 'demo' ? 'имитация' : x.kind === 'sim' ? 'имитация B24' : 'журнал'}</span><span class="num">${esc(x.t)}</span><span class="tx">${x.sev ? `<i class="dot" style="background:${SEVCOL[x.sev]}"></i>` : ''}${esc(x.text)}</span></button>`).join('') || '<p class="small" style="padding:8px">Событий пока нет.</p>';
+  el.querySelectorAll('[data-c3a]').forEach(b => b.onclick = () => c3Select({ type:'agent', id:b.dataset.c3a })); const ck = document.getElementById('c3clock'); if (ck) ck.textContent = C3.demo ? C3.clock : c3Now(); }
+function c3ActiveDraw(){ const el = document.getElementById('c3act'); if (!el) return; const now = performance.now(); el.textContent = Object.entries(C3.active).filter(([id, t]) => t > now && agentVisible(agentById(id))).length; }
+// ── боковая панель: подробности зоны или агента
+function c3Panel(){ const el = document.getElementById('c3panel'); if (!el) return; const s = C3.sel; el.classList.toggle('open', !!s);
+  if (!s){ el.innerHTML = ''; return; }
+  const close = `<button class="btn sm c3x" id="c3close" aria-label="Закрыть">${ic('x', 'ico-sm')}</button>`; let h = '';
+  if (s.type === 'agent'){ const x = c3Agent(s.id), a = x.a, p = profOf(a) || {}; const now = C3.demo ? C3.clock : c3Now(); const pr = c3Proc(s.id, now); const act = C3.active[s.id] > performance.now();
+    h = `<div class="row" style="flex-wrap:nowrap;gap:10px"><span class="av ${a.kind === 'platform' ? 'pl' : ''}">${ic(a.icon)}</span><div class="col" style="gap:2px;min-width:0"><b style="color:var(--ink)">${esc(a.name)}</b><span class="small">${esc(scopeName(a.id))}</span></div>${close}</div>
+      <div class="row"><span class="pill" style="background:${C3_ST[x.st].css};color:#fff">${C3_ST[x.st].l}</span><span class="pill ${act ? 'p-brand' : 'p-mute'}">${act ? 'выполняет процедуру' : 'ожидает'}</span></div>
+      <p class="small clamp3" style="color:var(--body)">${esc(a.spec)}</p>
+      <div class="c3sec"><h4>${C3.demo ? 'Процедура по регламенту (демо-время ' + esc(now) + ')' : 'Процедура по регламенту на ' + esc(now)}</h4>${pr ? `<p class="small" style="color:var(--body)"><b class="num">${esc(pr.t)}</b> ${esc(pr.what)}</p><p class="small">Данные: ${esc(pr.data)}</p>` : '<p class="small">Регламент не задан.</p>'}</div>
+      <div class="c3kp"><span><b>${x.open.length}</b>отклонений</span><span><b style="color:var(--crit)">${x.crit}</b>критич.</span><span><b>${x.ts.filter(t => t.status !== 'closed').length}</b>задач</span><span><b>${x.docs.length}</b>документов</span></div>
+      <div class="c3sec"><h4>Выявленные нарушения</h4>${x.open.slice(0, 5).map(caseRow).join('') || '<p class="small">Открытых отклонений нет.</p>'}</div>
+      ${x.ts.length ? `<div class="c3sec"><h4>Сформированные задачи (имитация Bitrix24)</h4>${x.ts.slice(0, 4).map(t => `<button class="c3li" data-go='{"page":"tasks","task":"${t.id}"}'><span class="small num">${esc(t.id)}</span> ${esc(t.title)} <span class="pill ${overdue(t) ? 'p-crit' : t.status === 'closed' ? 'p-ok' : 'p-mute'}">${overdue(t) ? 'просрочена' : t.status === 'closed' ? 'закрыта' : 'в работе'}</span></button>`).join('')}</div>` : ''}
+      ${x.docs.length ? `<div class="c3sec"><h4>Документы агента в базе знаний</h4>${x.docs.slice(0, 5).map(d => `<button class="c3li" data-go='{"page":"doc","id":"${d.id}"}'>${ic('file-text', 'ico-sm')} ${esc(d.title)}</button>`).join('')}</div>` : ''}
+      ${(p.sendsTo || []).length ? `<div class="c3sec"><h4>Передаёт информацию (оранжевые связи)</h4><p class="small">${p.sendsTo.map(z => esc((agentById(z.to) || {}).short || z.to)).join(' · ')}</p></div>` : ''}
+      <div class="row"><button class="btn pri sm" data-go='{"page":"agent","id":"${a.id}"}'>${ic('id-card', 'ico-sm')} Профиль агента (2D)</button><button class="btn sm" data-go='{"page":"cases"}'>Все кейсы</button></div>`; }
+  else if (s.id === 'hub'){ const F = visF(); const ver = F.filter(f => f.ver && f.ver.verdict && f.ver.verdict !== 'discrepancy').length; const rev = F.filter(f => (S.ai[aiKey(f)] || {}).rev).length; const T = (S.tasks || []).filter(t => t.fid && (S.role !== 'retail' || t.dir === 'retail'));
+    h = `<div class="row" style="flex-wrap:nowrap"><b style="color:var(--ink);flex:1">Центр контроля и аудита</b>${close}</div><p class="small">МОЗГ сводит сигналы аудиторов. Каждый кейс проходит независимую проверку: верификатор пересчитывает факты кодом, ревьюер оценивает риск вслепую, контроль исполнения следит за задачами.</p>
+      <div class="c3pipe">${[['Найдено аудиторами', F.length], ['Пересчитано верификатором', ver], ['Проверено ревьюером ИИ', rev], ['Задач поставлено', T.length], ['Закрыто', T.filter(t => t.status === 'closed').length]].map(([l, v], i) => `<div><span class="n">${i + 1}</span><span class="small">${l}</span><b class="num">${v}</b></div>`).join('')}</div>
+      <div class="row">${C3_HUB.filter(id => agentVisible(agentById(id))).map(id => `<button class="chip" data-c3a="${id}">${esc(agentById(id).short || agentById(id).name)}</button>`).join('')}</div>
+      <div class="row"><button class="btn pri sm" data-go='{"page":"mozg"}'>МОЗГ и взаимодействие (2D)</button><button class="btn sm" data-go='{"page":"quality"}'>Качество AI-аудита</button></div>`; }
+  else { const d = dirById(s.id), z = c3Zone(d);
+    h = `<div class="row" style="flex-wrap:nowrap"><b style="color:var(--ink);flex:1">${esc(d.name)} · ${esc(d.title)}</b>${close}</div>
+      ${z.st === 'off' ? `<p class="small">В роли «${esc(ROLES[S.role])}» это направление недоступно.</p>` : `<div class="row"><span class="pill" style="background:${C3_ST[z.st].css};color:#fff">${C3_ST[z.st].l}</span></div><p class="small">${esc(d.about)}</p>
+      <div class="c3kp"><span><b>${z.fs.length}</b>кейсов</span><span><b style="color:var(--crit)">${z.crit}</b>критич.</span><span><b>${z.tasks}</b>задач</span><span><b>${z.vis.length}</b>аудиторов</span></div>
+      <div class="c3sec"><h4>Подразделения и ИИ-аудиторы</h4>${d.units.map(u => `<div class="c3u"><span class="small" style="color:var(--body)">${esc(u.name)}</span><span class="row" style="gap:4px">${u.agents.filter(id => agentVisible(agentById(id))).map(id => { const st = c3Agent(id).st; return `<button class="chip" data-c3a="${id}"><i class="dot" style="background:${C3_ST[st].css}"></i>${esc(agentById(id).short || id)}</button>`; }).join('')}</span></div>`).join('')}</div>
+      <div class="row"><button class="btn pri sm" data-go='{"page":"dir","id":"${d.id}"}'>Открыть направление (2D)</button></div>`}`; }
+  el.innerHTML = h; if (window.lucide) try { lucide.createIcons({ attrs:{ 'aria-hidden':'true' } }); } catch {}
+  el.querySelectorAll('[data-go]').forEach(b => b.onclick = e => { e.stopPropagation(); go(JSON.parse(b.dataset.go)); });
+  el.querySelectorAll('[data-c3a]').forEach(b => b.onclick = () => c3Select({ type:'agent', id:b.dataset.c3a }));
+  const c = document.getElementById('c3close'); if (c) c.onclick = () => { c3Select(null); c3Fly(null); }; }
+// ── раздел платформы
+V.center3d = () => { const F = visF(); const vis = c3Vis();
+  return `<section class="row" style="gap:12px"><div class="col" style="gap:2px;flex:1;min-width:240px"><h1>3D-центр управления ИИ-аудиторами</h1><span class="small">Цифровой офис ГК Садыхан: направления — зоны, ИИ-аудиторы — за рабочими местами, в центре — контроль и аудит. Данные — те же, что в дашборде.</span></div>
+    <div class="row" role="group" aria-label="Режим отображения"><button class="btn sm" data-go='{"page":"home"}'>${ic('layout-dashboard', 'ico-sm')} 2D-дашборд</button><button class="btn sm pri" aria-pressed="true">${ic('box', 'ico-sm')} 3D-центр</button></div></section>
+  <div class="c3d" id="c3wrap"><div id="c3host" class="c3host">${C3.err ? '' : '<div class="c3load"><span class="spin"></span> Загрузка 3D-сцены…</div>'}</div>
+    <div class="c3hud"><div class="c3stat"><span><b class="num">${vis.length}</b>агентов</span><span><b class="num" id="c3act">0</b>активны</span><span><b class="num" style="color:var(--crit)">${F.filter(f => f.sev === 'critical').length}</b>критических</span><span><b class="num" style="color:var(--orange)">${F.filter(f => f.sev === 'high').length}</b>высоких</span><span><b class="num">${(S.tasks || []).filter(t => t.status !== 'closed' && (S.role !== 'retail' || t.dir === 'retail')).length}</b>задач</span><span><b class="num" id="c3clock">${esc(C3.demo ? C3.clock : c3Now())}</b>${C3.demo ? 'демо-время' : 'Алматы'}</span></div>
+      <div class="c3leg">${['ok', 'warn', 'crit'].map(k => `<span><i class="dot" style="background:${C3_ST[k].css}"></i>${C3_ST[k].l}</span>`).join('')}<span><i class="ln" style="background:#8FC7BD"></i>на проверку</span><span><i class="ln" style="background:var(--orange)"></i>передача данных</span></div></div>
+    <div class="c3ctl"><label class="c3sw"><input type="checkbox" id="c3demo" ${C3.demo ? 'checked' : ''}> Демо-воспроизведение регламента</label><label class="c3sw"><input type="checkbox" id="c3links" ${C3.links !== 'off' ? 'checked' : ''}> Связи</label><label class="c3sw"><input type="checkbox" id="c3lab" ${C3.labels ? 'checked' : ''}> Подписи</label>
+      <div class="row" style="gap:4px"><button class="btn sm" id="c3home" title="Общий вид">${ic('scan', 'ico-sm')}</button><button class="btn sm" id="c3hub" title="Центр контроля">${ic('shield-check', 'ico-sm')}</button></div></div>
+    ${C3.demo ? `<div class="c3sim">${ic('flask-conical', 'ico-sm')} ИМИТАЦИЯ: ход регламента воспроизводится на тестовых данных. Реальные системы не подключены — после подключения здесь будут фактические события.</div>` : ''}
+    <div class="c3feed"><div class="c3fh"><b>Работа агентов</b><span class="small">${C3.demo ? 'журнал платформы + имитация' : 'только журнал платформы'}</span></div><div id="c3feed"></div></div>
+    <div class="c3panel" id="c3panel"></div>
+    <div class="c3help small">Перетаскивание — вращение · правая кнопка или два пальца — перемещение · колесо — масштаб · клик — выбор · двойной клик — общий вид</div></div>
+  <section class="g3"><div class="card col"><h3>${ic('map', 'ico-sm')} Направления</h3>${DIRS.map(d => { const s = c3Zone(d); return s.st === 'off' ? '' : `<button class="c3li" data-c3z="${d.id}"><i class="dot" style="background:${C3_ST[s.st].css}"></i><b>${esc(d.name)}</b> <span class="small">кейсов ${s.fs.length}${s.crit ? ' · критических ' + s.crit : ''}</span></button>`; }).join('')}</div>
+    <div class="card col"><h3>${ic('shield-alert', 'ico-sm')} Требуют внимания</h3>${vis.map(a => ({ a, x:c3Agent(a.id) })).filter(o => o.x.st === 'crit').slice(0, 6).map(o => `<button class="c3li" data-c3a="${o.a.id}"><i class="dot" style="background:var(--crit)"></i><b>${esc(o.a.name)}</b> <span class="small">критических ${o.x.crit}</span></button>`).join('') || '<p class="small">Критических отклонений нет.</p>'}</div>
+    <div class="card col"><h3>${ic('info', 'ico-sm')} Источник данных</h3><p class="small">Статусы, кейсы, задачи и документы берутся из платформы. Поток «журнал» — действия, выполненные в системе. Поток «имитация» — воспроизведение ежедневного регламента агентов на тестовых данных; его можно выключить. Интеграции с 1С, Bitrix24 и ОФД пока не подключены.</p></div></section>`; };
+B.center3d = async () => { const host = document.getElementById('c3host'); const wrap = document.getElementById('c3wrap');
+  const bind = () => { const g = id => document.getElementById(id);
+    g('c3demo').onchange = e => { C3.demo = e.target.checked; render(); }; g('c3links').onchange = e => { C3.links = e.target.checked ? 'flow' : 'off'; c3Sync(); };
+    g('c3lab').onchange = e => { C3.labels = e.target.checked; }; g('c3home').onclick = () => { c3Select(null); c3Fly(null); }; g('c3hub').onclick = () => c3Select({ type:'zone', id:'hub' });
+    document.querySelectorAll('[data-c3a]').forEach(b => b.onclick = () => { wrap.scrollIntoView({ behavior:'smooth', block:'center' }); c3Select({ type:'agent', id:b.dataset.c3a }); });
+    document.querySelectorAll('[data-c3z]').forEach(b => b.onclick = () => { wrap.scrollIntoView({ behavior:'smooth', block:'center' }); c3Select({ type:'zone', id:b.dataset.c3z }); }); };
+  bind(); c3FeedDraw();
+  if (C3.err){ host.innerHTML = `<div class="c3load">${esc(C3.err)} <button class="btn sm" data-go='{"page":"home"}'>2D-дашборд</button></div>`; host.querySelector('[data-go]').onclick = () => go({ page:'home' }); return; }
+  try { const c = document.createElement('canvas'); if (!(c.getContext('webgl2') || c.getContext('webgl'))) throw new Error('Браузер не поддерживает WebGL — 3D-режим недоступен.');
+    if (!C3.ready){ C3.loading = C3.loading || c3Libs(); await C3.loading; if (!C3.ready) c3Build(); }
+  } catch (e){ C3.err = e.message || 'Не удалось запустить 3D.'; host.innerHTML = `<div class="c3load">${esc(C3.err)}</div>`; return; }
+  if (!document.getElementById('c3host')) return; const h2 = document.getElementById('c3host'); h2.innerHTML = ''; h2.appendChild(C3.el); c3Size();
+  const roleChanged = C3.roleBuilt !== S.role; if (roleChanged){ C3.steps = null; C3.step = 0; C3.flows.forEach(f => C3.scene.remove(f.m)); C3.flows = []; } c3Sync(); c3Facts();
+  if (roleChanged){ if (S.role === 'retail') c3Select({ type:'zone', id:'retail' }); else { c3Select(null); c3Fly(null); } } else c3Panel(); };
 function render(){
   if (!['ceo', 'ctl'].includes(S.role) && S.route.page === 'council') S.route = { page:'home' };
   document.getElementById('nav').innerHTML = navItems(); document.getElementById('crumbs').innerHTML = crumbs();
