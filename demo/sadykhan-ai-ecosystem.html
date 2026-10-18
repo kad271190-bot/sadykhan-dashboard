@@ -245,7 +245,7 @@ textarea{width:100%;resize:vertical}
     <div class="sidefoot">Тестовые данные условной аптечной сети. Не являются показателями ГК.</div>
   </aside>
   <div class="mainc">
-    <div class="ribbon"><i data-lucide="flask-conical" class="ico-sm"></i><b>Демоверсия.</b> Все данные тестовые. Интеграции с 1С и Bitrix24 имитируются и помечены «Имитация». Ответы ИИ-агентов — реальные (Claude), но по тестовым данным.</div>
+    <div class="ribbon" id="ribbon"><i data-lucide="flask-conical" class="ico-sm"></i><b>Демоверсия.</b> Все данные тестовые. Интеграции с 1С и Bitrix24 имитируются и помечены «Имитация». Ответы ИИ-агентов — реальные (Claude), но по тестовым данным.</div>
     <header class="topbar">
       <button class="btn sm menu-btn" id="menuBtn" aria-label="Открыть меню"><i data-lucide="menu"></i></button>
       <div class="crumbs" id="crumbs"></div>
@@ -2155,6 +2155,7 @@ rs.onchange = () => { S.role = rs.value; store.set('eco.role', S.role); go({ pag
 document.getElementById('menuBtn').onclick = () => document.getElementById('side').classList.toggle('open');
 rebuild(); seedTasks(); seedEvents(); if ((S.route.page === 'case' && !S.F.find(f => f.id === S.route.id)) || (S.route.page === 'agent' && !agentById(S.route.id)) || (S.route.page === 'sop' && !SOPS.find(x => x.id === S.route.id))) S.route = { page:'home' }; render();
 // ИИ подключается после первой отрисовки: страница работает и без него.
+if (!window.claude){ const rb = document.getElementById('ribbon'); const sp = document.createElement('span'); sp.innerHTML = '· <b>Режим просмотра без Claude:</b> ИИ-агенты, раздел «Документы» и сохранение работают в полной версии — <a href="https://claude.ai/artifact/6hSq7KghFBUy7eZZAdvVZs" target="_blank" rel="noopener" style="color:inherit;font-weight:700">открыть в Claude</a>.'; rb.appendChild(sp); }
 (async () => { try { S.sample = window.claude ? await window.claude.use('sample') : null; } catch { S.sample = null; } kbInit();
   S.sampleState = S.sample ? 'ready' : 'off'; if (S.sample){ try { const l = await S.sample.limits(); S.tools = !!(l && l.tools); S.toolMax = l && l.tools ? l.tools.maxCount : 0; } catch { S.tools = false; } } render(); })();
 </script>
