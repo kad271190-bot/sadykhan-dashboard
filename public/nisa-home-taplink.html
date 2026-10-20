@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#F6F2EC">
+<title>NISA HOME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ivory:   #F6F2EC;
+  --linen:   #EFE7DC;
+  --sand:    #D8C9B7;
+  --clay:    #C8A98D;
+  --taupe:   #B6A38F;
+  --stone:   #8A8178;
+  --charcoal:#3D3D3D;
+  --brown:   #4A3F38;
+  --serif:   'Cormorant Garamond', Georgia, serif;
+  --sans:    'Manrope', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  background: var(--ivory);
+  font-family: var(--sans);
+  color: var(--charcoal);
+  min-height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 0 60px;
+}
+
+/* ── WRAPPER ─────────────────────────────── */
+.wrap {
+  width: 100%;
+  max-width: 480px;
+  padding: 0 20px;
+}
+
+/* ── HEADER ──────────────────────────────── */
+.header {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 20px 32px;
+  text-align: center;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 2px solid var(--sand);
+  flex-shrink: 0;
+}
+
+.brand-name {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--charcoal);
+  letter-spacing: 5px;
+  margin-bottom: 6px;
+}
+
+.brand-sub {
+  font-family: var(--serif);
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--stone);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  font-style: italic;
+}
+
+.brand-cats {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--taupe);
+  letter-spacing: 1.5px;
+  margin-bottom: 0;
+}
+
+/* ── DIVIDER ─────────────────────────────── */
+.divider {
+  width: 40px;
+  height: 1px;
+  background: var(--sand);
+  margin: 24px auto;
+}
+
+/* ── BUTTONS ─────────────────────────────── */
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 22px;
+  border-radius: 14px;
+  text-decoration: none;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  transition: transform .15s, box-shadow .15s;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+}
+
+.btn:active { transform: scale(.98); }
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.btn-content { display: flex; flex-direction: column; align-items: flex-start; }
+.btn-title { font-size: 14px; font-weight: 600; line-height: 1.2; }
+.btn-hint  { font-size: 11px; font-weight: 400; opacity: .75; margin-top: 2px; }
+
+.btn-arrow {
+  margin-left: auto;
+  opacity: .4;
+  font-size: 16px;
+}
+
+/* WhatsApp */
+.btn-wa {
+  background: #25D366;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(37,211,102,.25);
+}
+.btn-wa .btn-icon { background: rgba(255,255,255,.18); }
+
+/* Kaspi */
+.btn-kaspi {
+  background: #F14635;
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(241,70,53,.2);
+}
+.btn-kaspi .btn-icon { background: rgba(255,255,255,.18); }
+
+/* Phone */
+.btn-phone {
+  background: #fff;
+  color: var(--charcoal);
+  border: 1.5px solid var(--sand);
+  box-shadow: 0 2px 12px rgba(61,61,61,.06);
+}
+.btn-phone .btn-icon { background: var(--linen); }
+
+/* Instagram */
+.btn-insta {
+  background: linear-gradient(135deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+  color: #fff;
+  box-shadow: 0 4px 20px rgba(220,39,67,.2);
+}
+.btn-insta .btn-icon { background: rgba(255,255,255,.18); }
+
+/* Secondary flat button */
+.btn-flat {
+  background: var(--linen);
+  color: var(--charcoal);
+  border: 1px solid var(--sand);
+}
+.btn-flat .btn-icon { background: var(--sand); }
+
+/* ── SECTION TITLE ───────────────────────── */
+.sec-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 32px 0 16px;
+}
+.sec-label-line { flex: 1; height: 1px; background: var(--sand); }
+.sec-label-text {
+  font-family: var(--sans);
+  font-size: 10px;
+  color: var(--taupe);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── CATALOG CATEGORY ────────────────────── */
+.cat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0 12px;
+  border-bottom: 1px solid var(--sand);
+  cursor: pointer;
+  user-select: none;
+}
+.cat-header-left { display: flex; align-items: center; gap: 12px; }
+.cat-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.cat-name { font-family: var(--serif); font-size: 20px; font-weight: 300; color: var(--charcoal); letter-spacing: .5px; }
+.cat-count { font-family: var(--sans); font-size: 11px; color: var(--stone); }
+.cat-arrow { font-size: 14px; color: var(--taupe); transition: transform .25s; }
+.cat-header.open .cat-arrow { transform: rotate(180deg); }
+
+/* Product grid */
+.prod-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 14px 0 4px;
+  display: none;
+}
+.prod-grid.visible { display: grid; }
+
+.prod-card {
+  background: #fff;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--linen);
+  box-shadow: 0 2px 12px rgba(61,61,61,.05);
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  text-decoration: none;
+  display: block;
+}
+.prod-card:active { transform: scale(.97); box-shadow: 0 1px 6px rgba(61,61,61,.08); }
+
+.prod-img {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.prod-body { padding: 12px 12px 14px; }
+.prod-name { font-family: var(--serif); font-size: 15px; font-weight: 400; color: var(--charcoal); margin-bottom: 3px; }
+.prod-desc { font-family: var(--sans); font-size: 11px; color: var(--stone); line-height: 1.5; margin-bottom: 8px; }
+.prod-footer { display: flex; align-items: center; justify-content: space-between; }
+.prod-price { font-family: var(--sans); font-size: 14px; font-weight: 700; color: var(--charcoal); }
+.prod-order {
+  font-family: var(--sans); font-size: 10px; font-weight: 600;
+  color: var(--charcoal); background: var(--linen);
+  padding: 5px 10px; border-radius: 8px; letter-spacing: .5px;
+  text-decoration: none;
+}
+
+/* CSS product shapes */
+.shape-lamp {
+  background: linear-gradient(145deg, var(--linen), var(--sand));
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 0;
+}
+.lamp-shade { width: 44px; height: 32px; background: var(--taupe); border-radius: 50% 50% 0 0 / 60% 60% 0 0; opacity: .85; }
+.lamp-neck  { width: 3px; height: 22px; background: var(--stone); }
+.lamp-base  { width: 22px; height: 4px; background: var(--brown); border-radius: 3px; }
+.lamp-glow  { position: absolute; top: 24px; width: 60px; height: 30px; background: radial-gradient(ellipse, rgba(255,235,180,.5) 0%, transparent 70%); }
+
+.shape-vase {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+.vase-body { position: relative; }
+
+.shape-kashpo {
+  width: 100%; height: 100%;
+  background: linear-gradient(145deg, var(--linen), var(--ivory));
+  display: flex; align-items: center; justify-content: center;
+}
+
+.shape-org {
+  width: 100%; height: 100%;
+  background: linear-gradient(145deg, var(--sand), var(--linen));
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-bottom: 20px; gap: 4px;
+}
+
+/* ── INFO CARDS ──────────────────────────── */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.info-card {
+  background: #fff;
+  border: 1px solid var(--linen);
+  border-radius: 14px;
+  padding: 18px 16px;
+}
+.info-card-icon { font-size: 22px; margin-bottom: 10px; display: block; }
+.info-card-title { font-family: var(--sans); font-size: 12px; font-weight: 600; color: var(--charcoal); margin-bottom: 4px; }
+.info-card-text  { font-family: var(--sans); font-size: 11px; color: var(--stone); line-height: 1.6; }
+
+/* ── REVIEWS ─────────────────────────────── */
+.review-card {
+  background: #fff;
+  border: 1px solid var(--linen);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 10px;
+}
+.review-stars { color: #f4b942; font-size: 13px; margin-bottom: 8px; letter-spacing: 2px; }
+.review-text { font-family: var(--serif); font-size: 15px; font-style: italic; color: var(--charcoal); line-height: 1.6; margin-bottom: 10px; }
+.review-author { font-family: var(--sans); font-size: 11px; color: var(--stone); }
+
+/* ── FOOTER ──────────────────────────────── */
+.footer {
+  margin-top: 40px;
+  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid var(--sand);
+}
+.footer svg { display: block; margin: 0 auto 8px; }
+.footer-text { font-family: var(--sans); font-size: 10px; color: var(--taupe); letter-spacing: 2px; }
+
+/* ── TOAST ───────────────────────────────── */
+.toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--charcoal); color: var(--ivory);
+  font-family: var(--sans); font-size: 13px;
+  padding: 12px 24px; border-radius: 100px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1);
+  white-space: nowrap; z-index: 999; pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ──────────────────────────────────── -->
+<div class="header">
+  <div class="avatar">
+    <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+      <rect width="80" height="80" fill="#3D3D3D"/>
+      <text x="40" y="57" text-anchor="middle"
+        font-family="Cormorant Garamond,Georgia,serif"
+        font-size="46" fill="#F6F2EC" font-weight="300">N</text>
+    </svg>
+  </div>
+  <h1 class="brand-name">NISA HOME</h1>
+  <p class="brand-sub">Современный декор для дома</p>
+  <p class="brand-cats">Светильники &nbsp;·&nbsp; Вазы &nbsp;·&nbsp; Кашпо</p>
+</div>
+
+<!-- ── MAIN WRAP ─────────────────────────────────── -->
+<div class="wrap">
+
+  <!-- ACTION BUTTONS -->
+  <div class="btn-group">
+
+    <a class="btn btn-wa" href="https://wa.me/77000000000" target="_blank">
+      <div class="btn-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.851L.054 23.454a.5.5 0 00.492.601l5.741-1.505A11.951 11.951 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.9 0-3.68-.524-5.2-1.437l-.373-.22-3.868 1.014 1.03-3.767-.24-.386A9.944 9.944 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+        </svg>
+      </div>
+      <div class="btn-content">
+        <span class="btn-title">Написать в WhatsApp</span>
+        <span class="btn-hint">Ответим в течение часа</span>
+      </div>
+      <span class="btn-arrow">›</span>
+    </a>
+
+    <a class="btn btn-kaspi" href="https://kaspi.kz/shop/nisahome" target="_blank">
+      <div class="btn-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+          <path d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v14a2 2 0 002 2h16a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5h12v2H6V7zm0 4h12v2H6v-2zm0 4h8v2H6v-2z"/>
+        </svg>
+      </div>
+      <div class="btn-content">
+        <span class="btn-title">Kaspi Магазин</span>
+        <span class="btn-hint">Оплата, рассрочка 0–0–24</span>
+      </div>
+      <span class="btn-arrow">›</span>
+    </a>
+
+    <a class="btn btn-phone" href="tel:+77000000000" id="phone-btn">
+      <div class="btn-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#3D3D3D">
+          <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+        </svg>
+      </div>
+      <div class="btn-content">
+        <span class="btn-title" id="phone-display">+7 (700) 000-00-00</span>
+        <span class="btn-hint">Звонки и SMS</span>
+      </div>
+      <span class="btn-arrow">›</span>
+    </a>
+
+    <a class="btn btn-insta" href="https://instagram.com/nisa.home" target="_blank">
+      <div class="btn-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
+      </div>
+      <div class="btn-content">
+        <span class="btn-title">Instagram</span>
+        <span class="btn-hint">@nisa.home</span>
+      </div>
+      <span class="btn-arrow">›</span>
+    </a>
+
+  </div>
+
+  <!-- ── DELIVERY & PAYMENT INFO ──────────────────── -->
+  <div class="sec-label">
+    <div class="sec-label-line"></div>
+    <span class="sec-label-text">Доставка и оплата</span>
+    <div class="sec-label-line"></div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <span class="info-card-icon">📦</span>
+      <p class="info-card-title">Доставка</p>
+      <p class="info-card-text">Almaty: 1–2 дня<br>Казахстан: 3–5 дней<br>Казпочта / СДЭК</p>
+    </div>
+    <div class="info-card">
+      <span class="info-card-icon">💳</span>
+      <p class="info-card-title">Оплата</p>
+      <p class="info-card-text">Kaspi Pay<br>Рассрочка 0–0–24<br>Перевод Kaspi</p>
+    </div>
+    <div class="info-card">
+      <span class="info-card-icon">🏺</span>
+      <p class="info-card-title">Производство</p>
+      <p class="info-card-text">3D-печать + ручная сборка<br>Срок: 3–7 дней</p>
+    </div>
+    <div class="info-card">
+      <span class="info-card-icon">✦</span>
+      <p class="info-card-title">Под заказ</p>
+      <p class="info-card-text">Нестандартный цвет или размер — пишите в WhatsApp</p>
+    </div>
+  </div>
+
+  <!-- ── CATALOG ───────────────────────────────────── -->
+  <div class="sec-label">
+    <div class="sec-label-line"></div>
+    <span class="sec-label-text">Каталог</span>
+    <div class="sec-label-line"></div>
+  </div>
+
+  <!-- CATEGORY: Светильники -->
+  <div>
+    <div class="cat-header open" onclick="toggleCat(this)">
+      <div class="cat-header-left">
+        <div class="cat-icon" style="background:var(--linen)">💡</div>
+        <div>
+          <p class="cat-name">Светильники</p>
+          <p class="cat-count">3 модели</p>
+        </div>
+      </div>
+      <span class="cat-arrow">▾</span>
+    </div>
+    <div class="prod-grid visible">
+
+      <a class="prod-card" href="https://kaspi.kz/shop/nisahome" target="_blank">
+        <div class="prod-img shape-lamp">
+          <div class="lamp-glow"></div>
+          <div class="lamp-shade"></div>
+          <div class="lamp-neck"></div>
+          <div class="lamp-base"></div>
+        </div>
+        <div class="prod-body">
+          <p class="prod-name">Луна</p>
+          <p class="prod-desc">Настольный, матовый</p>
+          <div class="prod-footer">
+            <span class="prod-price">12 500 ₸</span>
+            <span class="prod-order">Kaspi</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="prod-card" href="https://kaspi.kz/shop/nisahome" target="_blank">
+        <div class="prod-img shape-lamp" style="background:linear-gradient(145deg,var(--sand),var(--clay))">
+          <div class="lamp-glow"></div>
+          <div style="width:38px;height:46px;background:var(--brown);border-radius:50% 50% 8px 8px / 40% 40% 8px 8px;opacity:.75;position:relative;z-index:1"></div>
+          <div class="lamp-neck" style="height:16px;background:var(--brown);opacity:.7"></div>
+          <div class="lamp-base" style="background:var(--brown);opacity:.7"></div>
+        </div>
+        <div class="prod-body">
+          <p class="prod-name">Арка</p>
+          <p class="prod-desc">Настольный, конус</p>
+          <div class="prod-footer">
+            <span class="prod-price">14 000 ₸</span>
+            <span class="prod-order">Kaspi</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="prod-card" href="https://kaspi.kz/shop/nisahome" target="_blank" style="grid-column:1/-1">
+        <div style="display:flex;align-items:center;gap:0">
+          <div class="prod-img shape-lamp" style="width:120px;height:120px;min-width:120px;background:linear-gradient(145deg,var(--charcoal),var(--brown));flex-shrink:0">
+            <div style="width:6px;height:60px;background:var(--taupe);opacity:.5;border-radius:3px;position:relative;z-index:1"></div>
+          </div>
+          <div class="prod-body" style="flex:1">
+            <p class="prod-name">Ствол</p>
+            <p class="prod-desc">Напольный светильник. Высота 120 см. Матовая поверхность.</p>
+            <div class="prod-footer">
+              <span class="prod-price">24 000 ₸</span>
+              <span class="prod-order">Kaspi</span>
+            </div>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- CATEGORY: Вазы -->
+  <div>
+    <div class="cat-header" onclick="toggleCat(this)">
+      <div class="cat-header-left">
+        <div class="cat-icon" style="background:var(--linen)">🏺</div>
+        <div>
+          <p class="cat-name">Вазы</p>
+          <p class="cat-count">3 модели</p>
+        </div>
+      </div>
+      <span class="cat-arrow">▾</span>
+    </div>
+    <div class="prod-grid">
+
+      <a class="prod-card" href="https://kaspi.kz/shop/nisahome" target="_blank">
+        <div class="prod-img" style="background:linear-gradient(155deg,var(--linen),var(--sand))">
+          <svg width="48" height="72" viewBox="0 0 48 80" fill="none">
+            <path d="M10 72 C6 72 4 60 5 44 C5 32 8 22 10 14 L14 8 L24 6 L34 8 L38 14 C40 22 43 32 43 44 C44 60 42 72 38 72 Z" fill="#B6A38F" opacity=".8"/>
+            <ellipse cx="24" cy="6" rx="10" ry="3" fill="#D8C9B7" opacity=".6"/>
+          </svg>
+        </div>
+        <div class="prod-body">
+          <p class="prod-name">Момент</p>
+          <p class="prod-desc">Высота 22 см</p>
+          <div class="prod-footer">
+            <span class="prod-price">4 500 ₸</span>
+            <span class="prod-order">Kaspi</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="prod-card" href="https://kaspi.kz/shop/nisahome" target="_blank">
+        <div class="prod-img" style="background:linear-gradient(145deg,var(--sand),var(--clay))">
+          <div style="display:flex;gap:6px;align-items:flex-end">
+            <svg width="26" height="56" viewBox="0 0 26 60" fill="none">
+              <path d="M4 54 C2 54 1 44 2 32 C2 22 4 12 6 8 L13 5 L20 8 C22 12 24 22 24 32 C25 44 24 54 22 54 Z" fill="#C8A98D" opacity=".9"/>
+            </svg>
+            <svg width="22" height="44" viewBox="0 0 22 48" fill="none">
+              <path d="M3 42 C1 42 1 34 2 24 C2 16 4 10 5 7 L11 4 L17 7 C18 10 20 16 20 24 C21 34 21 42 19 42 Z" fill="#B6A38F" opacity=".8"/>
+            </svg>
+          </div>
+        </div>
+        <div class="prod-body">
+          <p class="prod-name">Дуо</p>
+          <p class="prod-desc">Набор 2 шт</p>
+          <div class="prod-footer">
+            <span class="prod-price">6 000 ₸</span>
+            <span class="prod-order">Kaspi</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="prod-card" href="https://kaspi.kz/shop/nisahome" target="_blank">
+        <div class="prod-img" style="background:linear-gradient(145deg,var(--ivory),var(--linen))">
+          <svg width="40" height="64" viewBox="0 0 40 70" fill="none">
+            <rect x="8" y="8" width="24" height="54" rx="3" fill="#8A8178" opacity=".6"/>
+            <rect x="12" y="5" width="16" height="6" rx="2" fill="#B6A38F" opacity=".7"/>
+          </svg>
+        </div>
+        <div class="prod-body">
+          <p class="prod-name">Минимо</p>
+          <p class="prod-desc">Высота 18 см</p>
+          <div class="prod-footer">
+            <span class="prod-price">3 800 ₸</span>
+            <span class="prod-order">Kaspi</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- CATEGORY: Кашпо -->
+  <div>
+    <div class="cat-header" onclick="toggleCat(this)">
+      <div class="cat-header-left">
+        <div class="cat-icon" style="background:var(--linen)">🌿</div>
+        <div>
+          <p class="cat-name">Кашпо</p>
+          <p class="cat-count">3 модели</p>
+        </div>
+      </div>
+      <span class="cat-arrow">▾</span>
+    </div>
+    <div class="prod-grid">
+
+      <a class="prod-card" href="https://kaspi.kz/shop/nisahome" target="_blank">
+        <div class="prod-img shape-kashpo">
+          <svg width="54" height="54" viewBox="0 0 54 60" fill="none">
+            <path d="M8 12 L6 52 L48 52 L46 12 Z" fill="#B6A38F" opacity=".75" rx="3"/>
+            <rect x="10" y="10" width="34" height="5" rx="2" fill="#D8C9B7" opacity=".8"/>
+          </svg>
+        </div>
+        <div class="prod-body">
+          <p class="prod-name">Трапеция</p>
+          <p class="prod-desc">Ø 14 см</p>
+          <div class="prod-footer">
+            <span class="prod-price">3 200 ₸</span>
+            <span class="prod-order">Kaspi</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="prod-card" href="https://kaspi.kz/shop/nisahome" target="_blank">
+        <div class="prod-img" style="background:linear-gradient(145deg,var(--sand),var(--linen));display:flex;align-items:center;justify-content:center">
+          <svg width="52" height="60" viewBox="0 0 52 64" fill="none">
+            <path d="M4 56 C4 58 8 62 26 62 C44 62 48 58 48 56 L44 18 C44 14 36 10 26 10 C16 10 8 14 8 18 Z" fill="#C8A98D" opacity=".8"/>
+            <ellipse cx="26" cy="18" rx="18" ry="6" fill="#D8C9B7" opacity=".7"/>
+          </svg>
+        </div>
+        <div class="prod-body">
+          <p class="prod-name">Конус</p>
+          <p class="prod-desc">Ø 12 см</p>
+          <div class="prod-footer">
+            <span class="prod-price">3 800 ₸</span>
+            <span class="prod-order">Kaspi</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="prod-card" href="https://kaspi.kz/shop/nisahome" target="_blank">
+        <div class="prod-img" style="background:linear-gradient(145deg,var(--ivory),var(--sand));display:flex;align-items:center;justify-content:center">
+          <svg width="52" height="56" viewBox="0 0 52 60" fill="none">
+            <rect x="4" y="12" width="44" height="42" rx="5" fill="#8A8178" opacity=".6"/>
+            <rect x="8" y="8" width="36" height="8" rx="4" fill="#B6A38F" opacity=".8"/>
+          </svg>
+        </div>
+        <div class="prod-body">
+          <p class="prod-name">Куб</p>
+          <p class="prod-desc">12 × 12 см</p>
+          <div class="prod-footer">
+            <span class="prod-price">2 900 ₸</span>
+            <span class="prod-order">Kaspi</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- CATEGORY: Органайзеры -->
+  <div>
+    <div class="cat-header" onclick="toggleCat(this)">
+      <div class="cat-header-left">
+        <div class="cat-icon" style="background:var(--linen)">🗂</div>
+        <div>
+          <p class="cat-name">Органайзеры</p>
+          <p class="cat-count">2 модели</p>
+        </div>
+      </div>
+      <span class="cat-arrow">▾</span>
+    </div>
+    <div class="prod-grid">
+
+      <a class="prod-card" href="https://kaspi.kz/shop/nisahome" target="_blank">
+        <div class="prod-img shape-org">
+          <div style="width:14px;height:44px;background:rgba(61,61,61,.3);border-radius:3px 3px 0 0"></div>
+          <div style="width:14px;height:32px;background:rgba(61,61,61,.25);border-radius:3px 3px 0 0"></div>
+          <div style="width:14px;height:52px;background:rgba(61,61,61,.35);border-radius:3px 3px 0 0"></div>
+        </div>
+        <div class="prod-body">
+          <p class="prod-name">Гнездо</p>
+          <p class="prod-desc">Органайзер 3 секции</p>
+          <div class="prod-footer">
+            <span class="prod-price">5 500 ₸</span>
+            <span class="prod-order">Kaspi</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="prod-card" href="https://kaspi.kz/shop/nisahome" target="_blank">
+        <div class="prod-img" style="background:linear-gradient(145deg,var(--linen),var(--ivory));display:flex;align-items:center;justify-content:center">
+          <svg width="70" height="60" viewBox="0 0 70 64" fill="none">
+            <rect x="2" y="40" width="66" height="20" rx="3" fill="#B6A38F" opacity=".6"/>
+            <rect x="10" y="22" width="16" height="20" rx="2" fill="#C8A98D" opacity=".7"/>
+            <rect x="30" y="14" width="16" height="28" rx="2" fill="#8A8178" opacity=".6"/>
+            <rect x="50" y="28" width="12" height="14" rx="2" fill="#D8C9B7" opacity=".8"/>
+          </svg>
+        </div>
+        <div class="prod-body">
+          <p class="prod-name">Полка</p>
+          <p class="prod-desc">Настенная, 4 ячейки</p>
+          <div class="prod-footer">
+            <span class="prod-price">7 200 ₸</span>
+            <span class="prod-order">Kaspi</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ── REVIEWS ──────────────────────────────────── -->
+  <div class="sec-label">
+    <div class="sec-label-line"></div>
+    <span class="sec-label-text">Отзывы</span>
+    <div class="sec-label-line"></div>
+  </div>
+
+  <div class="review-card">
+    <p class="review-stars">★★★★★</p>
+    <p class="review-text">«Заказала светильник "Луна" — он просто невероятный. Смотрится как арт-объект. Упакован с любовью, внутри карточка с тёплыми словами. Буду заказывать ещё.»</p>
+    <p class="review-author">Айгерим, Алматы &nbsp;·&nbsp; Kaspi отзыв</p>
+  </div>
+
+  <div class="review-card">
+    <p class="review-stars">★★★★★</p>
+    <p class="review-text">«Взяла набор ваз "Дуо" в подарок подруге. Она в восторге! Качество на уровне магазинов типа Zara Home, но с душой. Рекомендую.»</p>
+    <p class="review-author">Дина, Нур-Султан &nbsp;·&nbsp; WhatsApp отзыв</p>
+  </div>
+
+  <div class="review-card">
+    <p class="review-stars">★★★★★</p>
+    <p class="review-text">«Кашпо "Конус" — наконец нашла то, что искала. Не пластик, не масс-маркет. Живая вещь с характером. Спасибо за вашу работу!»</p>
+    <p class="review-author">Сабина, Алматы &nbsp;·&nbsp; Instagram DM</p>
+  </div>
+
+  <!-- ── FOOTER ──────────────────────────────────── -->
+  <div class="footer">
+    <svg width="160" height="44" viewBox="0 0 160 44" fill="none">
+      <text x="80" y="20" text-anchor="middle"
+        font-family="Cormorant Garamond,Georgia,serif"
+        font-size="20" letter-spacing="7" fill="#3D3D3D" font-weight="300">NISA</text>
+      <line x1="28" y1="27" x2="132" y2="27" stroke="#D8C9B7" stroke-width=".6"/>
+      <text x="80" y="40" text-anchor="middle"
+        font-family="Cormorant Garamond,Georgia,serif"
+        font-size="10" letter-spacing="9" fill="#8A8178" font-weight="300">HOME</text>
+    </svg>
+    <p class="footer-text" style="margin-top:12px">СОЗДАНО С ПОМОЩЬЮ 3D-ТЕХНОЛОГИЙ</p>
+    <p class="footer-text" style="margin-top:4px">© 2025 NISA HOME · Алматы, Казахстан</p>
+  </div>
+
+</div><!-- /wrap -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+function toggleCat(header) {
+  const grid = header.nextElementSibling;
+  const isOpen = header.classList.contains('open');
+  header.classList.toggle('open', !isOpen);
+  grid.classList.toggle('visible', !isOpen);
+}
+
+// Copy phone on tap
+document.getElementById('phone-btn').addEventListener('click', function(e) {
+  const phone = '+77000000000';
+  if (navigator.clipboard) {
+    e.preventDefault();
+    navigator.clipboard.writeText(phone).then(() => showToast('Номер скопирован'));
+  }
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ⚠️  ЗАМЕНИ НА СВОИ ДАННЫЕ:
+// href="https://wa.me/77000000000"    → свой номер WhatsApp
+// href="tel:+77000000000"             → свой номер телефона
+// id="phone-display"                  → свой номер для отображения
+// href="https://kaspi.kz/shop/nisahome" → ссылка на твой Kaspi магазин
+// href="https://instagram.com/nisa.home" → твой Instagram
+</script>
+</body>
+</html>
